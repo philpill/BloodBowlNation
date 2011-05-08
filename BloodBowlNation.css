@@ -1,0 +1,6 @@
+html { font: 62.5% tahoma, sans-serif }
+body {}
+h1 { font-size: 2em; line-height: 2em; }
+
+#Container { margin: 20px 50px; }
+#GameCanvas { border: solid 1px #efefef; }
