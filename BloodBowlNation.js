@@ -1,133 +1,159 @@
 var bloodBowlNation = bloodBowlNation || {
 	canvas: null,
-	context: null,
+	canvasContext: null,
 	init: function() {
 		this.canvas = document.getElementById("GameCanvas");
-		this.context = this.controls.canvas.getContext("2d");
+		this.canvasContext = this.canvas.getContext("2d");
+		this.game.init(this.canvas, this.canvasContext);
 	},
-	players: {
-	
+	player: {
+		position: null,
+		player: function(position) {
+			this.position = position;
+		}
 	},
-	pitch: {
-		leftOrigin: null,
-		topOrigin: null,
-		unit: null,
-		height: null,
-		width: null,
-		unitColour: null,
-		boundaryLineColour: null,
-		context: null,
-		controls: {
-			canvas: null
-		},
-		render: function() {
-			var canvas = this.controls.canvas;
-			var context = this.context;			
-			var unit = this.unit;
-			var width = this.width;
-			var height = this.height;
-			var unitColour = this.unitColour;
-			var boundaryLineColour = this.boundaryLineColour;
-			var pitchImage = new Image();
-			pitchImage.src="Pitch.jpg";
-			pitchImage.onload = function() {
-				context.drawImage(pitchImage, 0, 0, unit*width, unit*height);			
-				context.beginPath();
-				context.fillStyle = "rgba(0,255,0,0.1)";
-				context.fillRect(0,0,width*unit,height*unit);
-				
-				//vertical grid lines
-				for (var x=0.5; x < (width*unit)+unit; x+=unit)
-				{
-					context.moveTo(x, 0);
-					context.lineTo(x, height*unit);
-				}	
-				//horizontal grid lines
-				for (var y=0.5; y < (height*unit)+unit; y+=unit)
-				{
-					context.moveTo(0, y);
-					context.lineTo(width*unit, y);
-				}
-				context.strokeStyle=unitColour;
-				context.stroke();
-				
-				//upper touchline
-				context.beginPath();
-				context.moveTo(0, 1*unit);
-				context.lineTo(width*unit, 1*unit);		
-				context.strokeStyle=boundaryLineColour;
-				context.stroke();	
-				
-				//halfway line
-				context.beginPath();	
-				context.moveTo(0, (height*unit)/2);
-				context.lineTo(width*unit, (height*unit)/2);		
-				context.strokeStyle=boundaryLineColour;
-				context.stroke();
+	game: {
+		pitchUnitSize: 20,
+		canvasHeight: 26,
+		canvasWidth: 15,
+		init: function(canvas, canvasContext) {
+			this.pitch.init(canvas, canvasContext, this.pitchUnitSize, this.canvasWidth, this.canvasHeight, function(context, pitchUnitSize) {
 
-				//lower touchline
-				context.beginPath();
-				context.moveTo(0, height*unit-unit);
-				context.lineTo(width*unit, height*unit-unit);		
-				context.strokeStyle=boundaryLineColour;
-				context.stroke();
-				
-				//left sideline
-				context.beginPath();
-				context.moveTo(4*unit, 0);
-				context.lineTo(4*unit, unit*height);
-				context.strokeStyle=boundaryLineColour;
-				context.stroke();
-				
-				//right sideline
-				context.beginPath();
-				context.moveTo(11*unit, 0);
-				context.lineTo(11*unit, unit*height);
-				context.strokeStyle=boundaryLineColour;
-				context.stroke();
-								
-				//create one player
-				context.beginPath();
-				context.arc(unit/2, unit/2, unit/4, 0, Math.PI * 2, false);
-				context.closePath();
-				context.fillStyle = "rgba(0,0,255,0.5)";
-				context.fill();
-				context.strokeStyle = "rgba(0,0,0,0.3)";
-				context.stroke();
-				
-				//create one player
-				context.beginPath();
-				context.arc(unit+unit/2, unit/2, unit/4, 0, Math.PI * 2, false);
-				context.closePath();
-				context.fillStyle = "rgba(255,0,0,0.5)";
-				context.fill();
-				context.strokeStyle = "rgba(0,0,0,0.3)";
-				context.stroke();			
-			}						
+				for (var i=0;i<11;i++) {
+					context.beginPath();
+					context.arc((i*pitchUnitSize)+pitchUnitSize/2, pitchUnitSize+pitchUnitSize/2, pitchUnitSize/4, 0, Math.PI * 2, false);
+					context.closePath();
+					context.fillStyle = "rgba(255,0,0,0.5)";
+					context.fill();
+					context.strokeStyle = "rgba(0,0,0,0.3)";
+					context.stroke();
+				}
+
+				for (var i=0;i<11;i++) {
+					context.beginPath();
+					context.arc((i*pitchUnitSize)+pitchUnitSize/2, (2*pitchUnitSize)+pitchUnitSize/2, pitchUnitSize/4, 0, Math.PI * 2, false);
+					context.closePath();
+					context.fillStyle = "rgba(0,0,255,0.5)";
+					context.fill();
+					context.strokeStyle = "rgba(0,0,0,0.3)";
+					context.stroke();
+				}
+			});
 		},
-		canvasClick: function(e) {
+		pitch: {
+			grid: null,
+			leftOrigin: null,
+			topOrigin: null,
+			unit: null,
+			height: null,
+			width: null,
+			unitBorderColour: null,
+			unitFillColour: null,
+			boundaryLineColour: null,
+			canvasContext: null,
+			controls: {
+				canvas: null
+			},
+			render: function(initCallback) {
+				var canvas = this.controls.canvas;
+				var canvasContext = this.canvasContext;
+				var unit = this.unit;
+				var width = this.width;
+				var height = this.height;
+				var unitBorderColour = this.unitBorderColour;
+				var unitFillColour = this.unitFillColour;
+				var boundaryLineColour = this.boundaryLineColour;
+				var pitchImage = new Image();
+				pitchImage.src="Pitch.jpg";
+				pitchImage.onload = function(e) {
+					
+					console.log(e);
+				
+					//canvasContext.drawImage(pitchImage, 0, 0, unit*width, unit*height);
+					canvasContext.beginPath();
+					canvasContext.fillStyle = unitFillColour;
+					canvasContext.fillRect(0,0,width*unit,height*unit);
+					
+					//vertical grid lines
+					for (var x=0.5; x < (width*unit)+unit; x+=unit)
+					{
+						canvasContext.moveTo(x, 0);
+						canvasContext.lineTo(x, height*unit);
+					}
+					//horizontal grid lines
+					for (var y=0.5; y < (height*unit)+unit; y+=unit)
+					{
+						canvasContext.moveTo(0, y);
+						canvasContext.lineTo(width*unit, y);
+					}
+					canvasContext.strokeStyle=unitBorderColour;
+					canvasContext.stroke();
+					
+					//upper touchline
+					canvasContext.beginPath();
+					canvasContext.moveTo(0, 1*unit);
+					canvasContext.lineTo(width*unit, 1*unit);
+					canvasContext.strokeStyle=boundaryLineColour;
+					canvasContext.stroke();
+					
+					//halfway line
+					canvasContext.beginPath();
+					canvasContext.moveTo(0, (height*unit)/2);
+					canvasContext.lineTo(width*unit, (height*unit)/2);
+					canvasContext.strokeStyle=boundaryLineColour;
+					canvasContext.stroke();
+
+					//lower touchline
+					canvasContext.beginPath();
+					canvasContext.moveTo(0, height*unit-unit);
+					canvasContext.lineTo(width*unit, height*unit-unit);
+					canvasContext.strokeStyle=boundaryLineColour;
+					canvasContext.stroke();
+					
+					//left sideline
+					canvasContext.beginPath();
+					canvasContext.moveTo(4*unit, 0);
+					canvasContext.lineTo(4*unit, unit*height);
+					canvasContext.strokeStyle=boundaryLineColour;
+					canvasContext.stroke();
+					
+					//right sideline
+					canvasContext.beginPath();
+					canvasContext.moveTo(11*unit, 0);
+					canvasContext.lineTo(11*unit, unit*height);
+					canvasContext.strokeStyle=boundaryLineColour;
+					canvasContext.stroke();
+					
+					console.log("init");
+					
+					initCallback(canvasContext, unit);
+				}
+			},
+			canvasClick: function(e) {
+				
+				var that = e.data.that;
 			
-			var that = e.data.that;
-		
-			var left = e.pageX - this.offsetLeft;
-			var top = e.pageY - this.offsetTop;
-			console.log("(" + left + ", " + top + ")");	
-			
-			//work out grid position
-			var leftGrid = Math.ceil(left/that.unit);
-			var topGrid = Math.ceil(top/that.unit);
-			console.log("(" + leftGrid + ", " + topGrid + ")"); 
-		},
-		init: function() {
-			this.unit=20;
-			this.height=26;
-			this.width=15;
-			this.unitColour="rgba(0,0,0,0.1)";
-			this.boundaryLineColour="rgba(255,255,255,1)";			
-			this.controls.canvas=document.getElementById("GameCanvas");
-			this.context=this.controls.canvas.getContext("2d");
-			$(this.controls.canvas).click({that: this}, this.canvasClick);
-			this.render();
+				var left = e.pageX - this.offsetLeft;
+				var top = e.pageY - this.offsetTop;
+				console.log("(" + left + ", " + top + ")");
+				
+				//work out grid position
+				var leftGrid = Math.ceil(left/that.unit);
+				var topGrid = Math.ceil(top/that.unit);
+				console.log("(" + leftGrid + ", " + topGrid + ")"); 
+			},
+			init: function(canvas, canvasContext, pitchUnitSize, pitchWidth, pitchHeight, initCallback) {
+				this.unit=pitchUnitSize;
+				this.height=pitchHeight;
+				this.width=pitchWidth;
+				this.unitFillColour="rgba(0,255,0,0)";
+				this.unitBorderColour="rgba(0,0,0,0.1)";
+				this.boundaryLineColour="rgba(255,255,255,1)";
+				this.controls.canvas=canvas;
+				this.canvasContext=canvasContext;
+				$(this.controls.canvas).click({that: this}, this.canvasClick);
+				this.render(initCallback);
+			}
 		}
 	}
 } 
