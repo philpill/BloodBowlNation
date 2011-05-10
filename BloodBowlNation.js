@@ -21,8 +21,9 @@ var bloodBowlNation = bloodBowlNation || {
 					this.grid[i][j] = "";
 				}
 			}
-			this.pitch.init(canvas, canvasContext, this);
-			this.match.init(canvas, canvasContext, this);
+			
+			this.pitch.init(canvas, canvasContext, this, this.match.init);
+			
 		},
 		insertPlayersTemp: function(context, pitchUnitSize, grid) {
 			var i, x, y, gridX, gridY;
@@ -92,10 +93,10 @@ var bloodBowlNation = bloodBowlNation || {
 			},
 			init: function(canvas, canvasContext, gameContext) {
 				
-				var player = this.player, i, team = this.team;
-				this.gameContext = gameContext;
-				this.canvas = canvas;
-				this.canvasContext = canvasContext;
+				var player = gameContext.match.player, i, team = gameContext.match.team;
+				gameContext.match.gameContext = gameContext;
+				gameContext.match.canvas = canvas;
+				gameContext.match.canvasContext = canvasContext;
 				var team1 = new team("Reikland Reavers");
 				var team2 = new team("Orcland Raiders");
 				
@@ -107,13 +108,13 @@ var bloodBowlNation = bloodBowlNation || {
 					team2.players.push(new player("orc" + i));
 				}
 				
-				this.teams.push(team1);
-				this.teams.push(team2);
+				gameContext.match.teams.push(team1);
+				gameContext.match.teams.push(team2);
 				
-				this.renderPlayers(team1.players, 1, "rgba(255,0,0,0.5)");
-				this.renderPlayers(team2.players, 2, "rgba(0,0,255,0.5)");
+				gameContext.match.renderPlayers(team1.players, 1, "rgba(255,0,0,0.5)");
+				gameContext.match.renderPlayers(team2.players, 2, "rgba(0,0,255,0.5)");
 				
-				console.log(this.teams);
+				console.log(gameContext.match.teams);
 			}
 		},
 		pitch: {
@@ -127,7 +128,8 @@ var bloodBowlNation = bloodBowlNation || {
 			controls: {
 				canvas: null
 			},
-			render: function() {
+			render: function(matchInit) {
+				var gameContext = this.gameContext;
 				var grid = this.gameContext.grid;
 				var canvas = this.controls.canvas;
 				var canvasContext = this.canvasContext;
@@ -141,7 +143,7 @@ var bloodBowlNation = bloodBowlNation || {
 				pitchImage.src="Pitch.jpg";
 				pitchImage.onload = function(e) {
 					
-					//canvasContext.drawImage(pitchImage, 0, 0, unit*width, unit*height);
+					canvasContext.drawImage(pitchImage, 0, 0, unit*width, unit*height);
 					canvasContext.beginPath();
 					canvasContext.fillStyle = unitFillColour;
 					canvasContext.fillRect(0,0,width*unit,height*unit);
@@ -195,6 +197,8 @@ var bloodBowlNation = bloodBowlNation || {
 					canvasContext.lineTo(11*unit, unit*height);
 					canvasContext.strokeStyle=boundaryLineColour;
 					canvasContext.stroke();
+
+					matchInit(canvas, canvasContext, gameContext);
 				}
 			},
 			canvasClick: function(e) {
@@ -219,7 +223,7 @@ var bloodBowlNation = bloodBowlNation || {
 					console.log("(" + leftGrid + ", " + topGrid + ")"); 
 				}
 			},
-			init: function(canvas, canvasContext, gameContext) {
+			init: function(canvas, canvasContext, gameContext, matchInit) {
 				this.gameContext=gameContext;
 				this.unitFillColour="rgba(0,255,0,0)";
 				this.unitBorderColour="rgba(0,0,0,0.1)";
@@ -227,7 +231,7 @@ var bloodBowlNation = bloodBowlNation || {
 				this.controls.canvas=canvas;
 				this.canvasContext=canvasContext;
 				$(this.controls.canvas).click({that: this}, this.canvasClick);
-				this.render();
+				this.render(matchInit);
 			}
 		}
 	}
