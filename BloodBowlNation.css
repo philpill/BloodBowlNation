@@ -3,4 +3,4 @@ body {}
 h1 { font-size: 2em; line-height: 2em; }
 
 #Container { margin: 20px 50px; }
-#GameCanvas { border: solid 1px #efefef; }
+#GameCanvas { border: solid 1px #efefef; float: left; margin: 0 10px 0 0; }

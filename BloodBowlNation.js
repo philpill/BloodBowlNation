@@ -21,9 +21,9 @@ var bloodBowlNation = bloodBowlNation || {
 					this.grid[i][j] = "";
 				}
 			}
-			
-			this.pitch.init(canvas, canvasContext, this, this.match.init);
-			
+			this.pitch.init(canvas, canvasContext, this);
+			this.match.init(canvas, canvasContext, this);
+			this.render();
 		},
 		insertPlayersTemp: function(context, pitchUnitSize, grid) {
 			var i, x, y, gridX, gridY;
@@ -56,6 +56,19 @@ var bloodBowlNation = bloodBowlNation || {
 				context.stroke();
 			}
 		},
+		wrapFunction: function(fn, context, params) {
+				return function() {
+						fn.apply(context, params);
+				};
+		},
+		renderQueue: [],
+		render: function() {
+			for (var i = 0; i < this.renderQueue.length; i++){
+				if (typeof this.renderQueue[i]=== "function" ) {
+					this.renderQueue[i]();
+				}
+			}
+		},
 		match: {
 			pitch: this.pitch,
 			gameContext: null,
@@ -68,7 +81,7 @@ var bloodBowlNation = bloodBowlNation || {
 			},
 			player: function(playerName) {
 				this.name = playerName;
-				this.onSelect = function() { console.log("derp " + this.name); }
+				this.onSelect = function() { console.log(this.name + " selected"); }
 			},
 			renderPlayers: function(players, pitchRow, colour) {
 				var gameContext = this.gameContext;
@@ -103,18 +116,16 @@ var bloodBowlNation = bloodBowlNation || {
 				for (i = 0; i < 11; i++) {
 					team1.players.push(new player("human" + i));
 				}
-				
+
 				for (i = 0; i < 11; i++) {
 					team2.players.push(new player("orc" + i));
 				}
-				
+
 				gameContext.match.teams.push(team1);
 				gameContext.match.teams.push(team2);
-				
-				gameContext.match.renderPlayers(team1.players, 1, "rgba(255,0,0,0.5)");
-				gameContext.match.renderPlayers(team2.players, 2, "rgba(0,0,255,0.5)");
-				
-				console.log(gameContext.match.teams);
+
+				gameContext.renderQueue.push(gameContext.wrapFunction(this.renderPlayers, this, [team1.players, 1, "rgba(255,0,0,0.5)"]));
+				gameContext.renderQueue.push(gameContext.wrapFunction(this.renderPlayers, this, [team2.players, 2, "rgba(0,0,255,0.5)"]));
 			}
 		},
 		pitch: {
@@ -128,7 +139,8 @@ var bloodBowlNation = bloodBowlNation || {
 			controls: {
 				canvas: null
 			},
-			render: function(matchInit) {
+			render: function() {
+			
 				var gameContext = this.gameContext;
 				var grid = this.gameContext.grid;
 				var canvas = this.controls.canvas;
@@ -197,8 +209,6 @@ var bloodBowlNation = bloodBowlNation || {
 					canvasContext.lineTo(11*unit, unit*height);
 					canvasContext.strokeStyle=boundaryLineColour;
 					canvasContext.stroke();
-
-					matchInit(canvas, canvasContext, gameContext);
 				}
 			},
 			canvasClick: function(e) {
@@ -223,15 +233,49 @@ var bloodBowlNation = bloodBowlNation || {
 					console.log("(" + leftGrid + ", " + topGrid + ")"); 
 				}
 			},
-			init: function(canvas, canvasContext, gameContext, matchInit) {
+			canvasMouseMove: function(e) {
+			
+				var that = e.data.that;
+				var grid = that.gameContext.grid;
+				var unit = that.gameContext.pitchUnitSize;
+				var canvasContext = that.canvasContext;
+				var canvas = that.controls.canvas;
+				
+				
+				var left = e.pageX - this.offsetLeft;
+				var top = e.pageY - this.offsetTop;
+				
+				//work out grid position
+				var leftGrid = Math.ceil(left/unit) * unit - unit;
+				var topGrid = Math.ceil(top/unit) * unit - unit;
+
+			
+				//console.log("(" + leftGrid + ", " + topGrid + ")"); 
+				
+				//render a little coloured square at these co ordinates
+				
+				canvasContext.strokeStyle="rgba(0,0,0,0.1)";
+				canvasContext.fillStyle="rgba(0,0,0,0.1)";
+				
+				canvas.width = canvas.width;
+				
+				that.gameContext.render();
+				
+				canvasContext.strokeStyle="rgba(0,0,0,0.1)";
+				canvasContext.fillStyle="rgba(0,0,0,0.1)";
+				
+				canvasContext.fillRect(leftGrid, topGrid, unit, unit);
+			},
+			init: function(canvas, canvasContext, gameContext) {
 				this.gameContext=gameContext;
 				this.unitFillColour="rgba(0,255,0,0)";
 				this.unitBorderColour="rgba(0,0,0,0.1)";
 				this.boundaryLineColour="rgba(255,255,255,1)";
 				this.controls.canvas=canvas;
 				this.canvasContext=canvasContext;
+				$(this.controls.canvas).mousemove({that: this}, this.canvasMouseMove);
 				$(this.controls.canvas).click({that: this}, this.canvasClick);
-				this.render(matchInit);
+				gameContext.renderQueue.push(gameContext.wrapFunction(this.render, this));
 			}
 		}
 	}
