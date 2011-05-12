@@ -2,5 +2,6 @@ html { font: 62.5% tahoma, sans-serif }
 body {}
 h1 { font-size: 2em; line-height: 2em; }
 
-#Container { margin: 20px 50px; }
-#GameCanvas { border: solid 1px #efefef; float: left; margin: 0 10px 0 0; }
+#Container { margin: 20px 50px; position: relative; }
+#PitchCanvas { border: solid 1px #efefef; float: left; position: absolute; top: 100px; left: 10px; z-index: 0; }
+#GameCanvas { border: solid 1px #efefef; float: left; position: absolute; top: 100px; left: 10px; z-index: 1; }

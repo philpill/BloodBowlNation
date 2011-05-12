@@ -1,17 +1,23 @@
 var bloodBowlNation = bloodBowlNation || {
+	pitchCanvas: null,
+	pitchCanvasContext: null,
 	canvas: null,
 	canvasContext: null,
 	init: function() {
+		this.pitchCanvas = document.getElementById("PitchCanvas");
+		this.pitchCanvas.reset = function() { this.width = this.width; } //this way of resetting the canvas is stupid
 		this.canvas = document.getElementById("GameCanvas");
+		this.canvas.reset = function() { this.width = this.width; } //again, stupid
 		this.canvasContext = this.canvas.getContext("2d");
-		this.game.init(this.canvas, this.canvasContext);
+		this.pitchCanvasContext = this.pitchCanvas.getContext("2d");
+		this.game.init(this.canvas, this.canvasContext, this.pitchCanvas, this.pitchCanvasContext);
 	},
 	game: {
 		pitchUnitSize: 20,
 		canvasHeight: 26,
 		canvasWidth: 15,
 		grid: new Array(this.canvasWidth),
-		init: function(canvas, canvasContext) {
+		init: function(canvas, canvasContext, pitchCanvas, pitchCanvasContext) {
 			var i, j;
 			for (i = 0; i <= this.canvasWidth; i++) {
 				this.grid[i] = new Array(this.canvasHeight);
@@ -21,8 +27,9 @@ var bloodBowlNation = bloodBowlNation || {
 					this.grid[i][j] = "";
 				}
 			}
-			this.pitch.init(canvas, canvasContext, this);
+			this.pitch.init(pitchCanvas, pitchCanvasContext, this);
 			this.match.init(canvas, canvasContext, this);
+			this.grid.render = function() { console.log("boom"); }
 			this.render();
 		},
 		insertPlayersTemp: function(context, pitchUnitSize, grid) {
@@ -104,12 +111,71 @@ var bloodBowlNation = bloodBowlNation || {
 					canvasContext.stroke();
 				}
 			},
-			init: function(canvas, canvasContext, gameContext) {
+			canvasClick: function(e) {
 				
-				var player = gameContext.match.player, i, team = gameContext.match.team;
-				gameContext.match.gameContext = gameContext;
-				gameContext.match.canvas = canvas;
-				gameContext.match.canvasContext = canvasContext;
+				var that = e.data.that;
+				var grid = that.gameContext.grid;
+				
+				var position = $("#PitchCanvas").position();
+				var parentPosition = $("#Container").offset();
+				
+				var left = e.pageX - position.left - parentPosition.left;
+				var top = e.pageY - position.top - parentPosition.top;
+				
+				//work out grid position
+				var leftGrid = Math.ceil(left/that.gameContext.pitchUnitSize);
+				var topGrid = Math.ceil(top/that.gameContext.pitchUnitSize);
+				
+				//check to see if there's anything in this space
+				if (leftGrid<grid.length && grid[leftGrid][topGrid]!=="" && grid[leftGrid][topGrid]!==undefined) {
+					console.log("(" + leftGrid + ", " + topGrid + "): " + grid[leftGrid][topGrid].name);
+					grid[leftGrid][topGrid].onSelect();
+					//make that object active
+				} else {
+					console.log("(" + leftGrid + ", " + topGrid + ")"); 
+				}
+			},
+			canvasMouseMove: function(e) {
+			
+				var that = e.data.that;
+				var grid = that.gameContext.grid;
+				var unit = that.gameContext.pitchUnitSize;
+				var canvasContext = that.canvasContext;
+				var canvas = that.canvas;
+				
+				var position = $("#PitchCanvas").position();
+				var parentPosition = $("#Container").offset();
+				
+				var left = e.pageX - position.left - parentPosition.left;
+				var top = e.pageY - position.top - parentPosition.top;
+				
+				//work out grid position
+				var leftGrid = Math.ceil(left/unit) * unit - unit;
+				var topGrid = Math.ceil(top/unit) * unit - unit;
+
+				//render a little coloured square at these co ordinates
+				canvasContext.strokeStyle="rgba(0,0,0,0.1)";
+				canvasContext.fillStyle="rgba(0,0,0,0.1)";
+				
+				canvas.reset();
+				
+				that.gameContext.render();
+				
+				canvasContext.strokeStyle="rgba(0,0,0,0.1)";
+				canvasContext.fillStyle="rgba(0,0,0,0.1)";
+				
+				canvasContext.fillRect(leftGrid, topGrid, unit, unit);
+			},
+			generateGameTemp: function() {
+				var player, i, team, gameContext, canvas, canvasContext;
+				
+				gameContext = this.gameContext;
+				canvas = this.canvas;
+				canvasContext = this.canvasContext;
+				
+				player = this.player;
+				team = this.team;
+				
 				var team1 = new team("Reikland Reavers");
 				var team2 = new team("Orcland Raiders");
 				
@@ -121,11 +187,26 @@ var bloodBowlNation = bloodBowlNation || {
 					team2.players.push(new player("orc" + i));
 				}
 
-				gameContext.match.teams.push(team1);
-				gameContext.match.teams.push(team2);
+				this.teams.push(team1);
+				this.teams.push(team2);
+			},
+			init: function(canvas, canvasContext, gameContext) {
+				
+				var team, i = 0;
+				
+				this.gameContext = gameContext;
+				this.canvas = canvas;
+				this.canvasContext = canvasContext;
+				
+				this.generateGameTemp();
+				
+				for (team in this.teams) {
+					gameContext.renderQueue.push(gameContext.wrapFunction(this.renderPlayers, this, [team.players, i++, "rgba(255,0,0,0.5)"]));
+				}
 
-				gameContext.renderQueue.push(gameContext.wrapFunction(this.renderPlayers, this, [team1.players, 1, "rgba(255,0,0,0.5)"]));
-				gameContext.renderQueue.push(gameContext.wrapFunction(this.renderPlayers, this, [team2.players, 2, "rgba(0,0,255,0.5)"]));
+				
+				$(this.canvas).mousemove({that: this}, this.canvasMouseMove);
+				$(this.canvas).click({that: this}, this.canvasClick);
 			}
 		},
 		pitch: {
@@ -155,7 +236,9 @@ var bloodBowlNation = bloodBowlNation || {
 				pitchImage.src="Pitch.jpg";
 				pitchImage.onload = function(e) {
 					
-					canvasContext.drawImage(pitchImage, 0, 0, unit*width, unit*height);
+					canvas.reset();
+					
+					//canvasContext.drawImage(pitchImage, 0, 0, unit*width, unit*height);
 					canvasContext.beginPath();
 					canvasContext.fillStyle = unitFillColour;
 					canvasContext.fillRect(0,0,width*unit,height*unit);
@@ -211,61 +294,6 @@ var bloodBowlNation = bloodBowlNation || {
 					canvasContext.stroke();
 				}
 			},
-			canvasClick: function(e) {
-				
-				var that = e.data.that;
-				var grid = that.gameContext.grid;
-				
-				var left = e.pageX - this.offsetLeft;
-				var top = e.pageY - this.offsetTop;
-				//console.log("(" + left + ", " + top + ")");
-				
-				//work out grid position
-				var leftGrid = Math.ceil(left/that.gameContext.pitchUnitSize);
-				var topGrid = Math.ceil(top/that.gameContext.pitchUnitSize);
-				
-				//check to see if there's anything in this space
-				if (leftGrid<grid.length && grid[leftGrid][topGrid]!=="" && grid[leftGrid][topGrid]!==undefined) {
-					console.log("(" + leftGrid + ", " + topGrid + "): " + grid[leftGrid][topGrid].name);
-					grid[leftGrid][topGrid].onSelect();
-					//make that object active
-				} else {
-					console.log("(" + leftGrid + ", " + topGrid + ")"); 
-				}
-			},
-			canvasMouseMove: function(e) {
-			
-				var that = e.data.that;
-				var grid = that.gameContext.grid;
-				var unit = that.gameContext.pitchUnitSize;
-				var canvasContext = that.canvasContext;
-				var canvas = that.controls.canvas;
-				
-				
-				var left = e.pageX - this.offsetLeft;
-				var top = e.pageY - this.offsetTop;
-				
-				//work out grid position
-				var leftGrid = Math.ceil(left/unit) * unit - unit;
-				var topGrid = Math.ceil(top/unit) * unit - unit;
-
-			
-				//console.log("(" + leftGrid + ", " + topGrid + ")"); 
-				
-				//render a little coloured square at these co ordinates
-				
-				canvasContext.strokeStyle="rgba(0,0,0,0.1)";
-				canvasContext.fillStyle="rgba(0,0,0,0.1)";
-				
-				canvas.width = canvas.width;
-				
-				that.gameContext.render();
-				
-				canvasContext.strokeStyle="rgba(0,0,0,0.1)";
-				canvasContext.fillStyle="rgba(0,0,0,0.1)";
-				
-				canvasContext.fillRect(leftGrid, topGrid, unit, unit);
-			},
 			init: function(canvas, canvasContext, gameContext) {
 				this.gameContext=gameContext;
 				this.unitFillColour="rgba(0,255,0,0)";
@@ -273,8 +301,6 @@ var bloodBowlNation = bloodBowlNation || {
 				this.boundaryLineColour="rgba(255,255,255,1)";
 				this.controls.canvas=canvas;
 				this.canvasContext=canvasContext;
-				$(this.controls.canvas).mousemove({that: this}, this.canvasMouseMove);
-				$(this.controls.canvas).click({that: this}, this.canvasClick);
 				gameContext.renderQueue.push(gameContext.wrapFunction(this.render, this));
 			}
 		}
