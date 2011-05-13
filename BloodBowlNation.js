@@ -10,14 +10,20 @@ var bloodBowlNation = bloodBowlNation || {
 		this.canvas.reset = function() { this.width = this.width; } //again, stupid
 		this.canvasContext = this.canvas.getContext("2d");
 		this.pitchCanvasContext = this.pitchCanvas.getContext("2d");
-		this.game.init(this.canvas, this.canvasContext, this.pitchCanvas, this.pitchCanvasContext);
+		this.game.init(this.canvas, this.canvasContext, this.pitchCanvas, this.pitchCanvasContext, this.AssetManager);
+	},
+	AssetManager: function() {
+		this.successCount = 0;
+		this.errorCount = 0;
+		this.cache = {};
+		this.downloadQueue = [];
 	},
 	game: {
 		pitchUnitSize: 20,
 		canvasHeight: 26,
 		canvasWidth: 15,
 		grid: new Array(this.canvasWidth),
-		init: function(canvas, canvasContext, pitchCanvas, pitchCanvasContext) {
+		init: function(canvas, canvasContext, pitchCanvas, pitchCanvasContext, AssetManager) {
 			var i, j;
 			for (i = 0; i <= this.canvasWidth; i++) {
 				this.grid[i] = new Array(this.canvasHeight);
@@ -27,6 +33,45 @@ var bloodBowlNation = bloodBowlNation || {
 					this.grid[i][j] = "";
 				}
 			}
+			
+			var assetManager = new AssetManager();
+			
+			console.log(assetManager);
+			
+			
+
+			AssetManager.prototype.queueDownload = function(path) {
+				this.downloadQueue.push(path);
+			}
+			AssetManager.prototype.isDone = function() {
+				return (this.downloadQueue.length === this.successCount + this.errorCount);
+			}
+			AssetManager.prototype.downloadAll = function(callback) {
+				var i;
+				for (i = 0; i < this.downloadQueue.length; i++) {
+					var path = this.downloadQueue[i];
+					var img = new Image();
+					var that = this;
+					img.addEventListener("load", function() {
+						that.successCount += 1;
+						if (that.isDone()) { callback();}
+					});
+					img.addEventListener("error", function(){
+						that.errorCount += 1;
+						if (that.isDone()) { callback(); }
+					});
+					img.src = path;
+					this.cache[path] = img;
+				}
+			}
+
+			assetManager.queueDownload('Pitch.jpg');
+			
+			assetManager.downloadAll(function(){
+			var sprite = assetManager.getAsset("Pitch.jpg");
+			console.log(sprite);
+			});
+			
 			this.pitch.init(pitchCanvas, pitchCanvasContext, this);
 			this.match.init(canvas, canvasContext, this);
 			this.grid.render = function() { console.log("boom"); }
@@ -192,7 +237,7 @@ var bloodBowlNation = bloodBowlNation || {
 			},
 			init: function(canvas, canvasContext, gameContext) {
 				
-				var team, i = 0;
+				var i;
 				
 				this.gameContext = gameContext;
 				this.canvas = canvas;
@@ -200,8 +245,10 @@ var bloodBowlNation = bloodBowlNation || {
 				
 				this.generateGameTemp();
 				
-				for (team in this.teams) {
-					gameContext.renderQueue.push(gameContext.wrapFunction(this.renderPlayers, this, [team.players, i++, "rgba(255,0,0,0.5)"]));
+				
+				for (i = 0;i<this.teams.length;i++) {
+
+					gameContext.renderQueue.push(gameContext.wrapFunction(this.renderPlayers, this, [this.teams[i].players, i, "rgba(255,0,0,0.5)"]));
 				}
 
 				
