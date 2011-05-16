@@ -10,20 +10,14 @@ var bloodBowlNation = bloodBowlNation || {
 		this.canvas.reset = function() { this.width = this.width; } //again, stupid
 		this.canvasContext = this.canvas.getContext("2d");
 		this.pitchCanvasContext = this.pitchCanvas.getContext("2d");
-		this.game.init(this.canvas, this.canvasContext, this.pitchCanvas, this.pitchCanvasContext, this.AssetManager);
-	},
-	AssetManager: function() {
-		this.successCount = 0;
-		this.errorCount = 0;
-		this.cache = {};
-		this.downloadQueue = [];
+		this.game.init(this.canvas, this.canvasContext, this.pitchCanvas, this.pitchCanvasContext);
 	},
 	game: {
 		pitchUnitSize: 20,
 		canvasHeight: 26,
 		canvasWidth: 15,
 		grid: new Array(this.canvasWidth),
-		init: function(canvas, canvasContext, pitchCanvas, pitchCanvasContext, AssetManager) {
+		init: function(canvas, canvasContext, pitchCanvas, pitchCanvasContext) {
 			var i, j;
 			for (i = 0; i <= this.canvasWidth; i++) {
 				this.grid[i] = new Array(this.canvasHeight);
@@ -33,45 +27,7 @@ var bloodBowlNation = bloodBowlNation || {
 					this.grid[i][j] = "";
 				}
 			}
-			
-			var assetManager = new AssetManager();
-			
-			console.log(assetManager);
-			
-			
 
-			AssetManager.prototype.queueDownload = function(path) {
-				this.downloadQueue.push(path);
-			}
-			AssetManager.prototype.isDone = function() {
-				return (this.downloadQueue.length === this.successCount + this.errorCount);
-			}
-			AssetManager.prototype.downloadAll = function(callback) {
-				var i;
-				for (i = 0; i < this.downloadQueue.length; i++) {
-					var path = this.downloadQueue[i];
-					var img = new Image();
-					var that = this;
-					img.addEventListener("load", function() {
-						that.successCount += 1;
-						if (that.isDone()) { callback();}
-					});
-					img.addEventListener("error", function(){
-						that.errorCount += 1;
-						if (that.isDone()) { callback(); }
-					});
-					img.src = path;
-					this.cache[path] = img;
-				}
-			}
-
-			assetManager.queueDownload('Pitch.jpg');
-			
-			assetManager.downloadAll(function(){
-			var sprite = assetManager.getAsset("Pitch.jpg");
-			console.log(sprite);
-			});
-			
 			this.pitch.init(pitchCanvas, pitchCanvasContext, this);
 			this.match.init(canvas, canvasContext, this);
 			this.grid.render = function() { console.log("boom"); }
@@ -109,9 +65,9 @@ var bloodBowlNation = bloodBowlNation || {
 			}
 		},
 		wrapFunction: function(fn, context, params) {
-				return function() {
-						fn.apply(context, params);
-				};
+			return function() {
+				fn.apply(context, params);
+			};
 		},
 		renderQueue: [],
 		render: function() {
@@ -212,11 +168,9 @@ var bloodBowlNation = bloodBowlNation || {
 				canvasContext.fillRect(leftGrid, topGrid, unit, unit);
 			},
 			generateGameTemp: function() {
-				var player, i, team, gameContext, canvas, canvasContext;
-				
-				gameContext = this.gameContext;
-				canvas = this.canvas;
-				canvasContext = this.canvasContext;
+				var player, i, team;
+
+				console.log("generateGameTemp()");
 				
 				player = this.player;
 				team = this.team;
@@ -234,16 +188,32 @@ var bloodBowlNation = bloodBowlNation || {
 
 				this.teams.push(team1);
 				this.teams.push(team2);
+				
+				localStorage["teams"] = JSON.stringify(this.teams);
+			},
+			rehydratePlayers: function() {
+				var i, j, teams = JSON.parse(localStorage["teams"]);
+				console.log("rehydratePlayers()");
+				for (i = 0; i < teams.length; i++) {
+					for (j = 0; j < teams[i].players.length; j++) {
+						teams[i].players[j].onSelect = function() { console.log(this.name + " selected"); }
+						this.teams = teams;
+					}
+				}
 			},
 			init: function(canvas, canvasContext, gameContext) {
-				
+
 				var i;
 				
 				this.gameContext = gameContext;
 				this.canvas = canvas;
 				this.canvasContext = canvasContext;
 				
-				this.generateGameTemp();
+				if (localStorage["teams"] === null || localStorage["teams"] === undefined) {
+					this.generateGameTemp();
+				} else {
+					this.rehydratePlayers();
+				}
 				
 				
 				for (i = 0;i<this.teams.length;i++) {
