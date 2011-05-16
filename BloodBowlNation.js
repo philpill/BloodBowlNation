@@ -96,13 +96,15 @@ var bloodBowlNation = bloodBowlNation || {
 				var canvasContext = this.canvasContext;
 				var grid = gameContext.grid;
 				var pitchUnitSize = gameContext.pitchUnitSize
-				var i, x, y, gridX, gridY;
+				var i, j, x, y, gridX, gridY;
+				
 				for(i=0;i<players.length;i++) {
 					x = (i*pitchUnitSize)+pitchUnitSize/2;
 					y = (pitchRow*pitchUnitSize)+pitchUnitSize/2;
 					gridX = Math.ceil(x/pitchUnitSize);
 					gridY = Math.ceil(y/pitchUnitSize);
 					grid[gridX][gridY] = players[i];
+					/*
 					canvasContext.beginPath();
 					canvasContext.arc(x, y, pitchUnitSize/4, 0, Math.PI * 2, false);
 					canvasContext.closePath();
@@ -110,7 +112,36 @@ var bloodBowlNation = bloodBowlNation || {
 					canvasContext.fill();
 					canvasContext.strokeStyle = "rgba(0,0,0,0.3)";
 					canvasContext.stroke();
+					*/
 				}
+				
+
+				var counter = 0;
+				for(i = 0;i < gameContext.grid.length;i++) {
+
+					for (j = 0;j < gameContext.grid[i].length; j++) {
+
+						console.log("[i, j]: [" + i + ", " + j + "]");
+					
+						if (gameContext.grid[i][j] !== null && gameContext.grid[i][j] !== undefined && gameContext.grid[i][j] !== "") {
+								counter++;
+							x = (i*pitchUnitSize)+pitchUnitSize/2;
+							y = (j*pitchUnitSize)+pitchUnitSize/2;
+							gridX = Math.ceil(x/pitchUnitSize);
+							gridY = Math.ceil(y/pitchUnitSize);
+					
+							canvasContext.beginPath();
+							canvasContext.arc(x, y, pitchUnitSize/4, 0, Math.PI * 2, false);
+							canvasContext.closePath();
+							canvasContext.fillStyle = colour;
+							canvasContext.fill();
+							canvasContext.strokeStyle = "rgba(0,0,0,0.3)";
+							canvasContext.stroke();							
+						}
+					}
+				}
+				console.log(counter);
+				
 			},
 			canvasClick: function(e) {
 				
@@ -202,26 +233,21 @@ var bloodBowlNation = bloodBowlNation || {
 				}
 			},
 			init: function(canvas, canvasContext, gameContext) {
-
 				var i;
-				
 				this.gameContext = gameContext;
 				this.canvas = canvas;
 				this.canvasContext = canvasContext;
-				
 				if (localStorage["teams"] === null || localStorage["teams"] === undefined) {
 					this.generateGameTemp();
 				} else {
 					this.rehydratePlayers();
 				}
 				
+				//DON'T NEED TO LOOP
 				
 				for (i = 0;i<this.teams.length;i++) {
-
 					gameContext.renderQueue.push(gameContext.wrapFunction(this.renderPlayers, this, [this.teams[i].players, i, "rgba(255,0,0,0.5)"]));
 				}
-
-				
 				$(this.canvas).mousemove({that: this}, this.canvasMouseMove);
 				$(this.canvas).click({that: this}, this.canvasClick);
 			}
