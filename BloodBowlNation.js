@@ -30,39 +30,7 @@ var bloodBowlNation = bloodBowlNation || {
 
 			this.pitch.init(pitchCanvas, pitchCanvasContext, this);
 			this.match.init(canvas, canvasContext, this);
-			this.grid.render = function() { console.log("boom"); }
 			this.render();
-		},
-		insertPlayersTemp: function(context, pitchUnitSize, grid) {
-			var i, x, y, gridX, gridY;
-			for (i=0;i<11;i++) {
-				x = (i*pitchUnitSize)+pitchUnitSize/2;
-				y = pitchUnitSize+pitchUnitSize/2;
-				gridX = Math.ceil(x/pitchUnitSize);
-				gridY = Math.ceil(y/pitchUnitSize);
-				grid[gridX][gridY] = "x";
-				context.beginPath();
-				context.arc(x, y, pitchUnitSize/4, 0, Math.PI * 2, false);
-				context.closePath();
-				context.fillStyle = "rgba(255,0,0,0.5)";
-				context.fill();
-				context.strokeStyle = "rgba(0,0,0,0.3)";
-				context.stroke();
-			}
-			for (i=0;i<11;i++) {
-				x = (i*pitchUnitSize)+pitchUnitSize/2;
-				y = (2*pitchUnitSize)+pitchUnitSize/2;
-				gridX = Math.ceil(x/pitchUnitSize);
-				gridY = Math.ceil(y/pitchUnitSize);
-				grid[gridX][gridY] = "y";
-				context.beginPath();
-				context.arc(x, y, pitchUnitSize/4, 0, Math.PI * 2, false);
-				context.closePath();
-				context.fillStyle = "rgba(0,0,255,0.5)";
-				context.fill();
-				context.strokeStyle = "rgba(0,0,0,0.3)";
-				context.stroke();
-			}
 		},
 		wrapFunction: function(fn, context, params) {
 			return function() {
@@ -83,65 +51,40 @@ var bloodBowlNation = bloodBowlNation || {
 			canvas: null,
 			canvasContext: null,
 			teams: [],
-			team: function(teamName) {
+			Team: function(teamName) {
 				this.name = teamName;
 				this.players = [];
 			},
-			player: function(playerName) {
+			Player: function(playerName) {
 				this.name = playerName;
-				this.onSelect = function() { console.log(this.name + " selected"); }
+				this.onSelect = this.playerSelect;
 			},
-			renderPlayers: function(players, pitchRow, colour) {
+			playerSelect: function() {
+				console.log(this.name + " selected");
+			},
+			selectedPlayer: null,
+			renderPlayers: function(teams, colour) {
 				var gameContext = this.gameContext;
 				var canvasContext = this.canvasContext;
 				var grid = gameContext.grid;
 				var pitchUnitSize = gameContext.pitchUnitSize
 				var i, j, x, y, gridX, gridY;
 				
-				for(i=0;i<players.length;i++) {
-					x = (i*pitchUnitSize)+pitchUnitSize/2;
-					y = (pitchRow*pitchUnitSize)+pitchUnitSize/2;
-					gridX = Math.ceil(x/pitchUnitSize);
-					gridY = Math.ceil(y/pitchUnitSize);
-					grid[gridX][gridY] = players[i];
-					/*
-					canvasContext.beginPath();
-					canvasContext.arc(x, y, pitchUnitSize/4, 0, Math.PI * 2, false);
-					canvasContext.closePath();
-					canvasContext.fillStyle = colour;
-					canvasContext.fill();
-					canvasContext.strokeStyle = "rgba(0,0,0,0.3)";
-					canvasContext.stroke();
-					*/
-				}
-				
-
-				var counter = 0;
 				for(i = 0;i < gameContext.grid.length;i++) {
-
 					for (j = 0;j < gameContext.grid[i].length; j++) {
-
-						console.log("[i, j]: [" + i + ", " + j + "]");
-					
 						if (gameContext.grid[i][j] !== null && gameContext.grid[i][j] !== undefined && gameContext.grid[i][j] !== "") {
-								counter++;
 							x = (i*pitchUnitSize)+pitchUnitSize/2;
 							y = (j*pitchUnitSize)+pitchUnitSize/2;
-							gridX = Math.ceil(x/pitchUnitSize);
-							gridY = Math.ceil(y/pitchUnitSize);
-					
 							canvasContext.beginPath();
 							canvasContext.arc(x, y, pitchUnitSize/4, 0, Math.PI * 2, false);
 							canvasContext.closePath();
 							canvasContext.fillStyle = colour;
 							canvasContext.fill();
 							canvasContext.strokeStyle = "rgba(0,0,0,0.3)";
-							canvasContext.stroke();							
+							canvasContext.stroke();
 						}
 					}
 				}
-				console.log(counter);
-				
 			},
 			canvasClick: function(e) {
 				
@@ -155,14 +98,15 @@ var bloodBowlNation = bloodBowlNation || {
 				var top = e.pageY - position.top - parentPosition.top;
 				
 				//work out grid position
-				var leftGrid = Math.ceil(left/that.gameContext.pitchUnitSize);
-				var topGrid = Math.ceil(top/that.gameContext.pitchUnitSize);
+				var leftGrid = Math.floor(left/that.gameContext.pitchUnitSize);
+				var topGrid = Math.floor(top/that.gameContext.pitchUnitSize);
 				
 				//check to see if there's anything in this space
 				if (leftGrid<grid.length && grid[leftGrid][topGrid]!=="" && grid[leftGrid][topGrid]!==undefined) {
 					console.log("(" + leftGrid + ", " + topGrid + "): " + grid[leftGrid][topGrid].name);
-					grid[leftGrid][topGrid].onSelect();
+					grid[leftGrid][topGrid].onSelect = that.gameContext.match.playerSelect;					
 					//make that object active
+					that.gameContext.match.selectedPlayer = grid[leftGrid][topGrid];
 				} else {
 					console.log("(" + leftGrid + ", " + topGrid + ")"); 
 				}
@@ -197,24 +141,34 @@ var bloodBowlNation = bloodBowlNation || {
 				canvasContext.fillStyle="rgba(0,0,0,0.1)";
 				
 				canvasContext.fillRect(leftGrid, topGrid, unit, unit);
+				
+				//get selected player
+				
+				//find grid for selected player
+				
+				//calculate grid 
+				
+				//canvasContext.fillRect(leftGrid, topGrid, unit, unit);
 			},
 			generateGameTemp: function() {
-				var player, i, team;
+				var Player, player, i, Team, gameContext, grid, pitchUnitSize, pitchRow;
 
 				console.log("generateGameTemp()");
 				
-				player = this.player;
-				team = this.team;
+				Player = this.Player;
+				Team = this.Team;
 				
-				var team1 = new team("Reikland Reavers");
-				var team2 = new team("Orcland Raiders");
+				var team1 = new Team("Reikland Reavers");
+				var team2 = new Team("Orcland Raiders");
 				
 				for (i = 0; i < 11; i++) {
-					team1.players.push(new player("human" + i));
+					player = new Player("human" + i);
+					team1.players.push(player);
 				}
 
 				for (i = 0; i < 11; i++) {
-					team2.players.push(new player("orc" + i));
+					player = new Player("orc" + i);
+					team2.players.push(player);
 				}
 
 				this.teams.push(team1);
@@ -222,12 +176,35 @@ var bloodBowlNation = bloodBowlNation || {
 				
 				localStorage["teams"] = JSON.stringify(this.teams);
 			},
+			dumpPlayersOntoPitchTemp: function() {
+
+				var i, j, x, y, gridX, gridY, teams, gameContext, halfWayY, OffSetX, OffSetY;
+				
+				gameContext = this.gameContext;
+				teams = this.teams;
+				grid = gameContext.grid;
+				pitchUnitSize = gameContext.pitchUnitSize;
+				OffSetX = 2;
+				OffSetY = -1;
+				
+				halfWayY = Math.floor(grid[0].length/2);
+				
+				for (i = 0; i < teams.length; i++) {
+					for (j = 0; j < teams[i].players.length; j++) {
+						x = (j*pitchUnitSize)+pitchUnitSize/2;
+						y = (i*pitchUnitSize)+pitchUnitSize/2;
+						gridX = Math.floor(x/pitchUnitSize);
+						gridY = Math.floor(y/pitchUnitSize);
+						grid[gridX+OffSetX][gridY+halfWayY+OffSetY] = teams[i].players[j];
+					}
+				}
+			},
 			rehydratePlayers: function() {
 				var i, j, teams = JSON.parse(localStorage["teams"]);
 				console.log("rehydratePlayers()");
 				for (i = 0; i < teams.length; i++) {
 					for (j = 0; j < teams[i].players.length; j++) {
-						teams[i].players[j].onSelect = function() { console.log(this.name + " selected"); }
+						teams[i].players[j].onSelect = this.playerSelect;
 						this.teams = teams;
 					}
 				}
@@ -237,17 +214,17 @@ var bloodBowlNation = bloodBowlNation || {
 				this.gameContext = gameContext;
 				this.canvas = canvas;
 				this.canvasContext = canvasContext;
+				
 				if (localStorage["teams"] === null || localStorage["teams"] === undefined) {
 					this.generateGameTemp();
 				} else {
 					this.rehydratePlayers();
 				}
 				
-				//DON'T NEED TO LOOP
+				this.dumpPlayersOntoPitchTemp();
 				
-				for (i = 0;i<this.teams.length;i++) {
-					gameContext.renderQueue.push(gameContext.wrapFunction(this.renderPlayers, this, [this.teams[i].players, i, "rgba(255,0,0,0.5)"]));
-				}
+				gameContext.renderQueue.push(gameContext.wrapFunction(this.renderPlayers, this, [this.teams, "rgba(255,0,0,0.5)"]));
+
 				$(this.canvas).mousemove({that: this}, this.canvasMouseMove);
 				$(this.canvas).click({that: this}, this.canvasClick);
 			}
