@@ -24,7 +24,7 @@ var bloodBowlNation = bloodBowlNation || {
 			}
 			for (i = 0; i <= this.canvasWidth; i++) {
 				for (j = 0; j <= this.canvasHeight; j++) {
-					this.grid[i][j] = "";
+					this.grid[i][j] = null;
 				}
 			}
 
@@ -72,14 +72,9 @@ var bloodBowlNation = bloodBowlNation || {
 				var pitchUnitSize = gameContext.pitchUnitSize
 				var i, j, k, x, y, gridX, gridY, teamColours, renderedColours;
 				
-				
 				for(i = 0;i < gameContext.grid.length;i++) {
 					for (j = 0;j < gameContext.grid[i].length; j++) {
 						if (gameContext.grid[i][j] !== null && gameContext.grid[i][j] !== undefined && gameContext.grid[i][j] !== "") {
-						
-
-						
-
 						
 							x = (i*pitchUnitSize)+pitchUnitSize/2;
 							y = (j*pitchUnitSize)+pitchUnitSize/2;
@@ -88,7 +83,7 @@ var bloodBowlNation = bloodBowlNation || {
 							canvasContext.closePath();
 							
 							teamColours = gameContext.grid[i][j].colours;
-							
+								
 							renderedColours = canvasContext.createLinearGradient(x,y,x+pitchUnitSize/32,y);
 							
 							for (k = 0; k < teamColours.length; k++) {
@@ -105,20 +100,18 @@ var bloodBowlNation = bloodBowlNation || {
 									renderedColours.addColorStop(1, teamColours[k]);
 								}
 							}
-
+												
 							canvasContext.fillStyle = renderedColours;
 							canvasContext.fill();
 							canvasContext.strokeStyle = "rgba(0,0,0,1)";
 							canvasContext.stroke();
 							
-							canvasContext.beginPath();
+							canvasContext.beginPath();	
 							canvasContext.arc(x, y, pitchUnitSize/4 + 1, 0, Math.PI * 2, false);
-							canvasContext.closePath();
-							//canvasContext.fillStyle = "rgba(255,255,255,1)";
-							//canvasContext.fill();
+							
 							canvasContext.strokeStyle = "rgba(255,255,255,1)";
 							canvasContext.stroke();
-							
+							canvasContext.closePath();
 						}
 					}
 				}
@@ -138,8 +131,41 @@ var bloodBowlNation = bloodBowlNation || {
 				var leftGrid = Math.floor(left/that.gameContext.pitchUnitSize);
 				var topGrid = Math.floor(top/that.gameContext.pitchUnitSize);
 				
+				var emptySquare = (grid[leftGrid][topGrid]===null || grid[leftGrid][topGrid]==="" && grid[leftGrid][topGrid]===undefined);
+				
+				var outOfBounds = leftGrid<grid.length;
+				
+				//check for playerSelected
+				console.log(that.selectedPlayer);
+				
+				if (that.selectedPlayer) {
+					if (emptySquare) {
+						//check for out of bounds
+						//movement allowance
+						//move player
+						width:
+						for (i = 0; i < grid.length; i++) {
+							length:
+							for (j = 0; j < grid[i].length; j++) {
+								if (grid[i][j] === that.gameContext.match.selectedPlayer) {
+									grid[leftGrid][topGrid] = that.gameContext.match.selectedPlayer;
+									grid[i][j] = null;
+
+									break width;
+								}
+							}
+						}						
+					} else {					
+						//react accordingly to whatever is in square
+						//ball
+						//enemy
+						//team mate
+						//out of bounds?
+					}					
+				}
+				
 				//check to see if there's anything in this space
-				if (leftGrid<grid.length && grid[leftGrid][topGrid]!=="" && grid[leftGrid][topGrid]!==undefined) {
+				if (!emptySquare) {
 					console.log("(" + leftGrid + ", " + topGrid + "): " + grid[leftGrid][topGrid].name);
 					grid[leftGrid][topGrid].onSelect = that.gameContext.match.playerSelect;
 					//make that object active
@@ -169,18 +195,14 @@ var bloodBowlNation = bloodBowlNation || {
 
 				var i, j, x, y;
 				
-				//render a little coloured square at these co ordinates
-				canvasContext.strokeStyle="rgba(0,0,0,0.5)";
-				canvasContext.fillStyle="rgba(0,0,0,0.5)";
+				var gridCursorFillStyle = "rgba(0,0,0,0.7)";
 				
 				canvas.reset();
-				
-				that.gameContext.render();
-				
-				canvasContext.strokeStyle="rgba(0,0,0,0.3)";
-				canvasContext.fillStyle="rgba(0,0,0,0.3)";
+
+				canvasContext.beginPath();
+				canvasContext.fillStyle = gridCursorFillStyle;
 				canvasContext.fillRect(leftGrid, topGrid, unit, unit);
-				
+				canvasContext.closePath();
 				//get selected player
 				//console.log(that.gameContext.match.selectedPlayer);
 				
@@ -195,23 +217,17 @@ var bloodBowlNation = bloodBowlNation || {
 							x = i*unit;
 							y = j*unit;
 
-							canvasContext.fillStyle="rgba(255,255,255,0.3)";
+							canvasContext.fillStyle = gridCursorFillStyle;
 							canvasContext.fillRect(x, y, unit, unit);
-							canvasContext.strokeStyle="rgba(0,0,0,1)";
-							canvasContext.strokeRect(x, y, unit, unit);
-							
-							
-							
+
 							break width;
 						}
 					}
 				}
-				
 				canvasContext.stroke();
+				canvasContext.closePath();
 				
-				//calculate grid 
-				
-				
+				that.gameContext.render();				
 			},
 			generateGameTemp: function() {
 				var Player, player, i, Team, gameContext, grid, pitchUnitSize, pitchRow;
