@@ -54,10 +54,12 @@ var bloodBowlNation = bloodBowlNation || {
 			Team: function(teamName) {
 				this.name = teamName;
 				this.players = [];
+				this.colours = ["rgba(255,0,0,1)"];
 			},
-			Player: function(playerName) {
+			Player: function(playerName, colours) {
 				this.name = playerName;
 				this.onSelect = this.playerSelect;
+				this.colours = colours;
 			},
 			playerSelect: function() {
 				console.log(this.name + " selected");
@@ -68,20 +70,55 @@ var bloodBowlNation = bloodBowlNation || {
 				var canvasContext = this.canvasContext;
 				var grid = gameContext.grid;
 				var pitchUnitSize = gameContext.pitchUnitSize
-				var i, j, x, y, gridX, gridY;
+				var i, j, k, x, y, gridX, gridY, teamColours, renderedColours;
+				
 				
 				for(i = 0;i < gameContext.grid.length;i++) {
 					for (j = 0;j < gameContext.grid[i].length; j++) {
 						if (gameContext.grid[i][j] !== null && gameContext.grid[i][j] !== undefined && gameContext.grid[i][j] !== "") {
+						
+
+						
+
+						
 							x = (i*pitchUnitSize)+pitchUnitSize/2;
 							y = (j*pitchUnitSize)+pitchUnitSize/2;
 							canvasContext.beginPath();
 							canvasContext.arc(x, y, pitchUnitSize/4, 0, Math.PI * 2, false);
 							canvasContext.closePath();
-							canvasContext.fillStyle = colour;
+							
+							teamColours = gameContext.grid[i][j].colours;
+							
+							renderedColours = canvasContext.createLinearGradient(x,y,x+pitchUnitSize/32,y);
+							
+							for (k = 0; k < teamColours.length; k++) {
+								
+								if (k > 1) { break; } //not sure what to do if there are more than two colours
+							
+								if (k%2) {
+
+									renderedColours.addColorStop(0, teamColours[k]);
+									renderedColours.addColorStop(0.5, teamColours[k]);
+								} else {
+
+									renderedColours.addColorStop(0.5, teamColours[k]);
+									renderedColours.addColorStop(1, teamColours[k]);
+								}
+							}
+
+							canvasContext.fillStyle = renderedColours;
 							canvasContext.fill();
-							canvasContext.strokeStyle = "rgba(0,0,0,0.3)";
+							canvasContext.strokeStyle = "rgba(0,0,0,1)";
 							canvasContext.stroke();
+							
+							canvasContext.beginPath();
+							canvasContext.arc(x, y, pitchUnitSize/4 + 1, 0, Math.PI * 2, false);
+							canvasContext.closePath();
+							//canvasContext.fillStyle = "rgba(255,255,255,1)";
+							//canvasContext.fill();
+							canvasContext.strokeStyle = "rgba(255,255,255,1)";
+							canvasContext.stroke();
+							
 						}
 					}
 				}
@@ -104,10 +141,11 @@ var bloodBowlNation = bloodBowlNation || {
 				//check to see if there's anything in this space
 				if (leftGrid<grid.length && grid[leftGrid][topGrid]!=="" && grid[leftGrid][topGrid]!==undefined) {
 					console.log("(" + leftGrid + ", " + topGrid + "): " + grid[leftGrid][topGrid].name);
-					grid[leftGrid][topGrid].onSelect = that.gameContext.match.playerSelect;					
+					grid[leftGrid][topGrid].onSelect = that.gameContext.match.playerSelect;
 					//make that object active
 					that.gameContext.match.selectedPlayer = grid[leftGrid][topGrid];
 				} else {
+					that.gameContext.match.selectedPlayer = null;
 					console.log("(" + leftGrid + ", " + topGrid + ")"); 
 				}
 			},
@@ -129,26 +167,51 @@ var bloodBowlNation = bloodBowlNation || {
 				var leftGrid = Math.ceil(left/unit) * unit - unit;
 				var topGrid = Math.ceil(top/unit) * unit - unit;
 
+				var i, j, x, y;
+				
 				//render a little coloured square at these co ordinates
-				canvasContext.strokeStyle="rgba(0,0,0,0.1)";
-				canvasContext.fillStyle="rgba(0,0,0,0.1)";
+				canvasContext.strokeStyle="rgba(0,0,0,0.5)";
+				canvasContext.fillStyle="rgba(0,0,0,0.5)";
 				
 				canvas.reset();
 				
 				that.gameContext.render();
 				
-				canvasContext.strokeStyle="rgba(0,0,0,0.1)";
-				canvasContext.fillStyle="rgba(0,0,0,0.1)";
-				
+				canvasContext.strokeStyle="rgba(0,0,0,0.3)";
+				canvasContext.fillStyle="rgba(0,0,0,0.3)";
 				canvasContext.fillRect(leftGrid, topGrid, unit, unit);
 				
 				//get selected player
+				//console.log(that.gameContext.match.selectedPlayer);
 				
 				//find grid for selected player
+				//this is going to be slow
+				
+				width:
+				for (i = 0; i < grid.length; i++) {
+					length:
+					for (j = 0; j < grid[i].length; j++) {
+						if (grid[i][j] === that.gameContext.match.selectedPlayer) {
+							x = i*unit;
+							y = j*unit;
+
+							canvasContext.fillStyle="rgba(255,255,255,0.3)";
+							canvasContext.fillRect(x, y, unit, unit);
+							canvasContext.strokeStyle="rgba(0,0,0,1)";
+							canvasContext.strokeRect(x, y, unit, unit);
+							
+							
+							
+							break width;
+						}
+					}
+				}
+				
+				canvasContext.stroke();
 				
 				//calculate grid 
 				
-				//canvasContext.fillRect(leftGrid, topGrid, unit, unit);
+				
 			},
 			generateGameTemp: function() {
 				var Player, player, i, Team, gameContext, grid, pitchUnitSize, pitchRow;
@@ -161,13 +224,15 @@ var bloodBowlNation = bloodBowlNation || {
 				var team1 = new Team("Reikland Reavers");
 				var team2 = new Team("Orcland Raiders");
 				
+				team1.colours = ["rgba(0,0,255,1)","rgba(255,255,255,1)"];
+				
 				for (i = 0; i < 11; i++) {
-					player = new Player("human" + i);
+					player = new Player("human" + i, team1.colours);
 					team1.players.push(player);
 				}
 
 				for (i = 0; i < 11; i++) {
-					player = new Player("orc" + i);
+					player = new Player("orc" + i, team2.colours);
 					team2.players.push(player);
 				}
 
@@ -215,7 +280,7 @@ var bloodBowlNation = bloodBowlNation || {
 				this.canvas = canvas;
 				this.canvasContext = canvasContext;
 				
-				if (localStorage["teams"] === null || localStorage["teams"] === undefined) {
+				if (localStorage["teams"] === null || localStorage["teams"] === undefined || 1===1) {
 					this.generateGameTemp();
 				} else {
 					this.rehydratePlayers();
@@ -258,7 +323,7 @@ var bloodBowlNation = bloodBowlNation || {
 					
 					canvas.reset();
 					
-					//canvasContext.drawImage(pitchImage, 0, 0, unit*width, unit*height);
+					canvasContext.drawImage(pitchImage, 0, 0, unit*width, unit*height);
 					canvasContext.beginPath();
 					canvasContext.fillStyle = unitFillColour;
 					canvasContext.fillRect(0,0,width*unit,height*unit);
