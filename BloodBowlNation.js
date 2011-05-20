@@ -166,7 +166,7 @@ var bloodBowlNation = bloodBowlNation || {
 				
 				var player;
 				
-				outOfBounds = (leftGrid>=grid.length-1 || topGrid>=grid[0].length-1);
+				isOutOfBounds = (leftGrid>=grid.length-1 || topGrid>=grid[0].length-1);
 				
 				if (isOutOfBounds) {
 					that.deselectPlayer();
@@ -425,7 +425,7 @@ var bloodBowlNation = bloodBowlNation || {
 					
 					canvas.reset();
 					
-					//canvasContext.drawImage(pitchImage, 0, 0, unit*width, unit*height);
+					canvasContext.drawImage(pitchImage, 0, 0, unit*width, unit*height);
 					canvasContext.beginPath();
 					canvasContext.fillStyle = unitFillColour;
 					canvasContext.fillRect(0,0,width*unit,height*unit);
