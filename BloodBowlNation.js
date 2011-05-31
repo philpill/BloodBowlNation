@@ -1,18 +1,44 @@
-var bloodBowlNation = bloodBowlNation || {
-	pitchCanvas: null,
-	pitchCanvasContext: null,
-	canvas: null,
-	canvasContext: null,
-	init: function() {
-		this.pitchCanvas = document.getElementById("PitchCanvas");
-		this.pitchCanvas.reset = function() { this.width = this.width; } //this way of resetting the canvas is stupid
-		this.canvas = document.getElementById("GameCanvas");
-		this.canvas.reset = function() { this.width = this.width; } //again, stupid
-		this.canvasContext = this.canvas.getContext("2d");
-		this.pitchCanvasContext = this.pitchCanvas.getContext("2d");
-		this.game.init(this.canvas, this.canvasContext, this.pitchCanvas, this.pitchCanvasContext);
-	},
-	game: {
+var bloodBowlNation = bloodBowlNation || (function(){
+
+	Team = function(teamName) {
+		this.name = teamName;
+		this.players = [];
+		this.colours = ["rgba(255,0,0,1)"];
+		
+	}
+	Team.prototype.shout = function(){
+		console.log(this.name);
+	}
+	
+	Player = function(playerName, colours, playerNumber) {
+		this.name = playerName;
+		this.colours = colours;
+		this.number = playerNumber;
+	}		
+	Player.prototype.onSelect = function() {
+		console.log(this.name + " selected");
+	}	
+	
+	
+	Ball = function() {
+		this.colour = "rgba(255,255,0,1)";
+	}
+	
+	return {
+		pitchCanvas: null,
+		pitchCanvasContext: null,
+		canvas: null,
+		canvasContext: null,
+		init: function() {
+			this.pitchCanvas = document.getElementById("PitchCanvas");
+			this.pitchCanvas.reset = function() { this.width = this.width; } //this way of resetting the canvas is stupid
+			this.canvas = document.getElementById("GameCanvas");
+			this.canvas.reset = function() { this.width = this.width; } //again, stupid
+			this.canvasContext = this.canvas.getContext("2d");
+			this.pitchCanvasContext = this.pitchCanvas.getContext("2d");
+			this.game.init(this.canvas, this.canvasContext, this.pitchCanvas, this.pitchCanvasContext);
+		},
+		game: {
 		pitchUnitSize: 20,
 		canvasHeight: 26,
 		canvasWidth: 15,
@@ -52,23 +78,6 @@ var bloodBowlNation = bloodBowlNation || {
 			canvasContext: null,
 			teams: [],
 			ball: null,
-			Ball: function() {
-				this.colour = "rgba(255,255,0,1)";
-			},
-			Team: function(teamName) {
-				this.name = teamName;
-				this.players = [];
-				this.colours = ["rgba(255,0,0,1)"];
-			},
-			Player: function(playerName, colours, playerNumber) {
-				this.name = playerName;
-				this.onSelect = this.playerSelect;
-				this.colours = colours;
-				this.number = playerNumber;
-			},
-			playerSelect: function() {
-				console.log(this.name + " selected");
-			},
 			selectedPlayer: null,
 			renderPlayers: function(teams, colour) {
 				var gameContext = this.gameContext;
@@ -87,7 +96,7 @@ var bloodBowlNation = bloodBowlNation || {
 							canvasContext.arc(x, y, pitchUnitSize/4, 0, Math.PI * 2, false);
 							canvasContext.closePath();
 
-							if (gameContext.grid[i][j] instanceof this.Player) {
+							if (gameContext.grid[i][j] instanceof Player) {
 							
 								teamColours = gameContext.grid[i][j].colours;
 									
@@ -126,7 +135,7 @@ var bloodBowlNation = bloodBowlNation || {
 								canvasContext.fillStyle = "black";
 								canvasContext.fillText(gameContext.grid[i][j].number, x, y);
 								
-							} else if (gameContext.grid[i][j] instanceof this.Ball) {
+							} else if (gameContext.grid[i][j] instanceof Ball) {
 							
 								canvasContext.beginPath();
 								canvasContext.arc(x+pitchUnitSize/4, y+pitchUnitSize/4, pitchUnitSize/8 + 1, 0, Math.PI * 2, false);
@@ -210,7 +219,7 @@ var bloodBowlNation = bloodBowlNation || {
 						//check to see if there's anything in this space
 						if (!isEmptySquare) {
 							
-							if (grid[leftGrid][topGrid] instanceof that.Player) {
+							if (grid[leftGrid][topGrid] instanceof Player) {
 								player = grid[leftGrid][topGrid];
 								player.onSelect = that.gameContext.match.playerSelect;
 								that.gameContext.match.selectedPlayer = player;
@@ -298,18 +307,17 @@ var bloodBowlNation = bloodBowlNation || {
 				that.gameContext.render();
 			},
 			generateGameTemp: function() {
-				var Player, player, i, Team, gameContext, grid, pitchUnitSize, pitchRow, Ball;
+				var player, i, gameContext, grid, pitchUnitSize, pitchRow;
 
 				console.log("generateGameTemp()");
 				
-				Player = this.Player;
-				Team = this.Team;
-				Ball = this.Ball;
-				
-				var ball = new Ball();
+				this.ball = new Ball();
 				
 				var team1 = new Team("Reikland Reavers");
 				var team2 = new Team("Orcland Raiders");
+				
+				team1.shout();
+				team2.shout();
 				
 				team1.colours = ["rgba(0,0,255,1)","rgba(255,255,255,1)"];
 				
@@ -325,8 +333,6 @@ var bloodBowlNation = bloodBowlNation || {
 
 				this.teams.push(team1);
 				this.teams.push(team2);
-				
-				this.ball = ball;
 				
 				localStorage["teams"] = JSON.stringify(this.teams);
 			},
@@ -367,14 +373,20 @@ var bloodBowlNation = bloodBowlNation || {
 				
 			},
 			rehydratePlayers: function() {
-				var i, j, teams = JSON.parse(localStorage["teams"]);
+				var i, j, player, teams = [], JSONteams = JSON.parse(localStorage["teams"]);
+								
 				console.log("rehydratePlayers()");
-				for (i = 0; i < teams.length; i++) {
-					for (j = 0; j < teams[i].players.length; j++) {
-						teams[i].players[j].onSelect = this.playerSelect;
-						this.teams = teams;
-					}
-				}
+								
+				this.ball = new Ball();
+				
+				for (i = 0; i < JSONteams.length; i++) {				
+					teams[i] = new Team(JSONteams[i].name);				
+					for (j = 0; j < JSONteams[i].players.length; j++) {					
+						player = new Player(JSONteams[i].players[j].name, JSONteams[i].players[j].colours, JSONteams[i].players[j].number);					
+						teams[i].players.push(player);
+					}					
+				}				
+				this.teams = teams;
 			},
 			init: function(canvas, canvasContext, gameContext) {
 				var i;
@@ -382,7 +394,7 @@ var bloodBowlNation = bloodBowlNation || {
 				this.canvas = canvas;
 				this.canvasContext = canvasContext;
 
-				if (localStorage["teams"] === null || localStorage["teams"] === undefined || 1===1) {
+				if (localStorage["teams"] === null || localStorage["teams"] === undefined) {
 					this.generateGameTemp();
 				} else {
 					this.rehydratePlayers();
@@ -425,7 +437,7 @@ var bloodBowlNation = bloodBowlNation || {
 					
 					canvas.reset();
 					
-					canvasContext.drawImage(pitchImage, 0, 0, unit*width, unit*height);
+					//canvasContext.drawImage(pitchImage, 0, 0, unit*width, unit*height);
 					canvasContext.beginPath();
 					canvasContext.fillStyle = unitFillColour;
 					canvasContext.fillRect(0,0,width*unit,height*unit);
@@ -494,4 +506,5 @@ var bloodBowlNation = bloodBowlNation || {
 			}
 		}
 	}
-} 
+	}
+})();
