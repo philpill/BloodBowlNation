@@ -24,6 +24,32 @@ var bloodBowlNation = bloodBowlNation || (function(){
 		this.colour = "rgba(255,255,0,1)";
 	}
 	
+	Grid = function(width, length, pitchUnitSize) {
+		this.width = width;
+		this.length = length;
+		this.unit = pitchUnitSize;
+		this.space = new Array(this.width);		
+		for (var i = 0; i < this.width; i++) {
+			this.space[i] = new Array(this.length);
+		}
+	}
+	Grid.prototype.getGridX = function(x) {
+		if (x < 1) { x = 1; }
+		return Math.floor(x/this.unit);
+	}
+	Grid.prototype.getGridY = function(y) {
+		if (y < 1) { y = 1; }
+		return Math.floor(y/this.unit);
+	}
+	Grid.prototype.getX = function(gridX) {
+		if (gridX < 0) { gridX = 0; }
+		return gridX*this.unit;
+	}
+	Grid.prototype.getY = function(gridY) {
+		if (gridY < 0) { gridY = 0; }  
+		return gridY*this.unit;
+	}	
+	
 	return {
 		pitchCanvas: null,
 		pitchCanvasContext: null,
@@ -45,6 +71,8 @@ var bloodBowlNation = bloodBowlNation || (function(){
 		grid: new Array(this.canvasWidth),
 		init: function(canvas, canvasContext, pitchCanvas, pitchCanvasContext) {
 			var i, j;
+			var test = new Grid(15, 26, 20);
+			console.log(test);
 			for (i = 0; i <= this.canvasWidth; i++) {
 				this.grid[i] = new Array(this.canvasHeight);
 			}
