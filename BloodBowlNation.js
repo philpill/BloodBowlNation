@@ -10,6 +10,16 @@ var BBN = BBN || (function(){
 		return null;		
 	}
 	
+	var _castBallHelper = function(array)  {
+		var i;
+		for (i = 0; i < array.length; i++) {
+			if (array[i] instanceof BBN.Ball) {
+				return array[i];
+			}
+		}
+		return null;		
+	}
+	
 	var _castGridEntityHelper = function(array) {
 		var i;
 		for (i = 0; i < array.length; i++) {
@@ -68,7 +78,9 @@ var BBN = BBN || (function(){
 				ball: null,
 				selectedPlayer: null,
 				renderPlayer: function(gridX, gridY) {
+				
 					try {
+					
 						var teamColours = ["rgba(255, 255, 255, 1)"],
 							player,
 							canvasContext = this.canvasContext,
@@ -78,8 +90,6 @@ var BBN = BBN || (function(){
 
 						x = (gridX*gridUnit)+gridUnit/2;
 						y = (gridY*gridUnit)+gridUnit/2;
-
-						console.log(grid.space[gridX][gridY]);
 						
 						player = _castPlayerHelper(grid.space[gridX][gridY]);
 						
@@ -201,21 +211,26 @@ var BBN = BBN || (function(){
 
 					var movementLimit = 1;
 
-					var isEmptySquare, isOutOfBounds, isWithinMovementLimit;
+					var isEmptySquare, isOutOfBounds, isWithinMovementLimit, isPlayerSelected, player, ball, gridEntity;
 
 					var i;
 
-					var player;
-
 					isOutOfBounds = (leftGrid>=grid.space.length-1 || topGrid>=grid.space[0].length-1);
 
+					isPlayerSelected = (that.selectedPlayer !== null);
+					
 					if (isOutOfBounds) {
+					
 						that.deselectPlayer();
+						
 					} else {
-						isEmptySquare = (grid.space[leftGrid][topGrid]===null);
-
+									
+						gridEntity = _castGridEntityHelper(grid.space[leftGrid][topGrid]);
+						
+						isEmptySquare = (gridEntity===null);
+						
 						//check for playerSelected
-						if (that.selectedPlayer) {
+						if (isPlayerSelected) {
 							if (isEmptySquare) {
 								//move player
 								width:
@@ -225,20 +240,20 @@ var BBN = BBN || (function(){
 
 										isWithinMovementLimit = (leftGrid <= i+movementLimit && leftGrid >= i-movementLimit) && (topGrid <= j+movementLimit && topGrid >= j-movementLimit)
 
-										if (grid.space[i][j] === that.selectedPlayer) {
+										if (gridEntity === that.selectedPlayer) {
 											if (!isOutOfBounds && isWithinMovementLimit) {
-												grid.space[leftGrid][topGrid] = that.selectedPlayer;
+												grid.insertObject(leftGrid, topGrid, that.selectedPlayer);
 												grid.space[i][j] = null;
 											}
 											break width;
 										}
 									}
 								}
-							} else if (grid.space[leftGrid][topGrid] instanceof BBN.Ball) {
+							} else if (gridEntity instanceof BBN.Ball) {
 								//pick up ball, or something
-							} else if (grid.space[leftGrid][topGrid] === that.selectedPlayer) {
+							} else if (gridEntity === that.selectedPlayer) {
 								//self - do nothing probably
-							} else if (grid.space[leftGrid][topGrid] instanceof BBN.Player) {
+							} else if (gridEntity instanceof BBN.Player) {
 
 								//if other teamm
 								//BLOCK
@@ -250,11 +265,9 @@ var BBN = BBN || (function(){
 							//no player selected
 							//check to see if there's anything in this space
 							if (!isEmptySquare) {
-
-								if (grid.space[leftGrid][topGrid] instanceof BBN.Player) {
-									player = grid.space[leftGrid][topGrid];
-									player.onSelect = that.gameContext.match.playerSelect;
-									that.gameContext.match.selectedPlayer = player;
+								if (gridEntity instanceof BBN.Player) {
+									gridEntity.onSelect = that.gameContext.match.playerSelect;
+									that.gameContext.match.selectedPlayer = gridEntity;
 								}
 							}
 						}

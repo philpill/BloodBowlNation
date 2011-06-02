@@ -43,7 +43,7 @@ BBN.Grid = BBN.Grid || function(width, length, pitchUnitSize) {
 	}
 }	
 
-BBN.Grid.prototype.insertObject = function(gridX, gridY, object) {
+BBN.Grid.prototype.insertEntity = function(gridX, gridY, object) {
 	
 	try {
 	
@@ -59,6 +59,10 @@ BBN.Grid.prototype.insertObject = function(gridX, gridY, object) {
 		console.log(error);
 	}
 }
+	
+BBN.Grid.prototype.removeEntity = function(gridX, gridY, object) {
+
+}	
 	
 BBN.Grid.prototype.getGridX = function(x) {
 	if (x < 1) { x = 1; }
