@@ -6,31 +6,35 @@ var bloodBowlNation = bloodBowlNation || (function(){
 		this.colours = ["rgba(255,0,0,1)"];
 		
 	}
-	Team.prototype.shout = function(){
+	Team.prototype.shout = function() {
 		console.log(this.name);
 	}
 	
-	Player = function(playerName, colours, playerNumber) {
+	Player = function(playerName, team, playerNumber) {
 		this.name = playerName;
-		this.colours = colours;
+		this.colours = team.colours;
 		this.number = playerNumber;
+		this.team = team;
 	}		
 	Player.prototype.onSelect = function() {
 		console.log(this.name + " selected");
-	}	
-	
+	}
 	
 	Ball = function() {
 		this.colour = "rgba(255,255,0,1)";
 	}
 	
 	Grid = function(width, length, pitchUnitSize) {
+		var i, i;
 		this.width = width;
 		this.length = length;
 		this.unit = pitchUnitSize;
 		this.space = new Array(this.width);		
-		for (var i = 0; i < this.width; i++) {
+		for (i = 0; i < this.width; i++) {
 			this.space[i] = new Array(this.length);
+			for (j = 0; j < this.space[i].length; j++) {
+				this.space[i][j] = [];
+			}
 		}
 	}
 	Grid.prototype.getGridX = function(x) {
@@ -48,7 +52,7 @@ var bloodBowlNation = bloodBowlNation || (function(){
 	Grid.prototype.getY = function(gridY) {
 		if (gridY < 0) { gridY = 0; }  
 		return gridY*this.unit;
-	}	
+	}
 	
 	return {
 		pitchCanvas: null,
@@ -68,20 +72,10 @@ var bloodBowlNation = bloodBowlNation || (function(){
 		pitchUnitSize: 20,
 		canvasHeight: 26,
 		canvasWidth: 15,
-		grid: new Array(this.canvasWidth),
+		grid: null,
 		init: function(canvas, canvasContext, pitchCanvas, pitchCanvasContext) {
-			var i, j;
-			var test = new Grid(15, 26, 20);
-			console.log(test);
-			for (i = 0; i <= this.canvasWidth; i++) {
-				this.grid[i] = new Array(this.canvasHeight);
-			}
-			for (i = 0; i <= this.canvasWidth; i++) {
-				for (j = 0; j <= this.canvasHeight; j++) {
-					this.grid[i][j] = null;
-				}
-			}
-
+			var i, j;			
+			this.grid = new Grid(this.canvasWidth, this.canvasHeight, this.pitchUnitSize);
 			this.pitch.init(pitchCanvas, pitchCanvasContext, this);
 			this.match.init(canvas, canvasContext, this);
 			this.render();
@@ -94,7 +88,7 @@ var bloodBowlNation = bloodBowlNation || (function(){
 		renderQueue: [],
 		render: function() {
 			for (var i = 0; i < this.renderQueue.length; i++){
-				if (typeof this.renderQueue[i]=== "function" ) {
+				if (typeof this.renderQueue[i] === "function" ) {
 					this.renderQueue[i]();
 				}
 			}
@@ -107,71 +101,98 @@ var bloodBowlNation = bloodBowlNation || (function(){
 			teams: [],
 			ball: null,
 			selectedPlayer: null,
-			renderPlayers: function(teams, colour) {
-				var gameContext = this.gameContext;
-				var canvasContext = this.canvasContext;
-				var grid = gameContext.grid;
-				var pitchUnitSize = gameContext.pitchUnitSize
-				var i, j, k, x, y, gridX, gridY, teamColours, renderedColours;
+			renderPlayer: function(gridX, gridY) {
+				var teamColours,
+					canvasContext = this.canvasContext,
+					grid = this.gameContext.grid,
+					gridUnit = grid.unit,
+					x, y, i;
 				
-				for(i = 0;i < gameContext.grid.length;i++) {
-					for (j = 0;j < gameContext.grid[i].length; j++) {
-						if (gameContext.grid[i][j] !== null && gameContext.grid[i][j] !== undefined && gameContext.grid[i][j] !== "") {
-						
-							x = (i*pitchUnitSize)+pitchUnitSize/2;
-							y = (j*pitchUnitSize)+pitchUnitSize/2;
-							canvasContext.beginPath();
-							canvasContext.arc(x, y, pitchUnitSize/4, 0, Math.PI * 2, false);
-							canvasContext.closePath();
-
-							if (gameContext.grid[i][j] instanceof Player) {
-							
-								teamColours = gameContext.grid[i][j].colours;
+				x = (gridX*gridUnit)+gridUnit/2;
+				y = (gridY*gridUnit)+gridUnit/2;
+								
+				teamColours = grid.space[gridX][gridY][0].colours;
 									
-								renderedColours = canvasContext.createLinearGradient(x,y,x+pitchUnitSize/32,y);
-								
-								for (k = 0; k < teamColours.length; k++) {
-									
-									if (k > 1) { break; } //not sure what to do if there are more than two colours
-								
-									if (k%2) {
+				renderedColours = canvasContext.createLinearGradient(x, y, x+gridUnit/32, y);
+				
+				for (i = 0; i < teamColours.length; i++) {
+					
+					if (i > 1) { break; } //not sure what to do if there are more than two colours
+				
+					if (i % 2) {
+						renderedColours.addColorStop(0, teamColours[i]);
+						renderedColours.addColorStop(0.5, teamColours[i]);
+					} else {
+						renderedColours.addColorStop(0.5, teamColours[i]);
+						renderedColours.addColorStop(1, teamColours[i]);
+					}
+				}
 
-										renderedColours.addColorStop(0, teamColours[k]);
-										renderedColours.addColorStop(0.5, teamColours[k]);
-									} else {
+				canvasContext.beginPath();
+				canvasContext.arc(x, y, gridUnit/4, 0, Math.PI * 2, false);
+				canvasContext.closePath();
+				
+				canvasContext.fillStyle = renderedColours;
+				canvasContext.fill();
+				canvasContext.strokeStyle = "rgba(0,0,0,1)";
+				canvasContext.stroke();
+				
+				canvasContext.beginPath();
+				canvasContext.arc(x, y, gridUnit/4 + 1, 0, Math.PI * 2, false);
+				
+				canvasContext.strokeStyle = "rgba(255,255,255,1)";
+				canvasContext.stroke();
+				canvasContext.closePath();
+				
+				canvasContext.font = "6px Arial";
+				canvasContext.textBaseline = "middle";
+				canvasContext.textAlign = "center";
+				canvasContext.fillStyle = "black";
+				canvasContext.fillText(grid.space[gridX][gridY].number, x, y);		
+				
+			},
+			renderBall: function(gridX, gridY) {
+				var teamColours,
+					canvasContext = this.canvasContext,
+					grid = this.gameContext.grid,
+					gridUnit = grid.unit,
+					x, y;
 
-										renderedColours.addColorStop(0.5, teamColours[k]);
-										renderedColours.addColorStop(1, teamColours[k]);
-									}
-								}
+				x = (gridX*gridUnit)+gridUnit/2;
+				y = (gridY*gridUnit)+gridUnit/2;
+				
+				canvasContext.beginPath();
+				canvasContext.arc(x, y, gridUnit/4, 0, Math.PI * 2, false);
+				canvasContext.closePath();
+			
+				canvasContext.beginPath();
+				canvasContext.arc(x+gridUnit/4, y+gridUnit/4, gridUnit/8 + 1, 0, Math.PI * 2, false);
+				canvasContext.fillStyle = grid.space[gridX][gridY].colour;
+				canvasContext.fill();
+				canvasContext.strokeStyle = "rgba(0,0,0,1)";
+				canvasContext.stroke();
+				canvasContext.closePath();					
+				
+			},
+			renderGrid: function(teams, colour) {
+				var canvasContext = this.canvasContext,
+					grid = this.gameContext.grid,
+					gridUnit = grid.unit,
+					gridX, gridY;
+				
+				for (gridX = 0; gridX < grid.space.length; gridX++) {
 
-								canvasContext.fillStyle = renderedColours;
-								canvasContext.fill();
-								canvasContext.strokeStyle = "rgba(0,0,0,1)";
-								canvasContext.stroke();
-								
-								canvasContext.beginPath();
-								canvasContext.arc(x, y, pitchUnitSize/4 + 1, 0, Math.PI * 2, false);
-								
-								canvasContext.strokeStyle = "rgba(255,255,255,1)";
-								canvasContext.stroke();
-								canvasContext.closePath();
-								
-								canvasContext.font = "6px Arial";
-								canvasContext.textBaseline = "middle";
-								canvasContext.textAlign = "center";
-								canvasContext.fillStyle = "black";
-								canvasContext.fillText(gameContext.grid[i][j].number, x, y);
-								
-							} else if (gameContext.grid[i][j] instanceof Ball) {
+					for (gridY = 0; gridY < grid.space[gridX].length; gridY++) {
+					
+						if (grid.space[gridX][gridY].length !== 0) {
+
+							if (grid.space[gridX][gridY] instanceof Player) {
 							
-								canvasContext.beginPath();
-								canvasContext.arc(x+pitchUnitSize/4, y+pitchUnitSize/4, pitchUnitSize/8 + 1, 0, Math.PI * 2, false);
-								canvasContext.fillStyle = gameContext.grid[i][j].colour;
-								canvasContext.fill();
-								canvasContext.strokeStyle = "rgba(0,0,0,1)";
-								canvasContext.stroke();
-								canvasContext.closePath();
+								this.renderPlayer(gridX, gridY);
+								
+							} else if (grid.space[gridX][gridY] instanceof Ball) {
+
+								this.renderBall(gridX, gridY);
 							}
 						}
 					}
@@ -203,38 +224,38 @@ var bloodBowlNation = bloodBowlNation || (function(){
 				
 				var player;
 				
-				isOutOfBounds = (leftGrid>=grid.length-1 || topGrid>=grid[0].length-1);
+				isOutOfBounds = (leftGrid>=grid.space.length-1 || topGrid>=grid.space[0].length-1);
 				
 				if (isOutOfBounds) {
 					that.deselectPlayer();
 				} else {
-					isEmptySquare = (grid[leftGrid][topGrid]===null || grid[leftGrid][topGrid]==="" && grid[leftGrid][topGrid]===undefined);
+					isEmptySquare = (grid.space[leftGrid][topGrid]===null);
 				
 					//check for playerSelected
 					if (that.selectedPlayer) {
 						if (isEmptySquare) {
 							//move player
 							width:
-							for (i = 0; i < grid.length; i++) {
+							for (i = 0; i < grid.space.length; i++) {
 								length:
-								for (j = 0; j < grid[i].length; j++) {
+								for (j = 0; j < grid.space[i].length; j++) {
 									
 									isWithinMovementLimit = (leftGrid <= i+movementLimit && leftGrid >= i-movementLimit) && (topGrid <= j+movementLimit && topGrid >= j-movementLimit)
 								
-									if (grid[i][j] === that.selectedPlayer) {
+									if (grid.space[i][j] === that.selectedPlayer) {
 										if (!isOutOfBounds && isWithinMovementLimit) {
-											grid[leftGrid][topGrid] = that.selectedPlayer;
-											grid[i][j] = null;
+											grid.space[leftGrid][topGrid] = that.selectedPlayer;
+											grid.space[i][j] = null;
 										}
 										break width;
 									}
 								}
 							}
-						} else if (grid[leftGrid][topGrid] instanceof Ball) {
+						} else if (grid.space[leftGrid][topGrid] instanceof Ball) {
 							//pick up ball, or something
-						} else if (grid[leftGrid][topGrid] === that.selectedPlayer) {
+						} else if (grid.space[leftGrid][topGrid] === that.selectedPlayer) {
 							//self - do nothing probably
-						} else if (grid[leftGrid][topGrid] instanceof Player) {
+						} else if (grid.space[leftGrid][topGrid] instanceof Player) {
 						
 							//if other teamm
 							//BLOCK
@@ -247,8 +268,8 @@ var bloodBowlNation = bloodBowlNation || (function(){
 						//check to see if there's anything in this space
 						if (!isEmptySquare) {
 							
-							if (grid[leftGrid][topGrid] instanceof Player) {
-								player = grid[leftGrid][topGrid];
+							if (grid.space[leftGrid][topGrid] instanceof Player) {
+								player = grid.space[leftGrid][topGrid];
 								player.onSelect = that.gameContext.match.playerSelect;
 								that.gameContext.match.selectedPlayer = player;
 							}
@@ -281,7 +302,7 @@ var bloodBowlNation = bloodBowlNation || (function(){
 				
 				var gridCursorFillStyle = "rgba(0,0,0,0.7)";
 				
-				var outOfBounds = (leftGrid>=grid.length-1 || topGrid>=grid[0].length-1);
+				var outOfBounds = (leftGrid>=grid.space.length-1 || topGrid>=grid.space[0].length-1);
 
 				canvas.reset();
 
@@ -299,10 +320,10 @@ var bloodBowlNation = bloodBowlNation || (function(){
 				
 				if (that.gameContext.match.selectedPlayer !== null) {
 					width:
-					for (i = 0; i < grid.length; i++) {
+					for (i = 0; i < grid.space.length; i++) {
 						length:
-						for (j = 0; j < grid[i].length; j++) {
-							if (grid[i][j] === that.gameContext.match.selectedPlayer) {
+						for (j = 0; j < grid.space[i].length; j++) {
+							if (grid.space[i][j] === that.gameContext.match.selectedPlayer) {
 								x = i*unit;
 								y = j*unit;
 
@@ -350,12 +371,12 @@ var bloodBowlNation = bloodBowlNation || (function(){
 				team1.colours = ["rgba(0,0,255,1)","rgba(255,255,255,1)"];
 				
 				for (i = 0; i < 11; i++) {
-					player = new Player("human" + i, team1.colours, i+1);
+					player = new Player("human" + i, team1, i+1);
 					team1.players.push(player);
 				}
 
 				for (i = 0; i < 11; i++) {
-					player = new Player("orc" + i, team2.colours, i+1);
+					player = new Player("orc" + i, team2, i+1);
 					team2.players.push(player);
 				}
 
@@ -374,8 +395,8 @@ var bloodBowlNation = bloodBowlNation || (function(){
 				pitchUnitSize = gameContext.pitchUnitSize;
 				OffSetX = 2;
 				OffSetY = -1;
-
-				halfWayY = Math.floor(grid[0].length/2);
+				
+				halfWayY = Math.floor(grid.space[0].length/2);
 
 				for (i = 0; i < teams.length; i++) {
 					for (j = 0; j < teams[i].players.length; j++) {
@@ -383,21 +404,21 @@ var bloodBowlNation = bloodBowlNation || (function(){
 						y = (i*pitchUnitSize)+pitchUnitSize/2;
 						gridX = Math.floor(x/pitchUnitSize);
 						gridY = Math.floor(y/pitchUnitSize);
-						grid[gridX+OffSetX][gridY+halfWayY+OffSetY] = teams[i].players[j];
+						grid.space[gridX+OffSetX][gridY+halfWayY+OffSetY] = teams[i].players[j];
 					}
 				}
 
 				var randomX, randomY;
 				
-					randomX = Math.floor(Math.random()*(grid.length - 1));
-					randomY = Math.floor(Math.random()*(grid[0].length/2 - 1));
+					randomX = Math.floor(Math.random()*(grid.space.length - 1));
+					randomY = Math.floor(Math.random()*(grid.space[0].length/2 - 1));
 					
-				if (grid[randomX][randomY] !== null) {
+				if (grid.space[randomX][randomY].length > 0) {
 					//ball's fallen onto a player
-					console.log("ball's landed on " + grid[randomX][randomY].name + " - do something");
+					console.log("ball's landed on " + grid.space[randomX][randomY][0].name + " - do something");
 				}
 				
-				grid[randomX][randomY] = this.ball;
+				grid.space[randomX][randomY] = this.ball;
 				
 			},
 			rehydratePlayers: function() {
@@ -427,10 +448,10 @@ var bloodBowlNation = bloodBowlNation || (function(){
 				} else {
 					this.rehydratePlayers();
 				}
-
+				
 				this.dumpPlayersOntoPitchTemp();
 
-				gameContext.renderQueue.push(gameContext.wrapFunction(this.renderPlayers, this, [this.teams, "rgba(255,0,0,0.5)"]));
+				this.gameContext.renderQueue.push(gameContext.wrapFunction(this.renderGrid, this, [this.teams, "rgba(255,0,0,0.5)"]));
 
 				$(this.canvas).mousemove({that: this}, this.canvasMouseMove);
 				$(this.canvas).click({that: this}, this.canvasClick);
@@ -449,17 +470,18 @@ var bloodBowlNation = bloodBowlNation || (function(){
 			},
 			render: function() {
 			
-				var gameContext = this.gameContext;
-				var grid = this.gameContext.grid;
-				var canvas = this.controls.canvas;
-				var canvasContext = this.canvasContext;
-				var unit = this.gameContext.pitchUnitSize;
-				var width = this.gameContext.canvasWidth;
-				var height = this.gameContext.canvasHeight;
-				var unitBorderColour = this.unitBorderColour;
-				var unitFillColour = this.unitFillColour;
-				var boundaryLineColour = this.boundaryLineColour;
-				var pitchImage = new Image();
+				var gameContext = this.gameContext,
+					grid = this.gameContext.grid,
+					canvas = this.controls.canvas,
+					canvasContext = this.canvasContext,
+					unit = this.gameContext.pitchUnitSize,
+					width = this.gameContext.canvasWidth,
+					height = this.gameContext.canvasHeight,
+					unitBorderColour = this.unitBorderColour,
+					unitFillColour = this.unitFillColour,
+					boundaryLineColour = this.boundaryLineColour,
+					pitchImage = new Image()
+				
 				pitchImage.src="Pitch.jpg";
 				pitchImage.onload = function(e) {
 					
