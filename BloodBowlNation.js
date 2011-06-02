@@ -242,7 +242,7 @@ var BBN = BBN || (function(){
 
 										if (gridEntity === that.selectedPlayer) {
 											if (!isOutOfBounds && isWithinMovementLimit) {
-												grid.insertObject(leftGrid, topGrid, that.selectedPlayer);
+												grid.insertEntity(leftGrid, topGrid, that.selectedPlayer);
 												grid.space[i][j] = null;
 											}
 											break width;
