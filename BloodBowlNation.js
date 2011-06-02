@@ -1,5 +1,25 @@
 var BBN = BBN || (function(){
 	
+	var _castPlayerHelper = function(array) {
+		var i;
+		for (i = 0; i < array.length; i++) {
+			if (array[i] instanceof BBN.Player) {
+				return array[i];
+			}
+		}
+		return null;		
+	}
+	
+	var _castGridEntityHelper = function(array) {
+		var i;
+		for (i = 0; i < array.length; i++) {
+			if (array[i] instanceof BBN.Player || array[i] instanceof BBN.Ball) {
+				return array[i];
+			}
+		}
+		return null;		
+	}	
+	
 	return {
 		pitchCanvas: null,
 		pitchCanvasContext: null,
@@ -48,56 +68,69 @@ var BBN = BBN || (function(){
 				ball: null,
 				selectedPlayer: null,
 				renderPlayer: function(gridX, gridY) {
-					var teamColours,
-						player,
-						canvasContext = this.canvasContext,
-						grid = this.gameContext.grid,
-						gridUnit = grid.unit,
-						x, y, i;
+					try {
+						var teamColours = ["rgba(255, 255, 255, 1)"],
+							player,
+							canvasContext = this.canvasContext,
+							grid = this.gameContext.grid,
+							gridUnit = grid.unit,
+							x, y, i;
 
-					x = (gridX*gridUnit)+gridUnit/2;
-					y = (gridY*gridUnit)+gridUnit/2;
+						x = (gridX*gridUnit)+gridUnit/2;
+						y = (gridY*gridUnit)+gridUnit/2;
 
-					player = BBN.Helper.CastPlayerHelper(grid.space[gridX][gridY]);
-					
-					if (player != null) { teamColours = player.colours; }
-					
-					renderedColours = canvasContext.createLinearGradient(x, y, x+gridUnit/32, y);
-
-					for (i = 0; i < teamColours.length; i++) {
-
-						if (i > 1) { break; } //not sure what to do if there are more than two colours
-
-						if (i % 2) {
-							renderedColours.addColorStop(0, teamColours[i]);
-							renderedColours.addColorStop(0.5, teamColours[i]);
-						} else {
-							renderedColours.addColorStop(0.5, teamColours[i]);
-							renderedColours.addColorStop(1, teamColours[i]);
+						console.log(grid.space[gridX][gridY]);
+						
+						player = _castPlayerHelper(grid.space[gridX][gridY]);
+						
+						if (player === null) {
+						
+							throw "match.renderPlayer() error: player at grid.space[" + gridX + "][" + gridY + "] === null";
 						}
+						
+						teamColours = player.colours;
+						
+						renderedColours = canvasContext.createLinearGradient(x, y, x+gridUnit/32, y);
+
+						for (i = 0; i < teamColours.length; i++) {
+
+							if (i > 1) { break; } //not sure what to do if there are more than two colours
+
+							if (i % 2) {
+								renderedColours.addColorStop(0, teamColours[i]);
+								renderedColours.addColorStop(0.5, teamColours[i]);
+							} else {
+								renderedColours.addColorStop(0.5, teamColours[i]);
+								renderedColours.addColorStop(1, teamColours[i]);
+							}
+						}
+
+						canvasContext.beginPath();
+						canvasContext.arc(x, y, gridUnit/4, 0, Math.PI * 2, false);
+						canvasContext.closePath();
+
+						canvasContext.fillStyle = renderedColours;
+						canvasContext.fill();
+						canvasContext.strokeStyle = "rgba(0,0,0,1)";
+						canvasContext.stroke();
+
+						canvasContext.beginPath();
+						canvasContext.arc(x, y, gridUnit/4 + 1, 0, Math.PI * 2, false);
+
+						canvasContext.strokeStyle = "rgba(255,255,255,1)";
+						canvasContext.stroke();
+						canvasContext.closePath();
+
+						canvasContext.font = "6px Arial";
+						canvasContext.textBaseline = "middle";
+						canvasContext.textAlign = "center";
+						canvasContext.fillStyle = "black";
+						canvasContext.fillText(player.number, x, y);
+					
+					} catch(error) {
+					
+						console.log(error);
 					}
-
-					canvasContext.beginPath();
-					canvasContext.arc(x, y, gridUnit/4, 0, Math.PI * 2, false);
-					canvasContext.closePath();
-
-					canvasContext.fillStyle = renderedColours;
-					canvasContext.fill();
-					canvasContext.strokeStyle = "rgba(0,0,0,1)";
-					canvasContext.stroke();
-
-					canvasContext.beginPath();
-					canvasContext.arc(x, y, gridUnit/4 + 1, 0, Math.PI * 2, false);
-
-					canvasContext.strokeStyle = "rgba(255,255,255,1)";
-					canvasContext.stroke();
-					canvasContext.closePath();
-
-					canvasContext.font = "6px Arial";
-					canvasContext.textBaseline = "middle";
-					canvasContext.textAlign = "center";
-					canvasContext.fillStyle = "black";
-					canvasContext.fillText(grid.space[gridX][gridY].number, x, y);
 				},
 				renderBall: function(gridX, gridY) {
 					var teamColours,
@@ -126,20 +159,22 @@ var BBN = BBN || (function(){
 					var canvasContext = this.canvasContext,
 						grid = this.gameContext.grid,
 						gridUnit = grid.unit,
-						gridX, gridY;
-
+						gridX, gridY, gridEntity;
+						
 					for (gridX = 0; gridX < grid.space.length; gridX++) {
 
 						for (gridY = 0; gridY < grid.space[gridX].length; gridY++) {
 
-							if (grid.space[gridX][gridY].length !== 0) {
+							gridEntity = _castGridEntityHelper(grid.space[gridX][gridY]);
+						
+							if (gridEntity !== null) {
 
-								if (grid.space[gridX][gridY] instanceof BBN.Player) {
-
+								if (gridEntity instanceof BBN.Player) {
+									
 									this.renderPlayer(gridX, gridY);
-
-								} else if (grid.space[gridX][gridY] instanceof BBN.Ball) {
-
+								
+								} else if (gridEntity instanceof BBN.Ball) {
+									
 									this.renderBall(gridX, gridY);
 								}
 							}
@@ -199,11 +234,11 @@ var BBN = BBN || (function(){
 										}
 									}
 								}
-							} else if (grid.space[leftGrid][topGrid] instanceof Ball) {
+							} else if (grid.space[leftGrid][topGrid] instanceof BBN.Ball) {
 								//pick up ball, or something
 							} else if (grid.space[leftGrid][topGrid] === that.selectedPlayer) {
 								//self - do nothing probably
-							} else if (grid.space[leftGrid][topGrid] instanceof Player) {
+							} else if (grid.space[leftGrid][topGrid] instanceof BBN.Player) {
 
 								//if other teamm
 								//BLOCK
@@ -216,7 +251,7 @@ var BBN = BBN || (function(){
 							//check to see if there's anything in this space
 							if (!isEmptySquare) {
 
-								if (grid.space[leftGrid][topGrid] instanceof Player) {
+								if (grid.space[leftGrid][topGrid] instanceof BBN.Player) {
 									player = grid.space[leftGrid][topGrid];
 									player.onSelect = that.gameContext.match.playerSelect;
 									that.gameContext.match.selectedPlayer = player;
@@ -352,7 +387,7 @@ var BBN = BBN || (function(){
 							y = (i*pitchUnitSize)+pitchUnitSize/2;
 							gridX = Math.floor(x/pitchUnitSize);
 							gridY = Math.floor(y/pitchUnitSize);
-							grid.space[gridX+OffSetX][gridY+halfWayY+OffSetY] = teams[i].players[j];
+							grid.space[gridX+OffSetX][gridY+halfWayY+OffSetY].push(teams[i].players[j]);							
 						}
 					}
 
@@ -366,7 +401,7 @@ var BBN = BBN || (function(){
 						console.log("ball's landed on " + grid.space[randomX][randomY][0].name + " - do something");
 					}
 
-					grid.space[randomX][randomY] = this.ball;
+					grid.space[randomX][randomY].push(this.ball);
 
 				},
 				rehydratePlayers: function() {
@@ -379,7 +414,7 @@ var BBN = BBN || (function(){
 					for (i = 0; i < JSONteams.length; i++) {				
 						teams[i] = new BBN.Team(JSONteams[i].name);				
 						for (j = 0; j < JSONteams[i].players.length; j++) {					
-							player = new BBN.Player(JSONteams[i].players[j].name, JSONteams[i].players[j].colours, JSONteams[i].players[j].number);					
+							player = new BBN.Player(JSONteams[i].players[j].name, JSONteams[i], JSONteams[i].players[j].number);					
 							teams[i].players.push(player);
 						}					
 					}				

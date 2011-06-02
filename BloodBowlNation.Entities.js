@@ -1,4 +1,11 @@
-BBN.Team = BBN.Team || function(teamName) {
+BBN.Team = function() {
+
+	this.name = "Unnamed Team";
+	this.players = [];
+	this.colours = ["rgba(255,0,0,1)"];
+}
+
+BBN.Team = function(teamName) {
 
 	this.name = teamName;
 	this.players = [];
@@ -10,10 +17,11 @@ BBN.Team.prototype.shout = function() {
 }
 
 BBN.Player = BBN.Player || function(playerName, team, playerNumber) {
-		this.name = playerName;
-		this.colours = team.colours;
-		this.number = playerNumber;
-		this.team = team;
+
+	this.name = playerName;
+	this.colours = team.colours;
+	this.number = playerNumber;
+	this.team = team;
 }
 
 BBN.Player.prototype.onSelect = function() {
@@ -22,7 +30,7 @@ BBN.Player.prototype.onSelect = function() {
 
 BBN.Grid = BBN.Grid || function(width, length, pitchUnitSize) {
 
-	var i, i;
+	var i, j;
 	this.width = width;
 	this.length = length;
 	this.unit = pitchUnitSize;
@@ -34,6 +42,23 @@ BBN.Grid = BBN.Grid || function(width, length, pitchUnitSize) {
 		}
 	}
 }	
+
+BBN.Grid.prototype.insertObject = function(gridX, gridY, object) {
+	
+	try {
+	
+		if (!object instanceof BBN.Player && !object instanceof BBN.Ball) {
+			
+			throw("BBN.Grid.prototype.insertObject() error: object not griddable");
+		}
+				
+		this.space[gridX][gridY].push(object);
+		
+	} catch(error) {
+	
+		console.log(error);
+	}
+}
 	
 BBN.Grid.prototype.getGridX = function(x) {
 	if (x < 1) { x = 1; }
