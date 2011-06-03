@@ -166,9 +166,7 @@ var BBN = BBN || (function(){
 
 				},
 				renderGrid: function(teams, colour) {
-					var canvasContext = this.canvasContext,
-						grid = this.gameContext.grid,
-						gridUnit = grid.unit,
+					var grid = this.gameContext.grid,
 						gridX, gridY, gridEntity;
 						
 					for (gridX = 0; gridX < grid.space.length; gridX++) {
@@ -191,6 +189,21 @@ var BBN = BBN || (function(){
 						}
 					}
 				},
+				renderSelectedPlayerGrid: function() {
+					
+					var selectedPlayerLocation, selectedPlayer = this.selectedPlayer;
+					
+					var canvasContext = this.canvasContext;
+					
+					if (selectedPlayer === null) {
+						return;
+					}
+					
+					selectedPlayerLocation = this.gameContext.grid.getEntityLocation(selectedPlayer);
+					
+					
+					
+				},
 				deselectPlayer: function() {
 					this.gameContext.match.selectedPlayer = null;
 				},
@@ -206,48 +219,41 @@ var BBN = BBN || (function(){
 					var top = e.pageY - position.top - parentPosition.top;
 
 					//work out grid position
-					var leftGrid = Math.floor(left/that.gameContext.pitchUnitSize);
-					var topGrid = Math.floor(top/that.gameContext.pitchUnitSize);
+					var leftGrid = grid.getGridX(left);
+					var topGrid = grid.getGridY(top);
 
 					var movementLimit = 1;
 
 					var isEmptySquare, isOutOfBounds, isWithinMovementLimit, isPlayerSelected, player, ball, gridEntity;
 
+					var selectedPlayer = that.selectedPlayer, selectedPlayerLocation;
+					
 					var i;
 
-					isOutOfBounds = (leftGrid>=grid.space.length-1 || topGrid>=grid.space[0].length-1);
+					isOutOfBounds = (leftGrid>=grid.space.length-1 || topGrid>=grid.space[0].length-1 || leftGrid < 0 || topGrid < 0);
 
-					isPlayerSelected = (that.selectedPlayer !== null);
+					isPlayerSelected = (selectedPlayer !== null);
 					
 					if (isOutOfBounds) {
 					
 						that.deselectPlayer();
 						
 					} else {
-									
+					
 						gridEntity = _castGridEntityHelper(grid.space[leftGrid][topGrid]);
 						
 						isEmptySquare = (gridEntity===null);
 						
 						//check for playerSelected
 						if (isPlayerSelected) {
+
+							selectedPlayerLocation = grid.getEntityLocation(selectedPlayer);
+							
 							if (isEmptySquare) {
 								//move player
-								width:
-								for (i = 0; i < grid.space.length; i++) {
-									length:
-									for (j = 0; j < grid.space[i].length; j++) {
-
-										isWithinMovementLimit = (leftGrid <= i+movementLimit && leftGrid >= i-movementLimit) && (topGrid <= j+movementLimit && topGrid >= j-movementLimit)
-
-										if (gridEntity === that.selectedPlayer) {
-											if (!isOutOfBounds && isWithinMovementLimit) {
-												grid.insertEntity(leftGrid, topGrid, that.selectedPlayer);
-												grid.space[i][j] = null;
-											}
-											break width;
-										}
-									}
+								isWithinMovementLimit = (leftGrid <= selectedPlayerLocation[0]+movementLimit && leftGrid >= selectedPlayerLocation[0]-movementLimit) && (topGrid <= selectedPlayerLocation[1]+movementLimit && topGrid >= selectedPlayerLocation[1]-movementLimit)
+								if (!isOutOfBounds && isWithinMovementLimit) {
+									grid.moveEntity(leftGrid, topGrid, selectedPlayer)
 								}
 							} else if (gridEntity instanceof BBN.Ball) {
 								//pick up ball, or something
@@ -319,7 +325,7 @@ var BBN = BBN || (function(){
 						for (i = 0; i < grid.space.length; i++) {
 							length:
 							for (j = 0; j < grid.space[i].length; j++) {
-								if (grid.space[i][j] === that.gameContext.match.selectedPlayer) {
+								if (_castPlayerHelper(grid.space[i][j]) === that.gameContext.match.selectedPlayer) {
 									x = i*unit;
 									y = j*unit;
 
@@ -398,8 +404,8 @@ var BBN = BBN || (function(){
 						for (j = 0; j < teams[i].players.length; j++) {
 							x = (j*pitchUnitSize)+pitchUnitSize/2;
 							y = (i*pitchUnitSize)+pitchUnitSize/2;
-							gridX = Math.floor(x/pitchUnitSize);
-							gridY = Math.floor(y/pitchUnitSize);
+							gridX = grid.getGridX(x);
+							gridY = grid.getGridY(y);
 							grid.space[gridX+OffSetX][gridY+halfWayY+OffSetY].push(teams[i].players[j]);							
 						}
 					}
