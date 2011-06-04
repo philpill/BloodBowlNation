@@ -28,6 +28,19 @@ BBN.Player.prototype.onSelect = function() {
 	console.log(this.name + " selected");
 }
 
+BBN.Player.prototype.pickUpBall = function() {
+	
+	var gridEntities, entity;
+	
+	for (entity in gridEntities) {
+	
+		if (gridEntities[entity] instanceof BBN.Ball) {
+			//attempt to pickup
+			
+		}
+	}	
+}
+
 BBN.Grid = BBN.Grid || function(width, length, pitchUnitSize) {
 
 	var i, j;
@@ -121,6 +134,7 @@ BBN.Grid.prototype.getY = function(gridY) {
 	
 BBN.Ball = BBN.Ball || function() {
 	this.colour = "rgba(255,255,0,1)";
+	this.inPossessionOf = null;
 }
 
 

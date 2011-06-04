@@ -293,8 +293,6 @@ var BBN = BBN || (function(){
 									grid.moveEntity(leftGrid, topGrid, selectedPlayer)
 								}
 							} else {
-
-								for (gridEntity in gridEntities)
 							
 								if (gridEntities[gridEntity] instanceof BBN.Ball) {
 									//pick up ball, or something
@@ -418,8 +416,8 @@ var BBN = BBN || (function(){
 
 					var randomX, randomY;
 
-						randomX = Math.floor(Math.random()*(grid.space.length - 1));
-						randomY = Math.floor(Math.random()*(grid.space[0].length/2 - 1));
+					randomX = Math.floor(Math.random()*(grid.space.length - 1));
+					randomY = Math.floor(Math.random()*(grid.space[0].length/2 - 1));
 
 					if (grid.space[randomX][randomY].length > 0) {
 						//ball's fallen onto a player
@@ -427,7 +425,6 @@ var BBN = BBN || (function(){
 					}
 
 					grid.insertEntity(randomX, randomY, this.ball);
-
 				},
 				rehydratePlayers: function() {
 					var i, j, player, teams = [], JSONteams = JSON.parse(localStorage["teams"]);
