@@ -21,13 +21,13 @@ var BBN = BBN || (function(){
 	}
 	
 	var _castGridEntityHelper = function(array) {
-		var i;
+		var i, entityArray = [];
 		for (i = 0; i < array.length; i++) {
 			if (array[i] instanceof BBN.Player || array[i] instanceof BBN.Ball) {
-				return array[i];
+				entityArray.push(array[i]);
 			}
 		}
-		return null;		
+		return entityArray;		
 	}	
 	
 	return {
@@ -158,7 +158,7 @@ var BBN = BBN || (function(){
 
 					canvasContext.beginPath();
 					canvasContext.arc(x+gridUnit/4, y+gridUnit/4, gridUnit/8 + 1, 0, Math.PI * 2, false);
-					canvasContext.fillStyle = grid.space[gridX][gridY].colour;
+					canvasContext.fillStyle = "rgba(255,255,0,1)";
 					canvasContext.fill();
 					canvasContext.strokeStyle = "rgba(0,0,0,1)";
 					canvasContext.stroke();
@@ -167,23 +167,32 @@ var BBN = BBN || (function(){
 				},
 				renderGrid: function(teams, colour) {
 					var grid = this.gameContext.grid,
-						gridX, gridY, gridEntity;
-						
+						gridX, gridY, gridEntities, entity;
+					
+					if (this.selectedPlayer !== null) {
+					
+						this.renderSelectedPlayerGrid();
+					}
+					
 					for (gridX = 0; gridX < grid.space.length; gridX++) {
 
 						for (gridY = 0; gridY < grid.space[gridX].length; gridY++) {
 
-							gridEntity = _castGridEntityHelper(grid.space[gridX][gridY]);
+							gridEntities = _castGridEntityHelper(grid.space[gridX][gridY]);
 						
-							if (gridEntity !== null) {
+							if (gridEntities.length > 0) {
 
-								if (gridEntity instanceof BBN.Player) {
+								for (entity in gridEntities) {
+							
+									if (gridEntities[entity] instanceof BBN.Player) {
+										
+										this.renderPlayer(gridX, gridY);
 									
-									this.renderPlayer(gridX, gridY);
-								
-								} else if (gridEntity instanceof BBN.Ball) {
+									} else if (gridEntities[entity] instanceof BBN.Ball) {
+										
+										this.renderBall(gridX, gridY);
 									
-									this.renderBall(gridX, gridY);
+									}
 								}
 							}
 						}
@@ -195,13 +204,41 @@ var BBN = BBN || (function(){
 					
 					var canvasContext = this.canvasContext;
 					
+					var x, y, gridX, gridY;
+					
+					var grid = this.gameContext.grid, gridUnit = grid.unit;
+					
 					if (selectedPlayer === null) {
 						return;
 					}
 					
 					selectedPlayerLocation = this.gameContext.grid.getEntityLocation(selectedPlayer);
+
+					gridX = selectedPlayerLocation[0];
 					
+					gridY = selectedPlayerLocation[1];
 					
+					x = gridX*gridUnit;
+					y = gridY*gridUnit;
+
+					//render little square under selected player
+					//canvasContext.beginPath();
+					canvasContext.fillStyle = "rgba(100,170,255,0.5)";
+					canvasContext.fillRect(x, y, gridUnit, gridUnit);
+					canvasContext.stroke();
+					//canvasContext.closePath();
+
+					//render valid movement squares around selected player
+					canvasContext.fillStyle = "rgba(100,170,255,0.5)";
+					canvasContext.fillRect(x-gridUnit, y-gridUnit, gridUnit, gridUnit);
+					canvasContext.fillRect(x-gridUnit, y, gridUnit, gridUnit);
+					canvasContext.fillRect(x-gridUnit, y+gridUnit, gridUnit, gridUnit);
+					canvasContext.fillRect(x, y+gridUnit, gridUnit, gridUnit);
+					canvasContext.fillRect(x, y-gridUnit, gridUnit, gridUnit);
+					canvasContext.fillRect(x+gridUnit, y+gridUnit, gridUnit, gridUnit);
+					canvasContext.fillRect(x+gridUnit, y, gridUnit, gridUnit);
+					canvasContext.fillRect(x+gridUnit, y-gridUnit, gridUnit, gridUnit);
+					canvasContext.stroke();
 					
 				},
 				deselectPlayer: function() {
@@ -224,7 +261,7 @@ var BBN = BBN || (function(){
 
 					var movementLimit = 1;
 
-					var isEmptySquare, isOutOfBounds, isWithinMovementLimit, isPlayerSelected, player, ball, gridEntity;
+					var isEmptySquare, isOutOfBounds, isWithinMovementLimit, isPlayerSelected, player, ball, gridEntities, gridEntity;
 
 					var selectedPlayer = that.selectedPlayer, selectedPlayerLocation;
 					
@@ -240,13 +277,13 @@ var BBN = BBN || (function(){
 						
 					} else {
 					
-						gridEntity = _castGridEntityHelper(grid.space[leftGrid][topGrid]);
+						gridEntities = _castGridEntityHelper(grid.space[leftGrid][topGrid]);
 						
-						isEmptySquare = (gridEntity===null);
+						isEmptySquare = (gridEntities.length < 1);
 						
 						//check for playerSelected
 						if (isPlayerSelected) {
-
+						
 							selectedPlayerLocation = grid.getEntityLocation(selectedPlayer);
 							
 							if (isEmptySquare) {
@@ -255,25 +292,38 @@ var BBN = BBN || (function(){
 								if (!isOutOfBounds && isWithinMovementLimit) {
 									grid.moveEntity(leftGrid, topGrid, selectedPlayer)
 								}
-							} else if (gridEntity instanceof BBN.Ball) {
-								//pick up ball, or something
-							} else if (gridEntity === that.selectedPlayer) {
-								//self - do nothing probably
-							} else if (gridEntity instanceof BBN.Player) {
-
-								//if other teamm
-								//BLOCK
-
 							} else {
 
+								for (gridEntity in gridEntities)
+							
+								if (gridEntities[gridEntity] instanceof BBN.Ball) {
+									//pick up ball, or something
+									isWithinMovementLimit = (leftGrid <= selectedPlayerLocation[0]+movementLimit && leftGrid >= selectedPlayerLocation[0]-movementLimit) && (topGrid <= selectedPlayerLocation[1]+movementLimit && topGrid >= selectedPlayerLocation[1]-movementLimit)
+									if (!isOutOfBounds && isWithinMovementLimit) {
+										grid.moveEntity(leftGrid, topGrid, selectedPlayer)
+									}
+								} else if (gridEntities[gridEntity] === that.selectedPlayer) {
+									//self - do nothing probably
+								} else if (gridEntities[gridEntity] instanceof BBN.Player) {
+
+									//if other teamm
+									//BLOCK
+
+								} else {
+								
+								}
 							}
 						} else {
 							//no player selected
 							//check to see if there's anything in this space
 							if (!isEmptySquare) {
-								if (gridEntity instanceof BBN.Player) {
-									gridEntity.onSelect = that.gameContext.match.playerSelect;
-									that.gameContext.match.selectedPlayer = gridEntity;
+								for (gridEntity in gridEntities) {
+									while (that.gameContext.match.selectedPlayer === null) {
+										if (gridEntities[gridEntity] instanceof BBN.Player) {
+											gridEntities[gridEntity].onSelect = that.gameContext.match.playerSelect;
+											that.gameContext.match.selectedPlayer = gridEntities[gridEntity];
+										}
+									}
 								}
 							}
 						}
@@ -300,8 +350,6 @@ var BBN = BBN || (function(){
 					var leftGrid = Math.floor(left/unit);
 					var topGrid = Math.floor(top/unit);
 
-					var i, j, x, y;
-
 					var gridCursorFillStyle = "rgba(0,0,0,0.7)";
 
 					var outOfBounds = (leftGrid>=grid.space.length-1 || topGrid>=grid.space[0].length-1);
@@ -313,49 +361,7 @@ var BBN = BBN || (function(){
 						canvasContext.fillStyle = gridCursorFillStyle;
 						canvasContext.fillRect(leftGridRender, topGridRender, unit, unit);
 						canvasContext.closePath();
-					}
-
-					//get selected player
-					//console.log(that.gameContext.match.selectedPlayer);
-
-					//find grid for selected player
-
-					if (that.gameContext.match.selectedPlayer !== null) {
-						width:
-						for (i = 0; i < grid.space.length; i++) {
-							length:
-							for (j = 0; j < grid.space[i].length; j++) {
-								if (_castPlayerHelper(grid.space[i][j]) === that.gameContext.match.selectedPlayer) {
-									x = i*unit;
-									y = j*unit;
-
-									//render little square under selected player
-									//canvasContext.beginPath();
-									canvasContext.fillStyle = gridCursorFillStyle;
-									canvasContext.fillRect(x, y, unit, unit);
-									canvasContext.stroke();
-									//canvasContext.closePath();
-
-									//render valid movement squares around selected player
-									canvasContext.fillStyle = "rgba(100,170,255,0.5)";
-									canvasContext.fillRect(x-unit, y-unit, unit, unit);
-									canvasContext.fillRect(x-unit, y, unit, unit);
-									canvasContext.fillRect(x-unit, y+unit, unit, unit);
-									canvasContext.fillRect(x, y+unit, unit, unit);
-									canvasContext.fillRect(x, y-unit, unit, unit);
-									canvasContext.fillRect(x+unit, y+unit, unit, unit);
-									canvasContext.fillRect(x+unit, y, unit, unit);
-									canvasContext.fillRect(x+unit, y-unit, unit, unit);
-									canvasContext.stroke();
-
-
-									break width;
-								}
-							}
-						}
-					}
-
-					that.gameContext.render();
+					}					that.gameContext.render();
 				},
 				generateGameTemp: function() {
 					var player, i, gameContext, grid, pitchUnitSize, pitchRow;
@@ -420,7 +426,7 @@ var BBN = BBN || (function(){
 						console.log("ball's landed on " + grid.space[randomX][randomY][0].name + " - do something");
 					}
 
-					grid.space[randomX][randomY].push(this.ball);
+					grid.insertEntity(randomX, randomY, this.ball);
 
 				},
 				rehydratePlayers: function() {

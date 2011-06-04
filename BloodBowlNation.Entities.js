@@ -53,8 +53,12 @@ BBN.Grid.prototype.insertEntity = function(gridX, gridY, object) {
 		}		
 		if (gridY > this.length) {					
 			throw("BBN.Grid.prototype.insertObject() error: outside boundary");
-		}		
-		this.space[gridX][gridY].push(object);		
+		}
+		if (object instanceof BBN.Player) {
+			this.space[gridX][gridY].unshift(object);		
+		} else if (object instanceof BBN.Ball) {
+			this.space[gridX][gridY].push(object);
+		}
 	} catch(error) {	
 		console.log(error);
 	}
