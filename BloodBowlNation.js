@@ -291,24 +291,35 @@ var BBN = BBN || (function(){
 								isWithinMovementLimit = (leftGrid <= selectedPlayerLocation[0]+movementLimit && leftGrid >= selectedPlayerLocation[0]-movementLimit) && (topGrid <= selectedPlayerLocation[1]+movementLimit && topGrid >= selectedPlayerLocation[1]-movementLimit)
 								if (!isOutOfBounds && isWithinMovementLimit) {
 									grid.moveEntity(leftGrid, topGrid, selectedPlayer)
+									//move ball if in possession
 								}
 							} else {
+
+								for (gridEntity in gridEntities) {
 							
-								if (gridEntities[gridEntity] instanceof BBN.Ball) {
-									//pick up ball, or something
-									isWithinMovementLimit = (leftGrid <= selectedPlayerLocation[0]+movementLimit && leftGrid >= selectedPlayerLocation[0]-movementLimit) && (topGrid <= selectedPlayerLocation[1]+movementLimit && topGrid >= selectedPlayerLocation[1]-movementLimit)
-									if (!isOutOfBounds && isWithinMovementLimit) {
-										grid.moveEntity(leftGrid, topGrid, selectedPlayer)
+									if (gridEntities[gridEntity] instanceof BBN.Player) {
+
+										//if other teamm
+										//BLOCK
+										break;
 									}
-								} else if (gridEntities[gridEntity] === that.selectedPlayer) {
-									//self - do nothing probably
-								} else if (gridEntities[gridEntity] instanceof BBN.Player) {
-
-									//if other teamm
-									//BLOCK
-
-								} else {
-								
+							
+									if (gridEntities[gridEntity] === that.selectedPlayer) {
+										//self - do nothing probably
+										break;
+									}
+							
+									if (gridEntities[gridEntity] instanceof BBN.Ball) {
+									
+										//pick up ball, or something
+										isWithinMovementLimit = (leftGrid <= selectedPlayerLocation[0]+movementLimit && leftGrid >= selectedPlayerLocation[0]-movementLimit) && (topGrid <= selectedPlayerLocation[1]+movementLimit && topGrid >= selectedPlayerLocation[1]-movementLimit)
+										if (!isOutOfBounds && isWithinMovementLimit) {
+											
+											grid.moveEntity(leftGrid, topGrid, selectedPlayer)
+											selectedPlayer.pickUpBall(gridEntities[gridEntity]);
+										}
+										break;
+									}
 								}
 							}
 						} else {
@@ -492,7 +503,7 @@ var BBN = BBN || (function(){
 
 						canvas.reset();
 
-						//canvasContext.drawImage(pitchImage, 0, 0, unit*width, unit*height);
+						canvasContext.drawImage(pitchImage, 0, 0, unit*width, unit*height);
 						canvasContext.beginPath();
 						canvasContext.fillStyle = unitFillColour;
 						canvasContext.fillRect(0,0,width*unit,height*unit);

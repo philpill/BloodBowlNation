@@ -28,17 +28,11 @@ BBN.Player.prototype.onSelect = function() {
 	console.log(this.name + " selected");
 }
 
-BBN.Player.prototype.pickUpBall = function() {
+BBN.Player.prototype.pickUpBall = function(ball) {
 	
-	var gridEntities, entity;
-	
-	for (entity in gridEntities) {
-	
-		if (gridEntities[entity] instanceof BBN.Ball) {
-			//attempt to pickup
-			
-		}
-	}	
+	//attempt to pickup
+	ball.inPossessionOf = this;
+	console.log("ball picked up");
 }
 
 BBN.Grid = BBN.Grid || function(width, length, pitchUnitSize) {
