@@ -101,10 +101,20 @@ BBN.Grid.prototype.removeEntity = function(object) {
 	}
 }	
 	
-BBN.Grid.prototype.moveEntity = function(destinationGridX, destinationGridY, object) {	
+BBN.Grid.prototype.moveEntity = function(destinationGridX, destinationGridY, object) {
+	var player, ball;
 	if (!object instanceof BBN.Player && !object instanceof BBN.Ball) {		
 		throw("BBN.Grid.prototype.insertObject() error: object not griddable");
-	}	
+	}
+	if (object instanceof BBN.Player) {
+		player = object;	
+		ball = BBN.game.match.ball;
+		//check ball is in possession of player and move
+		if (ball.inPossessionOf === player) {
+			this.removeEntity(ball);	
+			this.insertEntity(destinationGridX, destinationGridY, ball);			
+		}
+	}
 	this.removeEntity(object);	
 	this.insertEntity(destinationGridX, destinationGridY, object);
 }	
@@ -115,7 +125,7 @@ BBN.Grid.prototype.getGridX = function(x) {
 }
 BBN.Grid.prototype.getGridY = function(y) {
 	if (y < 1) { y = 1; }
-	return Math.floor(y/this.unit);
+	return Math.floor(y/this.unit); 
 }
 BBN.Grid.prototype.getX = function(gridX) {
 	if (gridX < 0) { gridX = 0; }

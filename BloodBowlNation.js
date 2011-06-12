@@ -77,6 +77,13 @@ var BBN = BBN || (function(){
 				teams: [],
 				ball: null,
 				selectedPlayer: null,
+				renderObject: function(object, gridX, gridY) {				
+					if (object instanceof BBN.Player) {
+						this.renderPlayer(gridX, gridY);					
+					} else if (object instanceof BBN.Ball) {
+						this.renderBall(gridX, gridY);					
+					}
+				},
 				renderPlayer: function(gridX, gridY) {
 				
 					try {
@@ -180,21 +187,10 @@ var BBN = BBN || (function(){
 
 							gridEntities = _castGridEntityHelper(grid.space[gridX][gridY]);
 						
-							if (gridEntities.length > 0) {
-
-								for (entity in gridEntities) {
-							
-									if (gridEntities[entity] instanceof BBN.Player) {
-										
-										this.renderPlayer(gridX, gridY);
+							for (entity in gridEntities) {
 									
-									} else if (gridEntities[entity] instanceof BBN.Ball) {
-										
-										this.renderBall(gridX, gridY);
-									
-									}
-								}
-							}
+								this.renderObject(gridEntities[entity], gridX, gridY);								
+							}							
 						}
 					}
 				},
@@ -244,6 +240,27 @@ var BBN = BBN || (function(){
 				deselectPlayer: function() {
 					this.gameContext.match.selectedPlayer = null;
 				},
+				canvasClickOutOfBounds: function() {
+					this.deselectPlayer();
+				},
+				resolvePlayerAction: function(gridEntities, leftGrid, topGrid) {
+				
+					var gridEntity, selectedPlayer = this.selectedPlayer;
+				
+					for (gridEntity in gridEntities) {
+				
+						if (gridEntities[gridEntity] instanceof BBN.Player) {
+
+							//if other teamm
+							//BLOCK
+					
+						} else if (gridEntities[gridEntity] instanceof BBN.Ball) {
+						
+							grid.moveEntity(leftGrid, topGrid, selectedPlayer)
+							selectedPlayer.pickUpBall(gridEntities[gridEntity]);
+						}
+					}
+				},
 				canvasClick: function(e) {
 
 					var that = e.data.that;
@@ -264,79 +281,49 @@ var BBN = BBN || (function(){
 					var isEmptySquare, isOutOfBounds, isWithinMovementLimit, isPlayerSelected, player, ball, gridEntities, gridEntity;
 
 					var selectedPlayer = that.selectedPlayer, selectedPlayerLocation;
-					
-					var i;
 
 					isOutOfBounds = (leftGrid>=grid.space.length-1 || topGrid>=grid.space[0].length-1 || leftGrid < 0 || topGrid < 0);
 
 					isPlayerSelected = (selectedPlayer !== null);
 					
-					if (isOutOfBounds) {
+					if (isOutOfBounds) {					
+						that.canvasClickOutOfBounds();						
+						return;
+					}	
 					
-						that.deselectPlayer();
-						
-					} else {
+					gridEntities = _castGridEntityHelper(grid.space[leftGrid][topGrid]);
 					
-						gridEntities = _castGridEntityHelper(grid.space[leftGrid][topGrid]);
+					isEmptySquare = (gridEntities.length < 1);
+					
+					//check for playerSelected
+					if (isPlayerSelected) {
+					
+						selectedPlayerLocation = grid.getEntityLocation(selectedPlayer);
 						
-						isEmptySquare = (gridEntities.length < 1);
-						
-						//check for playerSelected
-						if (isPlayerSelected) {
-						
-							selectedPlayerLocation = grid.getEntityLocation(selectedPlayer);
-							
-							if (isEmptySquare) {
-								//move player
-								isWithinMovementLimit = (leftGrid <= selectedPlayerLocation[0]+movementLimit && leftGrid >= selectedPlayerLocation[0]-movementLimit) && (topGrid <= selectedPlayerLocation[1]+movementLimit && topGrid >= selectedPlayerLocation[1]-movementLimit)
-								if (!isOutOfBounds && isWithinMovementLimit) {
-									grid.moveEntity(leftGrid, topGrid, selectedPlayer)
-									//move ball if in possession
-								}
-							} else {
-
-								for (gridEntity in gridEntities) {
-							
-									if (gridEntities[gridEntity] instanceof BBN.Player) {
-
-										//if other teamm
-										//BLOCK
-										break;
-									}
-							
-									if (gridEntities[gridEntity] === that.selectedPlayer) {
-										//self - do nothing probably
-										break;
-									}
-							
-									if (gridEntities[gridEntity] instanceof BBN.Ball) {
-									
-										//pick up ball, or something
-										isWithinMovementLimit = (leftGrid <= selectedPlayerLocation[0]+movementLimit && leftGrid >= selectedPlayerLocation[0]-movementLimit) && (topGrid <= selectedPlayerLocation[1]+movementLimit && topGrid >= selectedPlayerLocation[1]-movementLimit)
-										if (!isOutOfBounds && isWithinMovementLimit) {
-											
-											grid.moveEntity(leftGrid, topGrid, selectedPlayer)
-											selectedPlayer.pickUpBall(gridEntities[gridEntity]);
-										}
-										break;
-									}
-								}
+						if (isEmptySquare) {
+							//move player
+							isWithinMovementLimit = (leftGrid <= selectedPlayerLocation[0]+movementLimit && leftGrid >= selectedPlayerLocation[0]-movementLimit) && (topGrid <= selectedPlayerLocation[1]+movementLimit && topGrid >= selectedPlayerLocation[1]-movementLimit)
+							if (!isOutOfBounds && isWithinMovementLimit) {
+								grid.moveEntity(leftGrid, topGrid, selectedPlayer)
+								//move ball if in possession
 							}
 						} else {
-							//no player selected
-							//check to see if there's anything in this space
-							if (!isEmptySquare) {
-								for (gridEntity in gridEntities) {
-									while (that.gameContext.match.selectedPlayer === null) {
-										if (gridEntities[gridEntity] instanceof BBN.Player) {
-											gridEntities[gridEntity].onSelect = that.gameContext.match.playerSelect;
-											that.gameContext.match.selectedPlayer = gridEntities[gridEntity];
-										}
+							that.resolvePlayerAction(gridEntities, leftGrid, topGrid);
+						}
+					} else {
+						//no player selected
+						//check to see if there's anything in this space
+						if (!isEmptySquare) {
+							for (gridEntity in gridEntities) {
+								while (that.gameContext.match.selectedPlayer === null) {
+									if (gridEntities[gridEntity] instanceof BBN.Player) {
+										gridEntities[gridEntity].onSelect = that.gameContext.match.playerSelect;
+										that.gameContext.match.selectedPlayer = gridEntities[gridEntity];
 									}
 								}
 							}
 						}
-					}
+					}					
 				},
 				canvasMouseMove: function(e) {
 
