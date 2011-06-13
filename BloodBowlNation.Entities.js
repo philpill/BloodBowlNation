@@ -16,12 +16,17 @@ BBN.Team.prototype.shout = function() {
 	console.log(this.name);
 }
 
-BBN.Player = BBN.Player || function(playerName, team, playerNumber) {
+BBN.Player = BBN.Player || function(playerName, team, playerNumber, playerRace, movementAllowance, strength, agility, armourValue) {
 
-	this.name = playerName;
+	this.name = playerName;	
 	this.colours = team.colours;
 	this.number = playerNumber;
 	this.team = team;
+	this.race = playerRace;
+	this.movementAllowance = movementAllowance;
+	this.strength = strength;
+	this.agility = agility;
+	this.armourValue = armourValue;
 }
 
 BBN.Player.prototype.onSelect = function() {

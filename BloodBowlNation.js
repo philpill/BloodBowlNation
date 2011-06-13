@@ -490,7 +490,7 @@ var BBN = BBN || (function(){
 
 						canvas.reset();
 
-						canvasContext.drawImage(pitchImage, 0, 0, unit*width, unit*height);
+						//canvasContext.drawImage(pitchImage, 0, 0, unit*width, unit*height);
 						canvasContext.beginPath();
 						canvasContext.fillStyle = unitFillColour;
 						canvasContext.fillRect(0,0,width*unit,height*unit);
