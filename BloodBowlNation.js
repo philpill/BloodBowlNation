@@ -69,6 +69,9 @@ var BBN = BBN || (function(){
 					}
 				}
 			},
+			options: {
+				renderBackground: false
+			},
 			match: {
 				pitch: this.pitch,
 				gameContext: null,
@@ -218,11 +221,9 @@ var BBN = BBN || (function(){
 					y = gridY*gridUnit;
 
 					//render little square under selected player
-					//canvasContext.beginPath();
 					canvasContext.fillStyle = "rgba(100,170,255,0.5)";
 					canvasContext.fillRect(x, y, gridUnit, gridUnit);
 					canvasContext.stroke();
-					//canvasContext.closePath();
 
 					//render valid movement squares around selected player
 					canvasContext.fillStyle = "rgba(100,170,255,0.5)";
@@ -357,17 +358,19 @@ var BBN = BBN || (function(){
 						canvasContext.fillStyle = gridCursorFillStyle;
 						canvasContext.fillRect(leftGridRender, topGridRender, unit, unit);
 						canvasContext.closePath();
-					}					that.gameContext.render();
+					}					
+					
+					that.gameContext.render();
 				},
 				generateGameTemp: function() {
 					var player, i, gameContext, grid, pitchUnitSize, pitchRow;
 
 					console.log("generateGameTemp()");
 
-					this.ball = new Ball();
+					this.ball = new BBN.Ball();
 
-					var team1 = new Team("Reikland Reavers");
-					var team2 = new Team("Orcland Raiders");
+					var team1 = new BBN.Team("Reikland Reavers");
+					var team2 = new BBN.Team("Orcland Raiders");
 
 					team1.shout();
 					team2.shout();
@@ -375,17 +378,19 @@ var BBN = BBN || (function(){
 					team1.colours = ["rgba(0,0,255,1)","rgba(255,255,255,1)"];
 
 					for (i = 0; i < 11; i++) {
-						player = new Player("human" + i, team1, i+1);
+						player = new BBN.Player("human" + i, team1, i+1);
 						team1.players.push(player);
 					}
 
 					for (i = 0; i < 11; i++) {
-						player = new Player("orc" + i, team2, i+1);
+						player = new BBN.Player("orc" + i, team2, i+1);
 						team2.players.push(player);
 					}
 
 					this.teams.push(team1);
 					this.teams.push(team2);
+
+					console.log(this.teams);
 
 					localStorage["teams"] = JSON.stringify(this.teams);
 				},
@@ -485,12 +490,16 @@ var BBN = BBN || (function(){
 						boundaryLineColour = this.boundaryLineColour,
 						pitchImage = new Image()
 
-					pitchImage.src="Pitch.jpg";
+					if (gameContext.options.renderBackground) {
+						pitchImage.src="Pitch.jpg";
+					} else {
+						pitchImage.src="blank.png";
+					}
 					pitchImage.onload = function(e) {
 
 						canvas.reset();
 
-						//canvasContext.drawImage(pitchImage, 0, 0, unit*width, unit*height);
+						canvasContext.drawImage(pitchImage, 0, 0, unit*width, unit*height);
 						canvasContext.beginPath();
 						canvasContext.fillStyle = unitFillColour;
 						canvasContext.fillRect(0,0,width*unit,height*unit);
@@ -556,6 +565,13 @@ var BBN = BBN || (function(){
 					this.controls.canvas=canvas;
 					this.canvasContext=canvasContext;
 					gameContext.renderQueue.push(gameContext.wrapFunction(this.render, this));
+					$("#BackgroundCheck").click(function(){
+						if ($(this).is(':checked')) {
+							gameContext.options.renderBackground = true;
+						} else {
+							gameContext.options.renderBackground = false;
+						}
+					});
 				}
 			}
 		}
