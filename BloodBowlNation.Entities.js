@@ -23,10 +23,17 @@ BBN.Player = BBN.Player || function(playerName, playerTeam, playerNumber, player
 	this.number = playerNumber;
 	this.team = playerTeam.name;
 	this.race = playerRace;
+	
+	
+	//these values should come from a player type class (e.g. Human Blocker)
 	this.movementAllowance = playerMovement;
 	this.strength = playerStrength;
 	this.agility = playerAgility;
 	this.armourValue = playerArmourValue;
+	
+	this.isProne = false;
+	this.isStunned = false;
+	this.isKnockedOut = false;
 }
 
 BBN.Player.prototype.onSelect = function() {

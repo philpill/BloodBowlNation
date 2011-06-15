@@ -145,7 +145,26 @@ var BBN = BBN || (function(){
 						canvasContext.textBaseline = "middle";
 						canvasContext.textAlign = "center";
 						canvasContext.fillStyle = "black";
-						canvasContext.fillText(player.number, x, y);
+						
+						canvasContext.save();
+
+						if (player.isProne) {
+							canvasContext.translate(x, y);
+							canvasContext.rotate(90 * Math.PI / 180);
+							canvasContext.fillText(player.number, 0, 0);							
+						
+						} else if (player.isStunned) {
+						
+							canvasContext.translate(x, y);
+							canvasContext.rotate(180 * Math.PI / 180);
+							canvasContext.fillText(player.number, 0, 0);
+							
+						} else {
+						
+							canvasContext.fillText(player.number, x, y);
+						}					
+						
+						canvasContext.restore();
 					
 					} catch(error) {
 					
@@ -264,26 +283,29 @@ var BBN = BBN || (function(){
 				},
 				canvasClick: function(e) {
 
-					var that = e.data.that;
-					var grid = that.gameContext.grid;
-
-					var position = $("#PitchCanvas").position();
-					var parentPosition = $("#Container").offset();
-
-					var left = e.pageX - position.left - parentPosition.left;
-					var top = e.pageY - position.top - parentPosition.top;
-
-					//work out grid position
-					var leftGrid = grid.getGridX(left);
-					var topGrid = grid.getGridY(top);
+					var that = e.data.that,
+						grid = that.gameContext.grid,
+						position = $("#PitchCanvas").position(),
+						parentPosition = $("#Container").offset(),
+						left = e.pageX - position.left - parentPosition.left,
+						top = e.pageY - position.top - parentPosition.top,
+						leftGrid = grid.getGridX(left),
+						topGrid = grid.getGridY(top);
 
 					var movementLimit = 1;
 
-					var isEmptySquare, isOutOfBounds, isWithinMovementLimit, isPlayerSelected, player, ball, gridEntities, gridEntity;
+					var isEmptySquare, 
+						isOutOfBounds, 
+						isWithinMovementLimit, 
+						isPlayerSelected, 
+						player, 
+						gridEntities, 
+						gridEntity;
 
-					var selectedPlayer = that.selectedPlayer, selectedPlayerLocation;
+					var selectedPlayer = that.selectedPlayer, 
+						selectedPlayerLocation;
 
-					isOutOfBounds = (leftGrid>=grid.space.length-1 || topGrid>=grid.space[0].length-1 || leftGrid < 0 || topGrid < 0);
+					isOutOfBounds = (leftGrid>=grid.space.length || topGrid>=grid.space[0].length || leftGrid < 0 || topGrid < 0);
 
 					isPlayerSelected = (selectedPlayer !== null);
 					
@@ -328,32 +350,25 @@ var BBN = BBN || (function(){
 				},
 				canvasMouseMove: function(e) {
 
-					var that = e.data.that;
-					var grid = that.gameContext.grid;
-					var unit = that.gameContext.pitchUnitSize;
-					var canvasContext = that.canvasContext;
-					var canvas = that.canvas;
-
-					var position = $("#PitchCanvas").position();
-					var parentPosition = $("#Container").offset();
-
-					var left = e.pageX - position.left - parentPosition.left;
-					var top = e.pageY - position.top - parentPosition.top;
-
-					//work out grid position
-					var leftGridRender = Math.ceil(left/unit) * unit - unit;
-					var topGridRender = Math.ceil(top/unit) * unit - unit;
-
-					var leftGrid = Math.floor(left/unit);
-					var topGrid = Math.floor(top/unit);
-
-					var gridCursorFillStyle = "rgba(0,0,0,0.7)";
-
-					var outOfBounds = (leftGrid>=grid.space.length-1 || topGrid>=grid.space[0].length-1);
+					var that = e.data.that,
+						grid = that.gameContext.grid,
+						unit = that.gameContext.pitchUnitSize,
+						canvasContext = that.canvasContext,
+						canvas = that.canvas,
+						position = $("#PitchCanvas").position(),
+						parentPosition = $("#Container").offset(),
+						left = e.pageX - position.left - parentPosition.left,
+						top = e.pageY - position.top - parentPosition.top,
+						leftGridRender = Math.ceil(left/unit) * unit - unit,
+						topGridRender = Math.ceil(top/unit) * unit - unit,
+						leftGrid = Math.floor(left/unit),
+						topGrid = Math.floor(top/unit),
+						gridCursorFillStyle = "rgba(0,0,0,0.7)",
+						isOutOfBounds = (leftGrid>=grid.space.length || topGrid>=grid.space[0].length || leftGrid < 0 || topGrid < 0);
 
 					canvas.reset();
 
-					if (!outOfBounds) {
+					if (!isOutOfBounds) {
 						canvasContext.beginPath();
 						canvasContext.fillStyle = gridCursorFillStyle;
 						canvasContext.fillRect(leftGridRender, topGridRender, unit, unit);
@@ -473,89 +488,65 @@ var BBN = BBN || (function(){
 				unitFillColour: null,
 				boundaryLineColour: null,
 				canvasContext: null,
+				backgroundImage: "Pitch.jpg",
 				controls: {
 					canvas: null
 				},
 				render: function() {
 
 					var gameContext = this.gameContext,
-						grid = this.gameContext.grid,
 						canvas = this.controls.canvas,
 						canvasContext = this.canvasContext,
 						unit = this.gameContext.pitchUnitSize,
 						width = this.gameContext.canvasWidth,
 						height = this.gameContext.canvasHeight,
 						unitBorderColour = this.unitBorderColour,
-						unitFillColour = this.unitFillColour,
 						boundaryLineColour = this.boundaryLineColour,
-						pitchImage = new Image()
+						pitchImage = new Image(),						
+						renderBackground = gameContext.options.renderBackground;
 
-					if (gameContext.options.renderBackground) {
-						pitchImage.src="Pitch.jpg";
-					} else {
-						pitchImage.src="blank.png";
+					pitchImage.src = this.backgroundImage;
+					
+					canvas.reset();
+					
+					if (renderBackground) {							
+						canvasContext.drawImage(pitchImage, 0, 0, unit*width, unit*height);						
 					}
-					pitchImage.onload = function(e) {
 
-						canvas.reset();
-
-						canvasContext.drawImage(pitchImage, 0, 0, unit*width, unit*height);
-						canvasContext.beginPath();
-						canvasContext.fillStyle = unitFillColour;
-						canvasContext.fillRect(0,0,width*unit,height*unit);
-
-						//vertical grid lines
-						for (var x=0.5; x < (width*unit)+unit; x+=unit)
-						{
-							canvasContext.moveTo(x, 0);
-							canvasContext.lineTo(x, height*unit);
-						}
-						//horizontal grid lines
-						for (var y=0.5; y < (height*unit)+unit; y+=unit)
-						{
-							canvasContext.moveTo(0, y);
-							canvasContext.lineTo(width*unit, y);
-						}
-						canvasContext.strokeStyle=unitBorderColour;
-						canvasContext.stroke();
-
-						//upper touchline
-						canvasContext.beginPath();
-						canvasContext.moveTo(0, 1*unit);
-						canvasContext.lineTo(width*unit, 1*unit);
-						canvasContext.strokeStyle=boundaryLineColour;
-						canvasContext.stroke();
-
-						//halfway line
-						canvasContext.beginPath();
-						canvasContext.moveTo(0, (height*unit)/2);
-						canvasContext.lineTo(width*unit, (height*unit)/2);
-						canvasContext.strokeStyle=boundaryLineColour;
-						canvasContext.stroke();
-
-						//lower touchline
-						canvasContext.beginPath();
-						canvasContext.moveTo(0, height*unit-unit);
-						canvasContext.lineTo(width*unit, height*unit-unit);
-						canvasContext.strokeStyle=boundaryLineColour;
-						canvasContext.stroke();
-
-						//left sideline
-						canvasContext.beginPath();
-						canvasContext.moveTo(4*unit, 0);
-						canvasContext.lineTo(4*unit, unit*height);
-						canvasContext.strokeStyle=boundaryLineColour;
-						canvasContext.stroke();
-
-						//right sideline
-						canvasContext.beginPath();
-						canvasContext.moveTo(11*unit, 0);
-						canvasContext.lineTo(11*unit, unit*height);
-						canvasContext.strokeStyle=boundaryLineColour;
-						canvasContext.stroke();
-
-						canvasContext.closePath();
+					//vertical grid lines
+					for (var x=0.5; x < (width*unit)+unit; x+=unit)
+					{
+						canvasContext.moveTo(x, 0);
+						canvasContext.lineTo(x, height*unit);
 					}
+					//horizontal grid lines
+					for (var y=0.5; y < (height*unit)+unit; y+=unit)
+					{
+						canvasContext.moveTo(0, y);
+						canvasContext.lineTo(width*unit, y);
+					}
+					canvasContext.strokeStyle=unitBorderColour;
+					canvasContext.stroke();
+					
+					canvasContext.beginPath();					
+					//upper touchline						
+					canvasContext.moveTo(0, 1*unit);
+					canvasContext.lineTo(width*unit, 1*unit);
+					//halfway line
+					canvasContext.moveTo(0, (height*unit)/2);
+					canvasContext.lineTo(width*unit, (height*unit)/2);
+					//lower touchline
+					canvasContext.moveTo(0, height*unit-unit);
+					canvasContext.lineTo(width*unit, height*unit-unit);
+					//left sideline
+					canvasContext.moveTo(4*unit, 0);
+					canvasContext.lineTo(4*unit, unit*height);
+					//right sideline
+					canvasContext.moveTo(11*unit, 0);
+					canvasContext.lineTo(11*unit, unit*height);					
+					canvasContext.strokeStyle=boundaryLineColour;	
+					canvasContext.stroke();
+					canvasContext.closePath();					
 				},
 				init: function(canvas, canvasContext, gameContext) {
 					this.gameContext=gameContext;
@@ -566,11 +557,8 @@ var BBN = BBN || (function(){
 					this.canvasContext=canvasContext;
 					gameContext.renderQueue.push(gameContext.wrapFunction(this.render, this));
 					$("#BackgroundCheck").click(function(){
-						if ($(this).is(':checked')) {
-							gameContext.options.renderBackground = true;
-						} else {
-							gameContext.options.renderBackground = false;
-						}
+						gameContext.options.renderBackground = $(this).is(':checked');
+						gameContext.render();
 					});
 				}
 			}
