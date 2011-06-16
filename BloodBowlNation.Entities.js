@@ -10,6 +10,8 @@ BBN.Team = function(teamName) {
 	this.name = teamName;
 	this.players = [];
 	this.colours = ["rgba(255,0,0,1)"];
+	this.score = 0;
+	this.reRolls = 0;
 }
 
 BBN.Team.prototype.shout = function() {
@@ -45,6 +47,18 @@ BBN.Player.prototype.pickUpBall = function(ball) {
 	//attempt to pickup
 	ball.inPossessionOf = this;
 	console.log("ball picked up");
+}
+
+BBN.Player.prototype.getTeam = function(teams) {
+	var player, team;	
+	for (team in teams) {
+		for (player in teams[team].players) {		
+			if (teams[team].players[player] === this) {
+				return team;
+			}
+		}
+	}
+	return null;
 }
 
 BBN.Grid = BBN.Grid || function(width, length, pitchUnitSize) {

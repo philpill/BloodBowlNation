@@ -80,6 +80,7 @@ var BBN = BBN || (function(){
 				teams: [],
 				ball: null,
 				selectedPlayer: null,
+				gameTurn: 0,
 				renderObject: function(object, gridX, gridY) {				
 					if (object instanceof BBN.Player) {
 						this.renderPlayer(gridX, gridY);					
@@ -263,16 +264,69 @@ var BBN = BBN || (function(){
 				canvasClickOutOfBounds: function() {
 					this.deselectPlayer();
 				},
+				resolveBlock: function(attacker, defender) {
+					console.log("BLOCK");
+					
+					var grid = this.gameContext.grid;
+					
+					var aLocation, dLocation, aX, aY, dX, dY, iX, iY, jX, jY, kX, kY, pushBackA, pushBackB, pushBackC;
+					
+					aLocation = grid.getEntityLocation(attacker);					
+					dLocation = grid.getEntityLocation(defender);
+					
+					console.log(aLocation);					
+					console.log(dLocation);
+					
+					aX = aLocation[0];
+					aY = aLocation[1];
+					
+					dX = dLocation[0];
+					dY = dLocation[1];
+					
+					jX = aX - 2*(aX - dX);
+					jY = aY - 2*(aY - dY);
+					
+					console.log(jX);
+					console.log(jY);
+					
+					if (dX === jX) {
+						iX = dX - 1;
+						iY = jY;
+						kX = dX + 1;
+						kY = jY;
+					}
+					
+					if (dY === jY) {
+						iX = jX;
+						iY = dY - 1;
+						kX = jX;
+						kY = dY + 1;
+					}
+					
+					console.log("i: [" + iX + ", " + iY + "]");
+					console.log("j: [" + jX + ", " + jY + "]");
+					console.log("k: [" + kX + ", " + kY + "]");
+					
+					//a = 2(a - b) + c
+					
+					//a - 2(a - b) = c
+					//16 - 2(16 - 17) = 18 = 16 - 2(-1) == a < c
+					//9 - 2(9 - 8) = 7 = 9 - 2(1) == a > c
+				},
 				resolvePlayerAction: function(gridEntities, leftGrid, topGrid) {
 				
-					var gridEntity, selectedPlayer = this.selectedPlayer;
+					var gridEntity, selectedPlayer = this.selectedPlayer, grid = this.gameContext.grid;
 				
 					for (gridEntity in gridEntities) {
 				
 						if (gridEntities[gridEntity] instanceof BBN.Player) {
-
+	
 							//if other teamm
-							//BLOCK
+							if (selectedPlayer.getTeam(this.teams) !== gridEntities[gridEntity].getTeam(this.teams)) {
+
+								//BLOCK
+								this.resolveBlock(selectedPlayer, gridEntities[gridEntity]);
+							}
 					
 						} else if (gridEntities[gridEntity] instanceof BBN.Ball) {
 						
@@ -282,7 +336,7 @@ var BBN = BBN || (function(){
 					}
 				},
 				canvasClick: function(e) {
-
+				
 					var that = e.data.that,
 						grid = that.gameContext.grid,
 						position = $("#PitchCanvas").position(),
@@ -378,7 +432,7 @@ var BBN = BBN || (function(){
 					that.gameContext.render();
 				},
 				generateGameTemp: function() {
-					var player, i, gameContext, grid, pitchUnitSize, pitchRow;
+					var player, i, gameContext, pitchUnitSize, pitchRow;
 
 					console.log("generateGameTemp()");
 
@@ -411,7 +465,7 @@ var BBN = BBN || (function(){
 				},
 				dumpPlayersOntoPitchTemp: function() {
 
-					var i, j, x, y, gridX, gridY, teams, gameContext, halfWayY, OffSetX, OffSetY;
+					var i, j, x, y, grid, gridX, gridY, teams, gameContext, halfWayY, OffSetX, OffSetY;
 
 					gameContext = this.gameContext;
 					teams = this.teams;
