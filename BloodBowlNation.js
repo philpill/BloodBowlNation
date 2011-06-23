@@ -392,11 +392,10 @@ var BBN = BBN || (function(){
 						//check to see if there's anything in this space
 						if (!isEmptySquare) {
 							for (gridEntity in gridEntities) {
-								while (that.gameContext.match.selectedPlayer === null) {
-									if (gridEntities[gridEntity] instanceof BBN.Player) {
-										gridEntities[gridEntity].onSelect = that.gameContext.match.playerSelect;
-										that.gameContext.match.selectedPlayer = gridEntities[gridEntity];
-									}
+								if (gridEntities[gridEntity] instanceof BBN.Player) {
+									gridEntities[gridEntity].onSelect = that.gameContext.match.playerSelect;
+									that.gameContext.match.selectedPlayer = gridEntities[gridEntity];
+									break;
 								}
 							}
 						}
