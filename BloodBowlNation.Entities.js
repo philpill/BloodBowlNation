@@ -121,6 +121,7 @@ Object.defineProperties(BBN.Player.prototype, {
 			if (value instanceof String) {
 				this._race = value; 
 			}
+		}
 	},
 	movementAllowance: {
 		get: function() { return this._movementAllowance; },
@@ -177,7 +178,7 @@ Object.defineProperties(BBN.Player.prototype, {
 				this._isKnockedOut = value; 
 			}
 		}
-	},
+	}
 });
 
 
