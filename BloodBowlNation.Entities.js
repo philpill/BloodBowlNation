@@ -278,7 +278,8 @@ BBN.Grid.prototype.moveEntity = function(destinationGridX, destinationGridY, obj
 		//check ball is in possession of player and move
 		if (ball.inPossessionOf === player) {
 			this.removeEntity(ball);	
-			this.insertEntity(destinationGridX, destinationGridY, ball);			
+			this.insertEntity(destinationGridX, destinationGridY, ball);		
+			//check win condition
 		}
 	}
 	this.removeEntity(object);	
