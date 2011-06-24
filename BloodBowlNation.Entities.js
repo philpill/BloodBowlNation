@@ -1,17 +1,17 @@
 BBN.Team = function() {
 
-	this._name = "Unnamed Team";
-	this._players = [];
-	this._colours = ["rgba(255,0,0,1)"];
+	this.name = "Unnamed Team";
+	this.players = [];
+	this.colours = ["rgba(255,0,0,1)"];
 }
 
 BBN.Team = function(teamName) {
 
-	this._name = teamName;
-	this._players = [];
-	this._colours = ["rgba(255,0,0,1)"];
-	this._score = 0;
-	this._reRolls = 0;
+	this.name = teamName;
+	this.players = [];
+	this.colours = ["rgba(255,0,0,1)"];
+	this.score = 0;
+	this.reRolls = 0;
 }
 
 //obsolete
@@ -23,7 +23,7 @@ Object.defineProperties(BBN.Team.prototype, {
 	name: {
 		get: function() { return this._name; },
 		set: function(value) { 
-			if (value instanceof String) {
+			if (typeof value === "string") {
 				this._name = value;
 			}
 		}
@@ -47,7 +47,7 @@ Object.defineProperties(BBN.Team.prototype, {
 	score: {
 		get: function() { return this._score; },
 		set: function(value) { 
-			if (value instanceof Number) {
+			if (typeof value === "number") {
 				this._score = value; 
 			}
 		}
@@ -55,8 +55,8 @@ Object.defineProperties(BBN.Team.prototype, {
 	reRolls: {
 		get: function() { return this._reRolls; },
 		set: function(value) { 
-			if (value instanceof Number) {
-				this.reRolls = value;
+			if (typeof value === "number") {
+				this._reRolls = value;
 			}
 		}
 	}
@@ -64,29 +64,29 @@ Object.defineProperties(BBN.Team.prototype, {
 
 BBN.Player = BBN.Player || function(playerName, playerTeam, playerNumber, playerRace, playerMovement, playerStrength, playerAgility, playerArmourValue) {
 
-	this._name = playerName;	
-	this._colours = playerTeam.colours;
-	this._number = playerNumber;
-	this._team = playerTeam.name;
-	this._race = playerRace;
+	this.name = playerName;	
+	this.colours = playerTeam.colours;
+	this.number = playerNumber;
+	this.team = playerTeam.name;
+	this.race = playerRace;
 	
 	
 	//these values should come from a player type class (e.g. Human Blocker)
-	this._movementAllowance = playerMovement;
-	this._strength = playerStrength;
-	this._agility = playerAgility;
-	this._armourValue = playerArmourValue;
+	this.movementAllowance = playerMovement;
+	this.strength = playerStrength;
+	this.agility = playerAgility;
+	this.armourValue = playerArmourValue;
 	
-	this._isProne = false;
-	this._isStunned = false;
-	this._isKnockedOut = false;
+	this.isProne = false;
+	this.isStunned = false;
+	this.isKnockedOut = false;
 }
 
 Object.defineProperties(BBN.Player.prototype, {
 	name: {
 		get: function() { return this._name; },
 		set: function(value) { 
-			if (value instanceof String) {
+			if (typeof value === "string") {
 				this._name = value;
 			}
 		}
@@ -102,7 +102,7 @@ Object.defineProperties(BBN.Player.prototype, {
 	number: {
 		get: function() { return this._number; },
 		set: function(value) { 
-			if (value instanceof Number) {
+			if (typeof value === "number") {
 				this._number = value; 
 			}
 		}
@@ -118,7 +118,7 @@ Object.defineProperties(BBN.Player.prototype, {
 	race: {
 		get: function() { return this._race; },
 		set: function(value) {
-			if (value instanceof String) {
+			if (typeof value === "string") {
 				this._race = value; 
 			}
 		}
@@ -126,7 +126,7 @@ Object.defineProperties(BBN.Player.prototype, {
 	movementAllowance: {
 		get: function() { return this._movementAllowance; },
 		set: function(value) { 
-			if (value instanceof Number) {
+			if (typeof value === "number") {
 				this._movementAllowance = value; 
 			}
 		}
@@ -134,7 +134,7 @@ Object.defineProperties(BBN.Player.prototype, {
 	strength: {
 		get: function() { return this._strength; },
 		set: function(value) { 
-			if (value instanceof Number) {
+			if (typeof value === "number") {
 				this._strength = value; 
 			}
 		}	
@@ -142,7 +142,7 @@ Object.defineProperties(BBN.Player.prototype, {
 	agility: {
 		get: function() { return this._agility; },
 		set: function(value) { 
-			if (value instanceof Number) {
+			if (typeof value === "number") {
 				this._agility = value; 
 			}
 		}
@@ -150,7 +150,7 @@ Object.defineProperties(BBN.Player.prototype, {
 	armourValue: {
 		get: function() { return this._armourValue; },
 		set: function(value) { 
-			if (value instanceof Number) {
+			if (typeof value === "number") {
 				this._armourValue = value; 
 			}
 		}

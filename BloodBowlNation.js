@@ -112,7 +112,7 @@ var BBN = BBN || (function(){
 						teamColours = player.colours;
 						
 						renderedColours = canvasContext.createLinearGradient(x, y, x+gridUnit/32, y);
-
+						
 						for (i = 0; i < teamColours.length; i++) {
 
 							if (i > 1) { break; } //not sure what to do if there are more than two colours
@@ -152,7 +152,7 @@ var BBN = BBN || (function(){
 						if (player.isProne) {
 							canvasContext.translate(x, y);
 							canvasContext.rotate(90 * Math.PI / 180);
-							canvasContext.fillText(player.number, 0, 0);							
+							canvasContext.fillText(player.number, 0, 0);
 						
 						} else if (player.isStunned) {
 						
@@ -464,7 +464,7 @@ var BBN = BBN || (function(){
 				},
 				dumpPlayersOntoPitchTemp: function() {
 
-					var i, j, x, y, grid, gridX, gridY, teams, gameContext, halfWayY, OffSetX, OffSetY;
+					var i, j, x, y, grid, gridX, gridY, player, teams, gameContext, halfWayY, OffSetX, OffSetY;
 
 					gameContext = this.gameContext;
 					teams = this.teams;
@@ -493,24 +493,37 @@ var BBN = BBN || (function(){
 					if (grid.space[randomX][randomY].length > 0) {
 						//ball's fallen onto a player
 						console.log("ball's landed on " + grid.space[randomX][randomY][0].name + " - do something");
+						player = _castPlayerHelper(grid.space[randomX][randomY])[0];
+						player.pickUpBall(this.ball);
 					}
 
 					grid.insertEntity(randomX, randomY, this.ball);
 				},
 				rehydratePlayers: function() {
-					var i, j, player, teams = [], JSONteams = JSON.parse(localStorage["teams"]);
+					var i, j, player, team, teams = [], JSONteams = JSON.parse(localStorage["teams"]);
 
 					console.log("rehydratePlayers()");
 
 					this.ball = new BBN.Ball();
 
+					//parse team to correct type
+					
 					for (i = 0; i < JSONteams.length; i++) {				
-						teams[i] = new BBN.Team(JSONteams[i].name);				
-						for (j = 0; j < JSONteams[i].players.length; j++) {					
-							player = new BBN.Player(JSONteams[i].players[j].name, JSONteams[i], JSONteams[i].players[j].number);					
-							teams[i].players.push(player);
+						teams[i] = new BBN.Team(JSONteams[i]._name);				
+						for (j = 0; j < JSONteams[i]._players.length; j++) {					
+							player = new BBN.Player(JSONteams[i]._players[j]._name, JSONteams[i], JSONteams[i]._players[j]._number);					
+							teams[i]._players.push(player);
 						}					
-					}				
+					}
+					
+					teams[0].colours = ["rgba(0,0,255,1)","rgba(255,255,255,1)"];
+					
+					for (team in teams) {
+						for (player in teams[team]._players) {
+							teams[team]._players[player]._colours = teams[team].colours;
+						}
+					}
+					
 					this.teams = teams;
 				},
 				init: function(canvas, canvasContext, gameContext) {
@@ -609,9 +622,19 @@ var BBN = BBN || (function(){
 					this.controls.canvas=canvas;
 					this.canvasContext=canvasContext;
 					gameContext.renderQueue.push(gameContext.wrapFunction(this.render, this));
+					
 					$("#BackgroundCheck").click(function(){
 						gameContext.options.renderBackground = $(this).is(':checked');
 						gameContext.render();
+					});
+					
+					if (localStorage["teams"] === null || localStorage["teams"] === undefined ) {
+						$("#ClearCacheLink").css("display", "none");
+					}
+					
+					$("#ClearCacheLink").click(function(){
+						localStorage.removeItem("teams");
+						return false;
 					});
 				}
 			}
