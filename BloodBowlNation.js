@@ -267,9 +267,14 @@ var BBN = BBN || (function(){
 				resolveBlock: function(attacker, defender) {
 					console.log("BLOCK");
 					
+					this.playerPushBack(attacker, defender);
+				},
+				playerPushBack: function(attacker, defender) {
 					var grid = this.gameContext.grid;
 					
-					var aLocation, dLocation, aX, aY, dX, dY, iX, iY, jX, jY, kX, kY, pushBackA, pushBackB, pushBackC;
+					var aLocation, dLocation, aX, aY, dX, dY, iX, iY, jX, jY, kX, kY, pushBackIndex, pushBackLocation, i, gridEntities, isEmptySquare;
+					
+					var pushBackX, pushBackY;
 					
 					aLocation = grid.getEntityLocation(attacker);					
 					dLocation = grid.getEntityLocation(defender);
@@ -303,15 +308,51 @@ var BBN = BBN || (function(){
 						kY = dY + 1;
 					}
 					
+					//work out iX, iY, kX, kY for diagonal blocks
+					
 					console.log("i: [" + iX + ", " + iY + "]");
 					console.log("j: [" + jX + ", " + jY + "]");
 					console.log("k: [" + kX + ", " + kY + "]");
+					
+					pushBackLocation = new Array();
+					
+					pushBackLocation[0] = [iX, iY];
+					pushBackLocation[1] = [jX, jY];
+					pushBackLocation[2] = [kX, kY];
+					
+					
+					//check pushback location for entities
+					for (i = 0; i < 3; i++) {
+					
+						pushBackX = pushBackLocation[i][0];
+						pushBackY = pushBackLocation[i][1];
+					
+						console.log("pushBackX: " + pushBackX);					
+						console.log("pushBackY: " + pushBackY);
+					
+						console.log(grid.space[pushBackX][pushBackY]);
+					
+						gridEntities = _castGridEntityHelper(grid.space[pushBackX][pushBackY]);
+					
+						isEmptySquare = (gridEntities.length < 1);
+					
+						if (!isEmptySquare) {
+							//remove option from array
+						}
+					}
+					
+					pushBackIndex = pushBackLocation[Math.floor(Math.random()*3)];
+					
+					console.log(pushBackIndex);
+					
+					grid.moveEntity(pushBackIndex[0], pushBackIndex[1], defender);					
+					grid.moveEntity(dLocation[0], dLocation[1], attacker);
 					
 					//a = 2(a - b) + c
 					
 					//a - 2(a - b) = c
 					//16 - 2(16 - 17) = 18 = 16 - 2(-1) == a < c
-					//9 - 2(9 - 8) = 7 = 9 - 2(1) == a > c
+					//9 - 2(9 - 8) = 7 = 9 - 2(1) == a > c					
 				},
 				resolvePlayerAction: function(gridEntities, leftGrid, topGrid) {
 				
@@ -330,7 +371,7 @@ var BBN = BBN || (function(){
 					
 						} else if (gridEntities[gridEntity] instanceof BBN.Ball) {
 						
-							grid.moveEntity(leftGrid, topGrid, selectedPlayer)
+							grid.moveEntity(leftGrid, topGrid, selectedPlayer);
 							selectedPlayer.pickUpBall(gridEntities[gridEntity]);
 						}
 					}
