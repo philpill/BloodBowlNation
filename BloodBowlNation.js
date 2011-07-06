@@ -44,6 +44,9 @@ var BBN = BBN || (function(){
 			this.pitchCanvasContext = this.pitchCanvas.getContext("2d");
 			this.game.init(this.canvas, this.canvasContext, this.pitchCanvas, this.pitchCanvasContext);
 		},
+		browserCompatibilityCheck() {
+		
+		},
 		game: {
 			pitchUnitSize: 20,
 			canvasHeight: 26,
@@ -308,7 +311,7 @@ var BBN = BBN || (function(){
 						kY = dY + 1;
 					}
 					
-					//work out iX, iY, kX, kY for diagonal blocks
+					//TODO: work out iX, iY, kX, kY for diagonal blocks
 					
 					console.log("i: [" + iX + ", " + iY + "]");
 					console.log("j: [" + jX + ", " + jY + "]");
@@ -376,6 +379,12 @@ var BBN = BBN || (function(){
 						}
 					}
 				},
+				effectPlayerAction: function() {
+							
+				},
+				activateEntity: function() {
+				
+				},
 				canvasClick: function(e) {
 				
 					var that = e.data.that,
@@ -393,7 +402,6 @@ var BBN = BBN || (function(){
 						isOutOfBounds, 
 						isWithinMovementLimit, 
 						isPlayerSelected, 
-						player, 
 						gridEntities, 
 						gridEntity;
 
@@ -402,7 +410,7 @@ var BBN = BBN || (function(){
 
 					isOutOfBounds = (leftGrid>=grid.space.length || topGrid>=grid.space[0].length || leftGrid < 0 || topGrid < 0);
 
-					isPlayerSelected = (selectedPlayer !== null);
+					isPlayerSelected = (selectedPlayer !== null && selectedPlayer !== undefined);
 					
 					if (isOutOfBounds) {					
 						that.canvasClickOutOfBounds();						
@@ -412,9 +420,11 @@ var BBN = BBN || (function(){
 					gridEntities = _castGridEntityHelper(grid.space[leftGrid][topGrid]);
 					
 					isEmptySquare = (gridEntities.length < 1);
-					
+										
 					//check for playerSelected
 					if (isPlayerSelected) {
+					
+						//that.effectPlayerAction();
 					
 						selectedPlayerLocation = grid.getEntityLocation(selectedPlayer);
 						
@@ -431,6 +441,9 @@ var BBN = BBN || (function(){
 					} else {
 						//no player selected
 						//check to see if there's anything in this space
+						
+						//that.activateEntity();
+						
 						if (!isEmptySquare) {
 							for (gridEntity in gridEntities) {
 								if (gridEntities[gridEntity] instanceof BBN.Player) {

@@ -3,8 +3,8 @@
 <head>
 	<meta charset="utf-8" />
 	<title>Blood Bowl Nation</title>
-	<script src="jquery-1.6.1.min.js"></script>
-	<script src="modernizr-2.0.js"></script>
+	<script src="jquery-1.6.2.min.js"></script>
+	<script src="modernizr-2.0.6.js"></script>
 	<script src="BloodBowlNation.js"></script>
 	<script src="BloodBowlNation.Entities.js"></script>	
 	<link rel="stylesheet" href="reset.css" />
@@ -18,8 +18,16 @@
 </header>
 <input type="checkbox" id="BackgroundCheck" />Background
 <a id="ClearCacheLink" href="#">Clear Cache</a>
-<canvas id="PitchCanvas" width="600" height="600"></canvas>
-<canvas id="GameCanvas" width="600" height="600"></canvas>
+<section>
+	<canvas id="PitchCanvas" width="600" height="600"></canvas>
+	<canvas id="GameCanvas" width="600" height="600"></canvas>
+</section>
+<aside>
+	<article>
+		<p>Firefox 3.x no longer supported to due use of <a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object/defineProperties">Object.defineProperties()</a></p>
+		<time datetime="2009-07-06" pubdate>6th July 2011</time>
+	</article>
+</aside>
 <footer></footer>
 </div>
 <script>

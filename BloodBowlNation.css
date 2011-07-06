@@ -1,7 +1,8 @@
 html { font: 62.5% tahoma, sans-serif }
 body {}
 h1 { font-size: 2em; line-height: 2em; }
+footer { clear: both; }
 
 #Container { margin: 20px 50px; position: relative; }
-#PitchCanvas { border: solid 1px #efefef; float: left; position: absolute; top: 100px; left: 10px; z-index: 0; }
-#GameCanvas { border: solid 1px #efefef; float: left; position: absolute; top: 100px; left: 10px; z-index: 1; }
+#PitchCanvas { border: solid 1px #efefef; position: absolute; top: 100px; left: 10px; z-index: 0; }
+#GameCanvas { border: solid 1px #efefef; position: absolute; top: 100px; left: 10px; z-index: 1; }
