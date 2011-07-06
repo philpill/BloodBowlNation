@@ -1,8 +1,22 @@
-html { font: 62.5% tahoma, sans-serif }
+html { font: 62.5% tahoma, sans-serif; color: #333; }
 body {}
 h1 { font-size: 2em; line-height: 2em; }
 footer { clear: both; }
 
 #Container { margin: 20px 50px; position: relative; }
-#PitchCanvas { border: solid 1px #efefef; position: absolute; top: 100px; left: 10px; z-index: 0; }
-#GameCanvas { border: solid 1px #efefef; position: absolute; top: 100px; left: 10px; z-index: 1; }
+#DebugControls { display: block; margin: 10px; }
+#Canvases { width: 600px; float: left; position: relative; }
+#PitchCanvas { border: solid 1px #efefef; z-index: 0; }
+#GameCanvas { border: solid 1px #efefef; position: absolute; top: 0px; left: 0px; z-index: 1; }
+
+
+#DevNotes { width: 250px; float: left; border: solid 1px #efefef; border-left: 0 none; padding: 10px; }
+#DevNotes header { padding: 0 0 10px 0; border-bottom: solid 1px #efefef; text-transform: uppercase; font-size: 1em; line-height: 1em; display: block; margin: 0 0 10px; }
+#DevNotes article { border-bottom: solid 1px #efefef; margin: 0 0 10px; padding: 0 10px 10px; }
+#DevNotes article p { font-size: 1.2em; line-height: 1.4em; margin: 0 0 10px;  }
+#DevNotes article time { display: block; color: #999; }
+
+
+
+
+
