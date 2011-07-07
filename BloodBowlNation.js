@@ -36,6 +36,12 @@ var BBN = BBN || (function(){
 		canvas: null,
 		canvasContext: null,
 		init: function() {
+		
+			if (!this.testBrowserRequirements()) {
+				console.log("Browser incompatible");
+				return;
+			}
+		
 			this.pitchCanvas = document.getElementById("PitchCanvas");
 			this.pitchCanvas.reset = function() { this.width = this.width; } //this way of resetting the canvas is stupid
 			this.canvas = document.getElementById("GameCanvas");
@@ -43,6 +49,13 @@ var BBN = BBN || (function(){
 			this.canvasContext = this.canvas.getContext("2d");
 			this.pitchCanvasContext = this.pitchCanvas.getContext("2d");
 			this.game.init(this.canvas, this.canvasContext, this.pitchCanvas, this.pitchCanvasContext);
+		},
+		testBrowserRequirements: function() {
+			if (Object.defineProperties === undefined) {
+				return false;
+			}
+		
+			return true;
 		},
 		game: {
 			pitchUnitSize: 20,
@@ -308,7 +321,7 @@ var BBN = BBN || (function(){
 						kY = dY + 1;
 					}
 					
-					//work out iX, iY, kX, kY for diagonal blocks
+					//TODO: work out iX, iY, kX, kY for diagonal blocks
 					
 					console.log("i: [" + iX + ", " + iY + "]");
 					console.log("j: [" + jX + ", " + jY + "]");
@@ -376,14 +389,19 @@ var BBN = BBN || (function(){
 						}
 					}
 				},
+				effectPlayerAction: function() {
+							
+				},
+				activateEntity: function() {
+				
+				},
 				canvasClick: function(e) {
 				
 					var that = e.data.that,
 						grid = that.gameContext.grid,
-						position = $("#PitchCanvas").position(),
-						parentPosition = $("#Container").offset(),
-						left = e.pageX - position.left - parentPosition.left,
-						top = e.pageY - position.top - parentPosition.top,
+						position = $("#PitchCanvas").offset(),
+						left = e.pageX - position.left,
+						top = e.pageY - position.top,
 						leftGrid = grid.getGridX(left),
 						topGrid = grid.getGridY(top);
 
@@ -393,7 +411,6 @@ var BBN = BBN || (function(){
 						isOutOfBounds, 
 						isWithinMovementLimit, 
 						isPlayerSelected, 
-						player, 
 						gridEntities, 
 						gridEntity;
 
@@ -402,7 +419,7 @@ var BBN = BBN || (function(){
 
 					isOutOfBounds = (leftGrid>=grid.space.length || topGrid>=grid.space[0].length || leftGrid < 0 || topGrid < 0);
 
-					isPlayerSelected = (selectedPlayer !== null);
+					isPlayerSelected = (selectedPlayer !== null && selectedPlayer !== undefined);
 					
 					if (isOutOfBounds) {					
 						that.canvasClickOutOfBounds();						
@@ -412,9 +429,11 @@ var BBN = BBN || (function(){
 					gridEntities = _castGridEntityHelper(grid.space[leftGrid][topGrid]);
 					
 					isEmptySquare = (gridEntities.length < 1);
-					
+										
 					//check for playerSelected
 					if (isPlayerSelected) {
+					
+						//that.effectPlayerAction();
 					
 						selectedPlayerLocation = grid.getEntityLocation(selectedPlayer);
 						
@@ -431,6 +450,9 @@ var BBN = BBN || (function(){
 					} else {
 						//no player selected
 						//check to see if there's anything in this space
+						
+						//that.activateEntity();
+						
 						if (!isEmptySquare) {
 							for (gridEntity in gridEntities) {
 								if (gridEntities[gridEntity] instanceof BBN.Player) {
@@ -449,17 +471,16 @@ var BBN = BBN || (function(){
 						unit = that.gameContext.pitchUnitSize,
 						canvasContext = that.canvasContext,
 						canvas = that.canvas,
-						position = $("#PitchCanvas").position(),
-						parentPosition = $("#Container").offset(),
-						left = e.pageX - position.left - parentPosition.left,
-						top = e.pageY - position.top - parentPosition.top,
+						position = $("#PitchCanvas").offset(),
+						left = e.pageX - position.left,
+						top = e.pageY - position.top,
 						leftGridRender = Math.ceil(left/unit) * unit - unit,
 						topGridRender = Math.ceil(top/unit) * unit - unit,
 						leftGrid = Math.floor(left/unit),
 						topGrid = Math.floor(top/unit),
 						gridCursorFillStyle = "rgba(0,0,0,0.7)",
 						isOutOfBounds = (leftGrid>=grid.space.length || topGrid>=grid.space[0].length || leftGrid < 0 || topGrid < 0);
-
+						
 					canvas.reset();
 
 					if (!isOutOfBounds) {

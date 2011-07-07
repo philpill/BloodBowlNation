@@ -3,12 +3,12 @@
 <head>
 	<meta charset="utf-8" />
 	<title>Blood Bowl Nation</title>
-	<script src="jquery-1.6.1.min.js"></script>
-	<script src="modernizr-2.0.js"></script>
-	<script src="BloodBowlNation.js"></script>
-	<script src="BloodBowlNation.Entities.js"></script>	
 	<link rel="stylesheet" href="reset.css" />
 	<link rel="stylesheet" href="BloodBowlNation.css" />
+	<script src="jquery-1.6.2.min.js"></script>
+	<script src="modernizr.js"></script>
+	<script src="BloodBowlNation.js"></script>
+	<script src="BloodBowlNation.Entities.js"></script>
 	<link rel="icon" type="image/png" href="favicon.png" />
 </head>
 <body>
@@ -16,14 +16,30 @@
 <header>
 	<h1>Blood Bowl Nation</h1>
 </header>
+<section id="DebugControls">
 <input type="checkbox" id="BackgroundCheck" />Background
 <a id="ClearCacheLink" href="#">Clear Cache</a>
-<canvas id="PitchCanvas" width="600" height="600"></canvas>
-<canvas id="GameCanvas" width="600" height="600"></canvas>
+</section>
+<section id="Canvases">
+	<canvas id="PitchCanvas" width="600" height="600"></canvas>
+	<canvas id="GameCanvas" width="600" height="600"></canvas>
+</section>
+<aside id="DevNotes">
+	<header>
+		<h3>Dev Notes</h3>
+	</header>
+	<article>
+		<p>Modernizr seems like more trouble than it's worth.</p>
+		<p>Firefox 3.x no longer supported due to use of <a href="https://developer.mozilla.org/en/JavaScript/Reference/Global_Objects/Object/defineProperties">Object.defineProperties()</a></p>
+		<time datetime="2009-07-06" pubdate>6th July 2011</time>
+	</article>
+</aside>
 <footer></footer>
 </div>
 <script>
-$(BBN.init());
+
+	$(BBN.init());
+
 </script>
 </body>
 </html>
