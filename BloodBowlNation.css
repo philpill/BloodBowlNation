@@ -1,17 +1,22 @@
-html { font: 62.5% tahoma, sans-serif; color: #333; }
+html { font: 62.5% tahoma, sans-serif; color: #666; }
 body {}
-h1 { font-size: 2em; line-height: 2em; }
-footer { clear: both; }
+h1 { font-family: 'Covered By Your Grace', arial, serif; font-size: 3em; line-height: 2em; }
+footer { clear: both; padding: 10px 0; }
+a { color: #999; text-decoration: none; border-bottom: solid 1px #ddd; }
+a:visited { color: #999; }
+a:hover { color: #f00; border-bottom: solid 1px #f00;  }
 
 #Container { margin: 20px 50px; position: relative; }
-#DebugControls { display: block; margin: 10px; }
-#Canvases { width: 600px; float: left; position: relative; }
-#PitchCanvas { border: solid 1px #efefef; z-index: 0; }
-#GameCanvas { border: solid 1px #efefef; position: absolute; top: 0px; left: 0px; z-index: 1; }
+#Canvases { float: left; position: relative; padding: 10px; border: solid 1px #efefef; }
+#PitchCanvas { z-index: 0; }
+#GameCanvas { position: absolute; top: 10px; left: 10px; z-index: 1; }
 
-
-#DevNotes { width: 250px; float: left; border: solid 1px #efefef; border-left: 0 none; padding: 10px; }
-#DevNotes header { padding: 0 0 10px 0; border-bottom: solid 1px #efefef; text-transform: uppercase; font-size: 1em; line-height: 1em; display: block; margin: 0 0 10px; }
+#MainAside { float: left; }
+#MainAside header { padding: 0 0 10px 0; border-bottom: solid 1px #efefef; text-transform: uppercase; font-size: 1em; line-height: 1em; display: block; margin: 0 0 10px; }
+#DebugControls { padding: 10px; clear: right; border-right: solid 1px #efefef; border-bottom: solid 1px #efefef; }
+#DebugControls label { display: block; padding: 10px; }
+#DebugControls a { margin: 10px; }
+#DevNotes { width: 250px; border: solid 1px #efefef; border-left: 0 none; padding: 10px; }
 #DevNotes article { border-bottom: solid 1px #efefef; margin: 0 0 10px; padding: 0 10px 10px; }
 #DevNotes article p { font-size: 1.2em; line-height: 1.4em; margin: 0 0 10px;  }
 #DevNotes article time { display: block; color: #999; }

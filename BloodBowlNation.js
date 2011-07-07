@@ -39,9 +39,9 @@ var BBN = BBN || (function(){
 		
 			if (!this.testBrowserRequirements()) {
 				console.log("Browser incompatible");
-				return;
+				return false;			
 			}
-		
+				
 			this.pitchCanvas = document.getElementById("PitchCanvas");
 			this.pitchCanvas.reset = function() { this.width = this.width; } //this way of resetting the canvas is stupid
 			this.canvas = document.getElementById("GameCanvas");
@@ -51,11 +51,14 @@ var BBN = BBN || (function(){
 			this.game.init(this.canvas, this.canvasContext, this.pitchCanvas, this.pitchCanvasContext);
 		},
 		testBrowserRequirements: function() {
+		
+			var isMinimumRequirementMet = true;
+		
 			if (Object.defineProperties === undefined) {
-				return false;
+				isMinimumRequirementMet =  false;
 			}
 		
-			return true;
+			return isMinimumRequirementMet;
 		},
 		game: {
 			pitchUnitSize: 20,
@@ -64,6 +67,14 @@ var BBN = BBN || (function(){
 			grid: null,
 			init: function(canvas, canvasContext, pitchCanvas, pitchCanvasContext) {
 				var i, j;	
+				
+				if (localStorage["options"] !== undefined && localStorage["options"] !== null) {
+						
+					this.options = JSON.parse(localStorage["options"]);
+				}
+										
+				$("#BackgroundCheck").prop("checked", this.options.renderBackground);
+				
 				this.grid = new BBN.Grid(this.canvasWidth, this.canvasHeight, this.pitchUnitSize);
 				this.pitch.init(pitchCanvas, pitchCanvasContext, this);
 				this.match.init(canvas, canvasContext, this);
@@ -488,7 +499,7 @@ var BBN = BBN || (function(){
 						canvasContext.fillStyle = gridCursorFillStyle;
 						canvasContext.fillRect(leftGridRender, topGridRender, unit, unit);
 						canvasContext.closePath();
-					}					
+					}
 					
 					that.gameContext.render();
 				},
@@ -634,47 +645,50 @@ var BBN = BBN || (function(){
 						renderBackground = gameContext.options.renderBackground;
 
 					pitchImage.src = this.backgroundImage;
-					
-					canvas.reset();
-					
-					if (renderBackground) {							
-						canvasContext.drawImage(pitchImage, 0, 0, unit*width, unit*height);						
-					}
 
-					//vertical grid lines
-					for (var x=0.5; x < (width*unit)+unit; x+=unit)
-					{
-						canvasContext.moveTo(x, 0);
-						canvasContext.lineTo(x, height*unit);
-					}
-					//horizontal grid lines
-					for (var y=0.5; y < (height*unit)+unit; y+=unit)
-					{
-						canvasContext.moveTo(0, y);
-						canvasContext.lineTo(width*unit, y);
-					}
-					canvasContext.strokeStyle=unitBorderColour;
-					canvasContext.stroke();
+					pitchImage.onload = function() {
 					
-					canvasContext.beginPath();					
-					//upper touchline						
-					canvasContext.moveTo(0, 1*unit);
-					canvasContext.lineTo(width*unit, 1*unit);
-					//halfway line
-					canvasContext.moveTo(0, (height*unit)/2);
-					canvasContext.lineTo(width*unit, (height*unit)/2);
-					//lower touchline
-					canvasContext.moveTo(0, height*unit-unit);
-					canvasContext.lineTo(width*unit, height*unit-unit);
-					//left sideline
-					canvasContext.moveTo(4*unit, 0);
-					canvasContext.lineTo(4*unit, unit*height);
-					//right sideline
-					canvasContext.moveTo(11*unit, 0);
-					canvasContext.lineTo(11*unit, unit*height);					
-					canvasContext.strokeStyle=boundaryLineColour;	
-					canvasContext.stroke();
-					canvasContext.closePath();					
+						canvas.reset();
+					
+						if (renderBackground) {	
+							canvasContext.drawImage(pitchImage, 0, 0, unit*width, unit*height);						
+						}
+
+						//vertical grid lines
+						for (var x=0.5; x < (width*unit)+unit; x+=unit)
+						{
+							canvasContext.moveTo(x, 0);
+							canvasContext.lineTo(x, height*unit);
+						}
+						//horizontal grid lines
+						for (var y=0.5; y < (height*unit)+unit; y+=unit)
+						{
+							canvasContext.moveTo(0, y);
+							canvasContext.lineTo(width*unit, y);
+						}
+						canvasContext.strokeStyle=unitBorderColour;
+						canvasContext.stroke();
+						
+						canvasContext.beginPath();					
+						//upper touchline						
+						canvasContext.moveTo(0, 1*unit);
+						canvasContext.lineTo(width*unit, 1*unit);
+						//halfway line
+						canvasContext.moveTo(0, (height*unit)/2);
+						canvasContext.lineTo(width*unit, (height*unit)/2);
+						//lower touchline
+						canvasContext.moveTo(0, height*unit-unit);
+						canvasContext.lineTo(width*unit, height*unit-unit);
+						//left sideline
+						canvasContext.moveTo(4*unit, 0);
+						canvasContext.lineTo(4*unit, unit*height);
+						//right sideline
+						canvasContext.moveTo(11*unit, 0);
+						canvasContext.lineTo(11*unit, unit*height);					
+						canvasContext.strokeStyle=boundaryLineColour;	
+						canvasContext.stroke();
+						canvasContext.closePath();
+					}									
 				},
 				init: function(canvas, canvasContext, gameContext) {
 					this.gameContext=gameContext;
@@ -684,9 +698,11 @@ var BBN = BBN || (function(){
 					this.controls.canvas=canvas;
 					this.canvasContext=canvasContext;
 					gameContext.renderQueue.push(gameContext.wrapFunction(this.render, this));
-					
-					$("#BackgroundCheck").click(function(){
-						gameContext.options.renderBackground = $(this).is(':checked');
+										
+					$("#BackgroundCheck").click(function(){						
+						var renderBackground = $(this).is(':checked');					
+						gameContext.options.renderBackground = renderBackground;
+						localStorage["options"] = JSON.stringify(gameContext.options);
 						gameContext.render();
 					});
 					
@@ -694,7 +710,7 @@ var BBN = BBN || (function(){
 						$("#ClearCacheLink").css("display", "none");
 					}
 					
-					$("#ClearCacheLink").click(function(){
+					$("#ClearCacheLink").click(function() {
 						localStorage.removeItem("teams");
 						return false;
 					});
