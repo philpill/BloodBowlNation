@@ -40,21 +40,29 @@ var BBN = BBN || (function(){
 			if (!this.testBrowserRequirements()) {
 				console.log("Browser incompatible");
 				return false;			
-			}
+			
+			} else {
+			
+				this.createEntityObjects();
 				
-			this.pitchCanvas = document.getElementById("PitchCanvas");
-			this.pitchCanvas.reset = function() { this.width = this.width; } //this way of resetting the canvas is stupid
-			this.canvas = document.getElementById("GameCanvas");
-			this.canvas.reset = function() { this.width = this.width; } //again, stupid
-			this.canvasContext = this.canvas.getContext("2d");
-			this.pitchCanvasContext = this.pitchCanvas.getContext("2d");
-			this.game.init(this.canvas, this.canvasContext, this.pitchCanvas, this.pitchCanvasContext);
+				this.pitchCanvas = document.getElementById("PitchCanvas");
+				this.pitchCanvas.reset = function() { this.width = this.width; } //this way of resetting the canvas is stupid
+				this.canvas = document.getElementById("GameCanvas");
+				this.canvas.reset = function() { this.width = this.width; } //again, stupid
+				this.canvasContext = this.canvas.getContext("2d");
+				this.pitchCanvasContext = this.pitchCanvas.getContext("2d");
+				this.game.init(this.canvas, this.canvasContext, this.pitchCanvas, this.pitchCanvasContext);
+			}
 		},
 		testBrowserRequirements: function() {
 		
 			var isMinimumRequirementMet = true;
 		
 			if (Object.defineProperties === undefined) {
+				isMinimumRequirementMet =  false;
+			}
+			
+			if (!Modernizr.localstorage) {
 				isMinimumRequirementMet =  false;
 			}
 		
@@ -67,12 +75,11 @@ var BBN = BBN || (function(){
 			grid: null,
 			init: function(canvas, canvasContext, pitchCanvas, pitchCanvasContext) {
 				var i, j;	
-				
-				if (localStorage["options"] !== undefined && localStorage["options"] !== null) {
-						
+
+				if (localStorage["options"] !== undefined && localStorage["options"] !== null) {							
 					this.options = JSON.parse(localStorage["options"]);
 				}
-										
+
 				$("#BackgroundCheck").prop("checked", this.options.renderBackground);
 				
 				this.grid = new BBN.Grid(this.canvasWidth, this.canvasHeight, this.pitchUnitSize);
@@ -263,12 +270,23 @@ var BBN = BBN || (function(){
 					
 					x = gridX*gridUnit;
 					y = gridY*gridUnit;
-
+					
+					canvasContext.clearRect(x, y, gridUnit, gridUnit);
+					canvasContext.clearRect(x-gridUnit, y-gridUnit, gridUnit, gridUnit);
+					canvasContext.clearRect(x-gridUnit, y, gridUnit, gridUnit);
+					canvasContext.clearRect(x-gridUnit, y+gridUnit, gridUnit, gridUnit);
+					canvasContext.clearRect(x, y+gridUnit, gridUnit, gridUnit);
+					canvasContext.clearRect(x, y-gridUnit, gridUnit, gridUnit);
+					canvasContext.clearRect(x+gridUnit, y+gridUnit, gridUnit, gridUnit);
+					canvasContext.clearRect(x+gridUnit, y, gridUnit, gridUnit);
+					canvasContext.clearRect(x+gridUnit, y-gridUnit, gridUnit, gridUnit);					
+					
 					//render little square under selected player
 					canvasContext.fillStyle = "rgba(100,170,255,0.5)";
 					canvasContext.fillRect(x, y, gridUnit, gridUnit);
 					canvasContext.stroke();
-
+					canvasContext.closePath();		
+					
 					//render valid movement squares around selected player
 					canvasContext.fillStyle = "rgba(100,170,255,0.5)";
 					canvasContext.fillRect(x-gridUnit, y-gridUnit, gridUnit, gridUnit);
@@ -280,6 +298,7 @@ var BBN = BBN || (function(){
 					canvasContext.fillRect(x+gridUnit, y, gridUnit, gridUnit);
 					canvasContext.fillRect(x+gridUnit, y-gridUnit, gridUnit, gridUnit);
 					canvasContext.stroke();
+					canvasContext.closePath();
 					
 				},
 				deselectPlayer: function() {
