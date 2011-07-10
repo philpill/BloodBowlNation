@@ -24,7 +24,7 @@ aside article time { display: block; color: #999; }
 #DebugControls label { display: block; padding: 0 10px 10px 10px; }
 #DebugControls a { margin: 10px; }
 
-#DevNotes { max-height: 300px; overflow: scroll-y; }
+#DevNotes { max-height: 200px; overflow: auto; }
 
 #GeneralInfo {}
 
