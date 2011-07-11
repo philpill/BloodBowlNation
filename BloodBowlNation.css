@@ -1,6 +1,8 @@
 html { font: 62.5% tahoma, sans-serif; color: #666; }
 body {}
 h1 { font-family: 'Covered By Your Grace', arial, serif; font-size: 3em; line-height: 2em; }
+h1 a { border: none 0; }
+h1 a:hover { border: none 0; color: #999; }
 footer { clear: both; padding: 10px 0; }
 a { color: #999; text-decoration: none; border-bottom: solid 1px #ddd; }
 a:visited { color: #999; }

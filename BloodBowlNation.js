@@ -724,13 +724,10 @@ var BBN = BBN || (function(){
 						localStorage["options"] = JSON.stringify(gameContext.options);
 						gameContext.render();
 					});
-					
-					if (localStorage["teams"] === null || localStorage["teams"] === undefined ) {
-						$("#ClearCacheLink").css("display", "none");
-					}
-					
+										
 					$("#ClearCacheLink").click(function() {
 						localStorage.removeItem("teams");
+						document.location.reload(true);
 						return false;
 					});
 				}
