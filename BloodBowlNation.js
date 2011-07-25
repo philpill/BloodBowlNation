@@ -532,9 +532,6 @@ var BBN = BBN || (function(){
 					var team1 = new BBN.Team("Reikland Reavers");
 					var team2 = new BBN.Team("Orcland Raiders");
 
-					team1.shout();
-					team2.shout();
-
 					team1.colours = ["rgba(0,0,255,1)","rgba(255,255,255,1)"];
 
 					for (i = 0; i < 11; i++) {
@@ -553,6 +550,14 @@ var BBN = BBN || (function(){
 					console.log(this.teams);
 
 					localStorage["teams"] = JSON.stringify(this.teams);
+				},
+				isTouchdown: function() {
+					
+					//if player team == a
+					//and player location == endzone b
+					//return true
+					//else return false
+					
 				},
 				dumpPlayersOntoPitchTemp: function() {
 

@@ -14,13 +14,8 @@ BBN.createEntityObjects = function() {
 		this.colours = ["rgba(255,0,0,1)"];
 		this.score = 0;
 		this.reRolls = 0;
+		this.gridHomeSection = 0;
 	}
-
-	//obsolete
-	this.Team.prototype.shout = function() {
-		console.log(this.name);
-	}
-
 
 	Object.defineProperties(BBN.Team.prototype, {
 		name: {
@@ -62,6 +57,14 @@ BBN.createEntityObjects = function() {
 					this._reRolls = value;
 				}
 			}
+		},
+		gridHomeSection: {
+			get: function() { return this._gridHomeSection; },
+			set: function(value) { 
+				if (typeof value === "number") {
+					this._gridHomeSection = value;
+				}
+			}		
 		}
 	});
 
@@ -219,6 +222,23 @@ BBN.createEntityObjects = function() {
 		}
 	}	
 
+	BBN.Grid.prototype.initialise = function() {
+	
+		//predicates
+		// 0 ~ halfway == home
+		// halfway ~ end == away
+	
+		//allocate areas of grid to teams to define home/away
+		
+			//count number of teams		
+			//divide pitch length by number of teams		
+			//define endzones
+			
+		//define widezone: 4 squares in from each side
+		
+		//define halfway line ... ?
+	}
+	
 	BBN.Grid.prototype.insertEntity = function(gridX, gridY, object) {	
 		try {	
 			if (!object instanceof BBN.Player && !object instanceof BBN.Ball) {			
