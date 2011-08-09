@@ -1,8 +1,11 @@
 ----
 
 Based on [Games Workshop's](http://www.games-workshop.com/gws/home.jsp) [Blood Bowl](http://www.games-workshop.com/gws/catalog/landingArmy.jsp?catId=cat480004a&rootCatGameStyle=)
+
 Github: [Source](https://github.com/philpill/BloodBowlNation)
+
 Blood Bowl: [Living Rulebook v5](http://www.bloodbowlonline.com/LivingRulebook5.pdf)
+
 Questions/comments: bbn@philpill.net
 
 ----
