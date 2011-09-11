@@ -13,6 +13,7 @@ BBN.createEntityObjects = function() {
 		this.players = [];
 		this.colours = ["rgba(255,0,0,1)"];
 		this.score = 0;
+		this.scoreZone = 0;
 		this.reRolls = 0;
 		this.gridHomeSection = 0;
 	}
@@ -47,6 +48,14 @@ BBN.createEntityObjects = function() {
 			set: function(value) { 
 				if (typeof value === "number") {
 					this._score = value; 
+				}
+			}
+		},
+		scoreZone: {
+			get: function() { return this._scoreZone; },
+			set: function(value) {
+				if (typeof value === "number") {
+					this._scoreZone = value;
 				}
 			}
 		},

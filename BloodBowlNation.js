@@ -299,7 +299,6 @@ var BBN = BBN || (function(){
 					canvasContext.fillRect(x+gridUnit, y-gridUnit, gridUnit, gridUnit);
 					canvasContext.stroke();
 					canvasContext.closePath();
-					
 				},
 				deselectPlayer: function() {
 					this.gameContext.match.selectedPlayer = null;
@@ -313,6 +312,9 @@ var BBN = BBN || (function(){
 					this.playerPushBack(attacker, defender);
 				},
 				playerPushBack: function(attacker, defender) {
+				
+					//revisit: bugs
+				
 					var grid = this.gameContext.grid;
 					
 					var aLocation, dLocation, aX, aY, dX, dY, iX, iY, jX, jY, kX, kY, pushBackIndex, pushBackLocation, i, gridEntities, isEmptySquare;
@@ -534,6 +536,10 @@ var BBN = BBN || (function(){
 
 					team1.colours = ["rgba(0,0,255,1)","rgba(255,255,255,1)"];
 
+					//needs 'proper' implementation
+					team1.scoreZone = 0;
+					team2.scoreZone = 25;
+					
 					for (i = 0; i < 11; i++) {
 						player = new BBN.Player("human" + i, team1, i+1);
 						team1.players.push(player);
@@ -608,7 +614,7 @@ var BBN = BBN || (function(){
 					for (i = 0; i < JSONteams.length; i++) {				
 						teams[i] = new BBN.Team(JSONteams[i]._name);				
 						for (j = 0; j < JSONteams[i]._players.length; j++) {					
-							player = new BBN.Player(JSONteams[i]._players[j]._name, JSONteams[i], JSONteams[i]._players[j]._number);					
+							player = new BBN.Player(JSONteams[i]._players[j]._name, JSONteams[i], JSONteams[i]._players[j]._number);
 							teams[i]._players.push(player);
 						}					
 					}
