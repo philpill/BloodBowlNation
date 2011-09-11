@@ -411,6 +411,7 @@ var BBN = BBN || (function(){
 							if (selectedPlayer.getTeam(this.teams) !== gridEntities[gridEntity].getTeam(this.teams)) {
 
 								//BLOCK
+								//need to check is in block zone
 								this.resolveBlock(selectedPlayer, gridEntities[gridEntity]);
 							}
 					
