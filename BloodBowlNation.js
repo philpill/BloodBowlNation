@@ -111,6 +111,7 @@ var BBN = BBN || (function(){
 				teams: [],
 				ball: null,
 				selectedPlayer: null,
+				blockedPlayer: null,
 				gameTurn: 0,
 				renderObject: function(object, gridX, gridY) {				
 					if (object instanceof BBN.Player) {
@@ -233,6 +234,11 @@ var BBN = BBN || (function(){
 					if (this.selectedPlayer !== null) {
 					
 						this.renderSelectedPlayerGrid();
+						
+						if (this.blockedPlayer !== null) {
+						
+							this.renderPushBackSquares();
+						}
 					}
 					
 					for (gridX = 0; gridX < grid.space.length; gridX++) {
@@ -251,12 +257,10 @@ var BBN = BBN || (function(){
 				renderSelectedPlayerGrid: function() {
 					
 					var selectedPlayerLocation, selectedPlayer = this.selectedPlayer;
-					
 					var canvasContext = this.canvasContext;
-					
 					var x, y, gridX, gridY;
-					
 					var grid = this.gameContext.grid, gridUnit = grid.unit;
+					var adjacentSquares, i;
 					
 					if (selectedPlayer === null) {
 						return;
@@ -265,117 +269,115 @@ var BBN = BBN || (function(){
 					selectedPlayerLocation = this.gameContext.grid.getEntityLocation(selectedPlayer);
 
 					gridX = selectedPlayerLocation[0];
-					
 					gridY = selectedPlayerLocation[1];
 					
 					x = gridX*gridUnit;
 					y = gridY*gridUnit;
 					
-					canvasContext.clearRect(x, y, gridUnit, gridUnit);
-					canvasContext.clearRect(x-gridUnit, y-gridUnit, gridUnit, gridUnit);
-					canvasContext.clearRect(x-gridUnit, y, gridUnit, gridUnit);
-					canvasContext.clearRect(x-gridUnit, y+gridUnit, gridUnit, gridUnit);
-					canvasContext.clearRect(x, y+gridUnit, gridUnit, gridUnit);
-					canvasContext.clearRect(x, y-gridUnit, gridUnit, gridUnit);
-					canvasContext.clearRect(x+gridUnit, y+gridUnit, gridUnit, gridUnit);
-					canvasContext.clearRect(x+gridUnit, y, gridUnit, gridUnit);
-					canvasContext.clearRect(x+gridUnit, y-gridUnit, gridUnit, gridUnit);					
+					adjacentSquares = this.getAdjacentSquares(x, y);			
+					
+					//render valid movement squares around selected player
+					canvasContext.fillStyle = "rgba(100,170,255,0.5)";					
+					for (i=0;i<adjacentSquares.length;i++) {
+						canvasContext.fillRect(adjacentSquares[i][0], adjacentSquares[i][1], gridUnit, gridUnit);
+					}					
+					canvasContext.fill();
 					
 					//render little square under selected player
 					canvasContext.fillStyle = "rgba(100,170,255,0.5)";
 					canvasContext.fillRect(x, y, gridUnit, gridUnit);
-					canvasContext.stroke();
-					canvasContext.closePath();		
+					canvasContext.fill();	
+				},
+				getAdjacentSquares: function(x, y) {
+				
+					var grid = this.gameContext.grid, gridUnit = grid.unit;
+				
+					var adjacentSquares = [];
 					
-					//render valid movement squares around selected player
-					canvasContext.fillStyle = "rgba(100,170,255,0.5)";
-					canvasContext.fillRect(x-gridUnit, y-gridUnit, gridUnit, gridUnit);
-					canvasContext.fillRect(x-gridUnit, y, gridUnit, gridUnit);
-					canvasContext.fillRect(x-gridUnit, y+gridUnit, gridUnit, gridUnit);
-					canvasContext.fillRect(x, y+gridUnit, gridUnit, gridUnit);
-					canvasContext.fillRect(x, y-gridUnit, gridUnit, gridUnit);
-					canvasContext.fillRect(x+gridUnit, y+gridUnit, gridUnit, gridUnit);
-					canvasContext.fillRect(x+gridUnit, y, gridUnit, gridUnit);
-					canvasContext.fillRect(x+gridUnit, y-gridUnit, gridUnit, gridUnit);
-					canvasContext.stroke();
-					canvasContext.closePath();
+					// 1 2 3
+					// 4 5 6
+					// 7 8 9
+				
+					adjacentSquares[0] = [x-gridUnit, y-gridUnit];
+					adjacentSquares[1] = [x-gridUnit, y];
+					adjacentSquares[2] = [x-gridUnit, y+gridUnit];
+					
+					adjacentSquares[3] = [x, y+gridUnit];
+					adjacentSquares[4] = [x, y];
+					adjacentSquares[5] = [x, y-gridUnit];
+					
+					adjacentSquares[6] = [x+gridUnit, y+gridUnit];
+					adjacentSquares[7] = [x+gridUnit, y];
+					adjacentSquares[8] = [x+gridUnit, y-gridUnit];
+					
+					return adjacentSquares;
 				},
 				deselectPlayer: function() {
 					this.gameContext.match.selectedPlayer = null;
 				},
+				cancelBlock: function() {
+					this.gameContext.match.blockedPlayer = null;
+				},
 				canvasClickOutOfBounds: function() {
 					this.deselectPlayer();
+					this.cancelBlock();
 				},
 				resolveBlock: function(attacker, defender) {
 					console.log("BLOCK");
 					
-					this.playerPushBack(attacker, defender);
+					this.blockedPlayer = defender;
 				},
-				playerPushBack: function(attacker, defender) {
-				
-					//revisit: bugs
-				
-					var grid = this.gameContext.grid;
+				renderPushBackSquares: function() {
 					
-					var aLocation, dLocation, aX, aY, dX, dY, iX, iY, jX, jY, kX, kY, pushBackIndex, pushBackLocation, i, gridEntities, isEmptySquare;
+					var grid = this.gameContext.grid, gridUnit = grid.unit;
+					var blockedPlayer = this.blockedPlayer, selectedPlayer = this.selectedPlayer;
 					
-					var pushBackX, pushBackY;
+					var canvasContext = this.canvasContext;
 					
-					aLocation = grid.getEntityLocation(attacker);					
-					dLocation = grid.getEntityLocation(defender);
+					var grid = this.gameContext.grid, aLocation, dLocation, pushBackIndex, pushBackLocation;
 					
-					console.log(aLocation);					
-					console.log(dLocation);
+					var i, x, y;
 					
-					aX = aLocation[0];
-					aY = aLocation[1];
+					aLocation = grid.getEntityLocation(selectedPlayer);					
+					dLocation = grid.getEntityLocation(blockedPlayer);
 					
-					dX = dLocation[0];
-					dY = dLocation[1];
+					pushBackLocation = this.getPushBackSquares(aLocation, dLocation);
 					
-					jX = aX - 2*(aX - dX);
-					jY = aY - 2*(aY - dY);
+					pushBackLocation = this.filterValidPushBack(pushBackLocation);
 					
-					console.log(jX);
-					console.log(jY);
+					for (i=0;i<pushBackLocation.length;i++) {
 					
-					if (dX === jX) {
-						iX = dX - 1;
-						iY = jY;
-						kX = dX + 1;
-						kY = jY;
+						x = pushBackLocation[i][0] * gridUnit;
+						y = pushBackLocation[i][1] * gridUnit;
+					
+						canvasContext.clearRect(x, y, gridUnit, gridUnit);
 					}
 					
-					if (dY === jY) {
-						iX = jX;
-						iY = dY - 1;
-						kX = jX;
-						kY = dY + 1;
+					canvasContext.beginPath();
+					canvasContext.fillStyle   = 'rgba(255,170,100,0.5)'; // pink
+					
+					for (i=0;i<pushBackLocation.length;i++) {
+					
+						x = pushBackLocation[i][0] * gridUnit;
+						y = pushBackLocation[i][1] * gridUnit;
+						;
+						//highlight each square
+						canvasContext.fillRect(x, y, gridUnit, gridUnit);
+						
 					}
-					
-					//TODO: work out iX, iY, kX, kY for diagonal blocks
-					
-					console.log("i: [" + iX + ", " + iY + "]");
-					console.log("j: [" + jX + ", " + jY + "]");
-					console.log("k: [" + kX + ", " + kY + "]");
-					
-					pushBackLocation = new Array();
-					
-					pushBackLocation[0] = [iX, iY];
-					pushBackLocation[1] = [jX, jY];
-					pushBackLocation[2] = [kX, kY];
-					
-					
+					canvasContext.closePath();
+				},
+				filterValidPushBack: function(pushBackLocation) {
+				
+					var grid = this.gameContext.grid, gridEntities;
+				
+					var pushBackX, pushBackY, i;	
+				
 					//check pushback location for entities
-					for (i = 0; i < 3; i++) {
+					for (i = 0; i < pushBackLocation.length; i++) {
 					
 						pushBackX = pushBackLocation[i][0];
 						pushBackY = pushBackLocation[i][1];
-					
-						console.log("pushBackX: " + pushBackX);					
-						console.log("pushBackY: " + pushBackY);
-					
-						console.log(grid.space[pushBackX][pushBackY]);
 					
 						gridEntities = _castGridEntityHelper(grid.space[pushBackX][pushBackY]);
 					
@@ -386,18 +388,63 @@ var BBN = BBN || (function(){
 						}
 					}
 					
-					pushBackIndex = pushBackLocation[Math.floor(Math.random()*3)];
+					return pushBackLocation;
+				},
+				getPushBackSquares: function(aLocation, dLocation) {
 					
-					console.log(pushBackIndex);
+					var grid = this.gameContext.grid;
 					
-					grid.moveEntity(pushBackIndex[0], pushBackIndex[1], defender);					
-					grid.moveEntity(dLocation[0], dLocation[1], attacker);
+					var aX, aY, dX, dY, iX, iY, jX, jY, kX, kY, pushBackIndex, pushBackLocation, isEmptySquare;
 					
+					aX = aLocation[0];
+					aY = aLocation[1];
+					
+					dX = dLocation[0];
+					dY = dLocation[1];
+					
+					jX = aX - 2*(aX - dX); //direct tackles
+					jY = aY - 2*(aY - dY);
+					
+					if (dX === jX) { 
+					//horizontal tackle
+						iX = dX - 1;
+						iY = jY;
+						kX = dX + 1;
+						kY = jY;
+						
+					} else if (dY === jY) { 
+					//vertical tackle
+						iX = jX;
+						iY = dY - 1;
+						kX = jX;
+						kY = dY + 1;
+					
+					} else {
+					//diagonal tackle
+						iX = dX;
+						iY = aY - 2*(aY - dY);
+						jX = dX + 1;
+						jY = dY + 1;
+						kX = aX - 2*(aX - dX);
+						kY = dY;
+					}
+					
+					pushBackLocation = new Array();
+					
+					pushBackLocation[0] = [iX, iY];
+					pushBackLocation[1] = [jX, jY];
+					pushBackLocation[2] = [kX, kY];
+										
+					return pushBackLocation;
+					
+					//formula to determine diagonal tackle
+					//a = (1/(a+b)) - b
+					
+					//formula to work out three straight gridsquares
 					//a = 2(a - b) + c
-					
 					//a - 2(a - b) = c
 					//16 - 2(16 - 17) = 18 = 16 - 2(-1) == a < c
-					//9 - 2(9 - 8) = 7 = 9 - 2(1) == a > c					
+					//9 - 2(9 - 8) = 7 = 9 - 2(1) == a > c
 				},
 				resolvePlayerAction: function(gridEntities, leftGrid, topGrid) {
 				
@@ -421,12 +468,6 @@ var BBN = BBN || (function(){
 							selectedPlayer.pickUpBall(gridEntities[gridEntity]);
 						}
 					}
-				},
-				effectPlayerAction: function() {
-							
-				},
-				activateEntity: function() {
-				
 				},
 				canvasClick: function(e) {
 				
