@@ -112,6 +112,7 @@ var BBN = BBN || (function(){
 				ball: null,
 				selectedPlayer: null,
 				blockedPlayer: null,
+				state: null, //0 - open, 1 - playerSelected, 2 - blocking
 				gameTurn: 0,
 				renderObject: function(object, gridX, gridY) {				
 					if (object instanceof BBN.Player) {
@@ -336,7 +337,7 @@ var BBN = BBN || (function(){
 					
 					var grid = this.gameContext.grid, aLocation, dLocation, pushBackIndex, pushBackLocation;
 					
-					var i, x, y;
+					var i;
 					
 					aLocation = grid.getEntityLocation(selectedPlayer);					
 					dLocation = grid.getEntityLocation(blockedPlayer);
@@ -344,28 +345,18 @@ var BBN = BBN || (function(){
 					pushBackLocation = this.getPushBackSquares(aLocation, dLocation);
 					
 					pushBackLocation = this.filterValidPushBack(pushBackLocation);
-					
-					for (i=0;i<pushBackLocation.length;i++) {
-					
-						x = pushBackLocation[i][0] * gridUnit;
-						y = pushBackLocation[i][1] * gridUnit;
-					
-						canvasContext.clearRect(x, y, gridUnit, gridUnit);
-					}
-					
-					canvasContext.beginPath();
+
 					canvasContext.fillStyle   = 'rgba(255,170,100,0.5)'; // pink
 					
 					for (i=0;i<pushBackLocation.length;i++) {
 					
-						x = pushBackLocation[i][0] * gridUnit;
-						y = pushBackLocation[i][1] * gridUnit;
-						;
 						//highlight each square
-						canvasContext.fillRect(x, y, gridUnit, gridUnit);
-						
+						canvasContext.fillRect(pushBackLocation[i][0] * gridUnit, pushBackLocation[i][1] * gridUnit, gridUnit, gridUnit);
 					}
-					canvasContext.closePath();
+					
+					//render little square under blocked player
+					canvasContext.fillStyle = "rgba(255,170,100,0.5)";
+					canvasContext.fillRect(dLocation[0] * gridUnit, dLocation[1] * gridUnit, gridUnit, gridUnit);
 				},
 				filterValidPushBack: function(pushBackLocation) {
 				
@@ -423,8 +414,8 @@ var BBN = BBN || (function(){
 					//diagonal tackle
 						iX = dX;
 						iY = aY - 2*(aY - dY);
-						jX = dX + 1;
-						jY = dY + 1;
+						jX = -1*(aX) + 2*(dX);
+						jY = -1*(aY) + 2*(dY);
 						kX = aX - 2*(aX - dX);
 						kY = dY;
 					}
