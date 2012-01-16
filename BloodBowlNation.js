@@ -378,6 +378,8 @@ var BBN = BBN || (function(){
 						
 						canvasContext.strokeRect(x, y, gridUnit, gridUnit);
 						
+						//BUG: check for ball - is valid pushback square
+						
 						if (gridEntities.length === 0) {
 							//highlight each square
 							canvasContext.fillRect(x, y, gridUnit, gridUnit);
