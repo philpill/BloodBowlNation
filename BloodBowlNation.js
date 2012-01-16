@@ -275,19 +275,36 @@ var BBN = BBN || (function(){
 					x = gridX*gridUnit;
 					y = gridY*gridUnit;
 					
+					//render little square under selected player
+					canvasContext.fillStyle = "rgba(100,170,255,0.5)";
+					canvasContext.fillRect(x, y, gridUnit, gridUnit);
+					canvasContext.fill();
+					
 					adjacentSquares = this.getAdjacentSquares(x, y);			
 					
 					//render valid movement squares around selected player
 					canvasContext.fillStyle = "rgba(100,170,255,0.5)";					
+					canvasContext.strokeStyle = "rgba(100,170,255,1)";
+					
 					for (i=0;i<adjacentSquares.length;i++) {
-						canvasContext.fillRect(adjacentSquares[i][0], adjacentSquares[i][1], gridUnit, gridUnit);
+					
+						x = adjacentSquares[i][0];
+						y = adjacentSquares[i][1];
+					
+						gridX = x/gridUnit;
+						gridY = y/gridUnit;
+					
+						var gridEntities = _castGridEntityHelper(grid.space[gridX][gridY]);
+						
+						canvasContext.strokeRect(x, y, gridUnit, gridUnit);
+						
+						if (gridEntities.length === 0) {
+							canvasContext.fillRect(x, y, gridUnit, gridUnit);
+						}
 					}					
 					canvasContext.fill();
 					
-					//render little square under selected player
-					canvasContext.fillStyle = "rgba(100,170,255,0.5)";
-					canvasContext.fillRect(x, y, gridUnit, gridUnit);
-					canvasContext.fill();	
+	
 				},
 				getAdjacentSquares: function(x, y) {
 				
@@ -347,11 +364,24 @@ var BBN = BBN || (function(){
 					pushBackLocation = this.filterValidPushBack(pushBackLocation);
 
 					canvasContext.fillStyle   = 'rgba(255,170,100,0.5)'; // pink
+					canvasContext.strokeStyle   = 'rgba(255,170,100,1)';
 					
 					for (i=0;i<pushBackLocation.length;i++) {
 					
-						//highlight each square
-						canvasContext.fillRect(pushBackLocation[i][0] * gridUnit, pushBackLocation[i][1] * gridUnit, gridUnit, gridUnit);
+						var gridX = pushBackLocation[i][0];
+						var gridY = pushBackLocation[i][1];
+					
+						var x = gridX * gridUnit;
+						var y = gridY * gridUnit;
+						
+						var gridEntities = _castGridEntityHelper(grid.space[gridX][gridY]);
+						
+						canvasContext.strokeRect(x, y, gridUnit, gridUnit);
+						
+						if (gridEntities.length === 0) {
+							//highlight each square
+							canvasContext.fillRect(x, y, gridUnit, gridUnit);
+						}
 					}
 					
 					//render little square under blocked player
@@ -501,16 +531,19 @@ var BBN = BBN || (function(){
 						//that.effectPlayerAction();
 					
 						selectedPlayerLocation = grid.getEntityLocation(selectedPlayer);
+						isWithinMovementLimit = (leftGrid <= selectedPlayerLocation[0]+movementLimit && leftGrid >= selectedPlayerLocation[0]-movementLimit) && (topGrid <= selectedPlayerLocation[1]+movementLimit && topGrid >= selectedPlayerLocation[1]-movementLimit);
 						
 						if (isEmptySquare) {
 							//move player
-							isWithinMovementLimit = (leftGrid <= selectedPlayerLocation[0]+movementLimit && leftGrid >= selectedPlayerLocation[0]-movementLimit) && (topGrid <= selectedPlayerLocation[1]+movementLimit && topGrid >= selectedPlayerLocation[1]-movementLimit)
+							
 							if (!isOutOfBounds && isWithinMovementLimit) {
 								grid.moveEntity(leftGrid, topGrid, selectedPlayer)
 								//move ball if in possession
 							}
 						} else {
-							that.resolvePlayerAction(gridEntities, leftGrid, topGrid);
+							if (isWithinMovementLimit) {
+								that.resolvePlayerAction(gridEntities, leftGrid, topGrid);
+							}
 						}
 					} else {
 						//no player selected
