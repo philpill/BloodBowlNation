@@ -64,7 +64,7 @@ var BBN = BBN || (function(){
 				this.gameContext=gameContext;
 				this.unitFillColour="rgba(0,255,0,0)";
 				this.unitBorderColour="rgba(0,0,0,0.1)";
-				this.boundaryLineColour="rgba(255,255,255,0.2)";
+				this.boundaryLineColour="rgba(0,100,0,0.1)";
 				this.pitchStage = pitchStage;
 				this.render();
 			}
