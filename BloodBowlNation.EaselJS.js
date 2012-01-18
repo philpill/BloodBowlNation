@@ -9,7 +9,10 @@ var BBN = BBN || (function(){
 		canvasStage: null,
 		canvasBounds: null,
 		init: function() {
-			console.log('init()');
+			console.log('-- bloodbowlnation --');
+			
+			this.createEntityObjects();
+			
 			pitchCanvas = document.getElementById("PitchCanvas");
 			gameCanvas = document.getElementById("GameCanvas");
 			canvasBounds = new Rectangle();
@@ -83,13 +86,8 @@ var BBN = BBN || (function(){
 			init: function(gameStage) {
 				var i, j;
 			
-				this.grid.space = new Array(this.canvasWidth);
-				for (i = 0; i < this.canvasWidth; i++) {
-					this.grid.space[i] = new Array(this.canvasHeight);
-					for (j = 0; j < this.grid.space[i].length; j++) {
-						this.grid.space[i][j] = [];
-					}
-				}
+				this.grid = this.grid = new BBN.Grid(this.canvasWidth, this.canvasHeight, this.pitchUnitSize);
+				
 				this.gameStage = gameStage;
 			}		
 		}
