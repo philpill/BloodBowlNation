@@ -1,13 +1,12 @@
-BBN.createEntityObjects = function() {
 
-	this.Team = function() {
+if (typeof BBN == "undefined" || !BBN)
+{
+   var BBN = {};
+}
 
-		this.name = "Unnamed Team";
-		this.players = [];
-		this.colours = ["rgba(255,0,0,1)"];
-	}
+(function() {
 
-	this.Team = function(teamName) {
+	BBN.Team = function(teamName) {
 
 		this.name = teamName;
 		this.players = [];
@@ -18,7 +17,7 @@ BBN.createEntityObjects = function() {
 		this.gridHomeSection = 0;
 	}
 
-	Object.defineProperties(BBN.Team.prototype, {
+	BBN.Team.prototype = {
 		name: {
 			get: function() { return this._name; },
 			set: function(value) { 
@@ -75,9 +74,12 @@ BBN.createEntityObjects = function() {
 				}
 			}		
 		}
-	});
+	}
+})();
 
-	BBN.Player = BBN.Player || function(playerName, playerTeam, playerNumber, playerRace, playerMovement, playerStrength, playerAgility, playerArmourValue) {
+(function() {
+
+	BBN.Player = function(playerName, playerTeam, playerNumber, playerRace, playerMovement, playerStrength, playerAgility, playerArmourValue) {
 
 		this.name = playerName;	
 		this.colours = playerTeam.colours;
@@ -98,7 +100,7 @@ BBN.createEntityObjects = function() {
 	}
 
 
-	Object.defineProperties(BBN.Player.prototype, {
+	BBN.Player.prototype = {
 		name: {
 			get: function() { return this._name; },
 			set: function(value) { 
@@ -195,7 +197,7 @@ BBN.createEntityObjects = function() {
 				}
 			}
 		}
-	});
+	}
 
 	BBN.Player.prototype.pickUpBall = function(ball) {
 		
@@ -215,8 +217,11 @@ BBN.createEntityObjects = function() {
 		}
 		return null;
 	}
+})();
 
-	BBN.Grid = BBN.Grid || function(width, length, pitchUnitSize) {
+(function() {
+
+	BBN.Grid = function(width, length, pitchUnitSize) {
 
 		var i, j;
 		this.width = width;
@@ -232,11 +237,11 @@ BBN.createEntityObjects = function() {
 	}	
 
 	BBN.Grid.prototype.initialise = function() {
-	
+
 		//predicates
 		// 0 ~ halfway == home
 		// halfway ~ end == away
-	
+
 		//allocate areas of grid to teams to define home/away
 		
 			//count number of teams		
@@ -247,7 +252,7 @@ BBN.createEntityObjects = function() {
 		
 		//define halfway line ... ?
 	}
-	
+
 	BBN.Grid.prototype.insertEntity = function(gridX, gridY, object) {	
 		try {	
 			if (!object instanceof BBN.Player && !object instanceof BBN.Ball) {			
@@ -334,13 +339,16 @@ BBN.createEntityObjects = function() {
 		if (gridY < 0) { gridY = 0; }  
 		return gridY*this.unit;
 	}
-		
-	BBN.Ball = BBN.Ball || function() {
+})();
+
+(function() {
+
+	BBN.Ball = function() {
 		this.colour = "rgba(255,255,0,1)";
 		this.inPossessionOf = null;
 	}
+})();
 
-}
 
 
 

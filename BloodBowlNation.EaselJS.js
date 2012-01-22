@@ -8,22 +8,39 @@ var BBN = BBN || (function(){
 		pitchStage: null,
 		canvasStage: null,
 		canvasBounds: null,
+		variables: {
+			unitFillColour: "rgba(0,255,0,0)",
+			unitBorderColour: "rgba(0,0,0,0.1)",
+			boundaryLineColour: "rgba(0,100,0,0.1)",
+			pitchBitmapScaleX: 0.435,
+			pitchBitmapScaleY: 0.435,
+			pitchUnitSize: 20,
+			canvasHeight: 26,
+			canvasWidth: 15			
+		},
 		init: function() {
 			console.log('-- bloodbowlnation --');
 			
-			this.createEntityObjects();
-			
 			pitchCanvas = document.getElementById("PitchCanvas");
 			gameCanvas = document.getElementById("GameCanvas");
+			
+			$(gameCanvas).mousemove({that: this}, this.gameCanvasMouseMove);
+			
 			canvasBounds = new Rectangle();
 			canvasBounds.width = gameCanvas.width;
 			canvasBounds.height = gameCanvas.height;
 			gameStage = new Stage(gameCanvas);
 			pitchStage = new Stage(pitchCanvas);
+			
+			gameStage.mouseEventsEnabled = true;
+			
 			this.pitch.init(pitchStage, this.game);
 			this.game.init(gameStage);
 			Ticker.setFPS(30);
 			//Ticker.addListener(window);
+		},
+		gameCanvasMouseMove: function(e) {
+			var that = e.data.that;
 		},
 		pitch: {
 			gameContext: null,
@@ -32,36 +49,39 @@ var BBN = BBN || (function(){
 			boundaryLineColour: null,
 			pitchStage: null,
 			gameContext: null,
+			pitchImage: null,
 			backgroundImage: "Pitch.jpg",
 			render: function() {
-				var gameContext = this.gameContext,
-					canvasContext = this.canvasContext,
+				this.pitchImage = new Image();
+				addEvent(this.pitchImage, "load", this.pitchImageOnload, this);
+				this.pitchImage.src = this.backgroundImage;
+			},
+			pitchImageOnload: function() {
+				var x, y, 
+					pitchBitmap = new Bitmap(this.pitchImage),
+					shape = new Shape(),
+					gameContext = this.gameContext,
 					unit = gameContext.pitchUnitSize,
 					width = gameContext.canvasWidth,
 					height = gameContext.canvasHeight,
 					unitBorderColour = this.unitBorderColour,
-					boundaryLineColour = this.boundaryLineColour,
-					pitchImage = new Image();
-				pitchImage.src = this.backgroundImage;
-				pitchImage.onload = function() {
-					var pitchBitmap = new Bitmap(pitchImage);
-					pitchStage.addChild(pitchBitmap);
-					pitchBitmap.x = 0;
-					pitchBitmap.y = 0;
-					pitchBitmap.scaleX = 0.435;
-					pitchBitmap.scaleY = 0.435;
-					var shape = new Shape();
-					pitchStage.addChild(shape);
-					//vertical grid lines
-					for (var x=0.5; x < (width*unit)+unit; x+=unit) {	
-						shape.graphics.beginStroke(boundaryLineColour).moveTo(x,0).lineTo(x,height*unit).endStroke();
-					}
-					//horizontal grid lines
-					for (var y=0.5; y < (height*unit)+unit; y+=unit) {
-						shape.graphics.beginStroke(boundaryLineColour).moveTo(0,y).lineTo(width*unit,y).endStroke();
-					}
-					pitchStage.update();
+					boundaryLineColour = this.boundaryLineColour;			
+				
+				pitchStage.addChild(pitchBitmap);
+				pitchBitmap.x = 0;
+				pitchBitmap.y = 0;
+				pitchBitmap.scaleX = 0.435;
+				pitchBitmap.scaleY = 0.435;					
+				pitchStage.addChild(shape);
+				//vertical grid lines
+				for (x=0.5; x < (width*unit)+unit; x+=unit) {	
+					shape.graphics.beginStroke(boundaryLineColour).moveTo(x,0).lineTo(x,height*unit).endStroke();
 				}
+				//horizontal grid lines
+				for (y=0.5; y < (height*unit)+unit; y+=unit) {
+					shape.graphics.beginStroke(boundaryLineColour).moveTo(0,y).lineTo(width*unit,y).endStroke();
+				}
+				pitchStage.update();
 			},
 			init: function(pitchStage, gameContext) {
 				this.gameContext=gameContext;
@@ -77,17 +97,10 @@ var BBN = BBN || (function(){
 			canvasHeight: 26,
 			canvasWidth: 15,
 			gameStage: null,
-			grid: {
-				width: this.canvasWidth,					
-				length: this.canvasHeight,
-				unit: this.pitchUnitSize,
-				space: null				
-			},
+			grid: null,
 			init: function(gameStage) {
-				var i, j;
-			
-				this.grid = this.grid = new BBN.Grid(this.canvasWidth, this.canvasHeight, this.pitchUnitSize);
-				
+				var i, j;			
+				this.grid = new BBN.Grid(this.canvasWidth, this.canvasHeight, this.pitchUnitSize);				
 				this.gameStage = gameStage;
 			}		
 		}
