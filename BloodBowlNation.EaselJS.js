@@ -1,48 +1,47 @@
 var BBN = BBN || (function(){
 
+	function _convertPixelsToGrids(x, y, unit) {
+		return [Math.ceil(x/unit), Math.ceil(y/unit)];
+	}
+
 	return {
 		pitchCanvas: null,
-		pitchCanvasContext: null,
 		gameCanvas: null,
-		gameCanvasContext: null,
 		pitchStage: null,
-		canvasStage: null,
+		gameStage: null,
 		canvasBounds: null,
 		init: function() {
 			console.log('-- BloodBowlNation --');
 			
-			pitchCanvas = document.getElementById("PitchCanvas");
-			gameCanvas = document.getElementById("GameCanvas");
+			this.pitchCanvas = document.getElementById("PitchCanvas");
+			this.gameCanvas = document.getElementById("GameCanvas");
+
+			this.canvasBounds = new Rectangle();
+			this.canvasBounds.width = this.gameCanvas.width;
+			this.canvasBounds.height = this.gameCanvas.height;
+			this.gameStage = new Stage(this.gameCanvas);
+			this.pitchStage = new Stage(this.pitchCanvas);
 			
-			$(gameCanvas).mousemove({that: this}, this.gameCanvasMouseMove);
+			this.gameStage.mouseEventsEnabled = true;
 			
-			canvasBounds = new Rectangle();
-			canvasBounds.width = gameCanvas.width;
-			canvasBounds.height = gameCanvas.height;
-			gameStage = new Stage(gameCanvas);
-			pitchStage = new Stage(pitchCanvas);
+			this.Pitch.init(this.pitchStage, this.Game);
+			this.Game.init(this.gameStage);
 			
-			gameStage.mouseEventsEnabled = true;
+			$(this.gameCanvas).mousemove({that: this}, this.gameCanvasMouseMove);
 			
-			this.Pitch.init(pitchStage, this.game);
-			this.game.init(gameStage);
 			Ticker.setFPS(30);
 			//Ticker.addListener(window);
 		},
 		gameCanvasMouseMove: function(e) {
 			var that = e.data.that;
-		},
-		game: {
-			pitchUnitSize: 20,
-			canvasHeight: 26,
-			canvasWidth: 15,
-			gameStage: null,
-			grid: null,
-			init: function(gameStage) {
-				var i, j;			
-				this.grid = new BBN.Grid(this.canvasWidth, this.canvasHeight, this.pitchUnitSize);				
-				this.gameStage = gameStage;
-			}		
+			
+			//console.log(that);
+			
+			//console.log(that.pitchStage.mouseX + ', ' + that.pitchStage.mouseY);
+			
+			//var grids = _convertPixelsToGrids(that.pitchStage.mouseX, that.pitchStage.mouseY, that.Game.pitchUnitSize);
+			
+			that.Pitch.renderCursor(that.pitchStage.mouseX, that.pitchStage.mouseY, that.Game.pitchUnitSize);
 		}
 	}
 })();

@@ -20,6 +20,19 @@ if (typeof BBN == "undefined" || !BBN)
 			addEvent(this.pitchImage, "load", this.pitchImageOnload, this);
 			this.pitchImage.src = this.backgroundImage;
 		},
+		renderCursor: function(x, y, unit) {
+		
+			console.log(x + ', ' + y + ', ' + unit);
+			
+			var shape = new Shape();
+			shape.graphics.beginFill("rgba(100,100,100,0.2)");
+			shape.graphics.drawRect(x, y, unit, unit);
+			shape.graphics.endFill();
+			
+			this.pitchStage.addChild(shape);
+			
+			this.pitchStage.update();
+		},
 		pitchImageOnload: function() {
 			var x, y, 
 				pitchBitmap = new Bitmap(this.pitchImage),
@@ -31,12 +44,12 @@ if (typeof BBN == "undefined" || !BBN)
 				unitBorderColour = this.unitBorderColour,
 				boundaryLineColour = this.boundaryLineColour;			
 			
-			pitchStage.addChild(pitchBitmap);
+			this.pitchStage.addChild(pitchBitmap);
 			pitchBitmap.x = 0;
 			pitchBitmap.y = 0;
 			pitchBitmap.scaleX = 0.435;
 			pitchBitmap.scaleY = 0.435;					
-			pitchStage.addChild(shape);
+			this.pitchStage.addChild(shape);
 			//vertical grid lines
 			for (x=0.5; x < (width*unit)+unit; x+=unit) {	
 				shape.graphics.beginStroke(boundaryLineColour).moveTo(x,0).lineTo(x,height*unit).endStroke();
@@ -45,7 +58,7 @@ if (typeof BBN == "undefined" || !BBN)
 			for (y=0.5; y < (height*unit)+unit; y+=unit) {
 				shape.graphics.beginStroke(boundaryLineColour).moveTo(0,y).lineTo(width*unit,y).endStroke();
 			}
-			pitchStage.update();
+			this.pitchStage.update();
 		},
 		init: function(pitchStage, gameContext) {
 			this.gameContext=gameContext;
