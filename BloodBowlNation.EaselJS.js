@@ -1,9 +1,5 @@
 var BBN = BBN || (function(){
-
-	function _convertPixelsToGrids(x, y, unit) {
-		return [Math.ceil(x/unit), Math.ceil(y/unit)];
-	}
-
+	
 	return {
 		pitchCanvas: null,
 		gameCanvas: null,
@@ -39,9 +35,9 @@ var BBN = BBN || (function(){
 			
 			//console.log(that.pitchStage.mouseX + ', ' + that.pitchStage.mouseY);
 			
-			//var grids = _convertPixelsToGrids(that.pitchStage.mouseX, that.pitchStage.mouseY, that.Game.pitchUnitSize);
+			var grids = _convertPixelsToGrids(that.pitchStage.mouseX, that.pitchStage.mouseY, that.Game.pitchUnitSize);
 			
-			that.Pitch.renderCursor(that.pitchStage.mouseX, that.pitchStage.mouseY, that.Game.pitchUnitSize);
+			that.Pitch.renderCursor(grids[0], grids[1], that.Game.pitchUnitSize);
 		}
 	}
 })();

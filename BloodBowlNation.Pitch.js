@@ -24,9 +24,11 @@ if (typeof BBN == "undefined" || !BBN)
 		
 			console.log(x + ', ' + y + ', ' + unit);
 			
+			var pixels = _convertGridsToPixels(x, y, unit);
+			
 			var shape = new Shape();
 			shape.graphics.beginFill("rgba(100,100,100,0.2)");
-			shape.graphics.drawRect(x, y, unit, unit);
+			shape.graphics.drawRect(pixels[0], pixels[1], unit, unit);
 			shape.graphics.endFill();
 			
 			this.pitchStage.addChild(shape);

@@ -17,3 +17,11 @@ function addEvent(element, eventName, handler, context)
     else if(element.attachEvent)
         element.attachEvent("on" + eventName, wrapper);
 }
+
+function _convertPixelsToGrids(x, y, unit) {
+	return [Math.ceil(x/unit), Math.ceil(y/unit)];
+}
+
+function _convertGridsToPixels(gridX, gridY, unit) {
+	return [gridX*unit-unit, gridY*unit-unit];
+}	
