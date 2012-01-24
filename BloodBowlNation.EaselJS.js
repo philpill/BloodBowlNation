@@ -28,18 +28,28 @@ var BBN = BBN || (function(){
 			this.Pitch.init(this.pitchStage, this.Game);
 			this.Game.init(this.gameStage);
 			
-			$(this.gridCanvas).mousemove({that: this}, this.gridCanvasMouseMove);
+			$(this.gameCanvas).mousemove({that: this}, this.gameCanvasMouseMove);
+			
+			$(this.gameCanvas).click({that: this}, this.gameCanvasClick);
 			
 			Ticker.setFPS(30);
 			//Ticker.addListener(window);
 		},
-		gridCanvasMouseMove: function(e) {
+		gameCanvasMouseMove: function(e) {
 
 			var that = e.data.that;
 			
 			var grids = _convertPixelsToGrids(that.pitchStage.mouseX, that.pitchStage.mouseY, that.Game.pitchUnitSize);
 			
 			that.Game.grid.renderCursor(grids[0], grids[1], that.Game.pitchUnitSize, that.gridStage);
+		},
+		gameCanvasClick: function(e) {
+
+			var that = e.data.that;
+			
+			var grids = _convertPixelsToGrids(that.pitchStage.mouseX, that.pitchStage.mouseY, that.Game.pitchUnitSize);
+			
+			console.log(grids);
 		}
 	}
 })();

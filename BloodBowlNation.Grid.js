@@ -21,18 +21,20 @@ if (typeof BBN == "undefined" || !BBN)
 		}
 	}
 	
-	BBN.Grid.prototype.renderCursor = function(x, y, unit, gridStage) {
+	BBN.Grid.prototype.renderCursor = function(x, y, unit, stage) {
+		
+		stage.removeAllChildren();
 		
 		var pixels = _convertGridsToPixels(x, y, unit);
 		
 		var shape = new Shape();
-		shape.graphics.beginFill("rgba(100,100,100,0.2)");
+		shape.graphics.beginFill("rgba(0,0,0,0.5)");
 		shape.graphics.drawRect(pixels[0], pixels[1], unit, unit);
 		shape.graphics.endFill();
 		
-		gridStage.addChild(shape);
+		stage.addChild(shape);
 		
-		gridStage.update();
+		stage.update();
 	}	
 
 	BBN.Grid.prototype.initialise = function() {
