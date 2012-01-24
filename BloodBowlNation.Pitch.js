@@ -16,24 +16,12 @@ if (typeof BBN == "undefined" || !BBN)
 		pitchImage: null,
 		backgroundImage: "Pitch.jpg",
 		render: function() {
+			this.renderPitchImage();
+		},
+		renderPitchImage: function() {
 			this.pitchImage = new Image();
 			addEvent(this.pitchImage, "load", this.pitchImageOnload, this);
 			this.pitchImage.src = this.backgroundImage;
-		},
-		renderCursor: function(x, y, unit) {
-		
-			console.log(x + ', ' + y + ', ' + unit);
-			
-			var pixels = _convertGridsToPixels(x, y, unit);
-			
-			var shape = new Shape();
-			shape.graphics.beginFill("rgba(100,100,100,0.2)");
-			shape.graphics.drawRect(pixels[0], pixels[1], unit, unit);
-			shape.graphics.endFill();
-			
-			this.pitchStage.addChild(shape);
-			
-			this.pitchStage.update();
 		},
 		pitchImageOnload: function() {
 			var x, y, 
