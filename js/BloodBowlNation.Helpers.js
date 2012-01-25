@@ -25,3 +25,33 @@ function _convertPixelsToGrids(x, y, unit) {
 function _convertGridsToPixels(gridX, gridY, unit) {
 	return [gridX*unit-unit, gridY*unit-unit];
 }	
+
+function _castPlayerHelper(array) {
+	var i;
+	for (i = 0; i < array.length; i++) {
+		if (array[i] instanceof BBN.Player) {
+			return array[i];
+		}
+	}
+	return null;		
+}
+
+function _castBallHelper(array)  {
+	var i;
+	for (i = 0; i < array.length; i++) {
+		if (array[i] instanceof BBN.Ball) {
+			return array[i];
+		}
+	}
+	return null;		
+}
+
+function _castGridEntityHelper(array) {
+	var i, entityArray = [];
+	for (i = 0; i < array.length; i++) {
+		if (array[i] instanceof BBN.Player || array[i] instanceof BBN.Ball) {
+			entityArray.push(array[i]);
+		}
+	}
+	return entityArray;		
+}	
