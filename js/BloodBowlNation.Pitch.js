@@ -14,7 +14,7 @@ if (typeof BBN == "undefined" || !BBN)
 		pitchStage: null,
 		gameContext: null,
 		pitchImage: null,
-		backgroundImage: "Pitch.jpg",
+		backgroundImage: "img/Pitch.jpg",
 		render: function() {
 			this.renderPitchImage();
 		},
