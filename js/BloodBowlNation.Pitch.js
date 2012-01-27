@@ -15,7 +15,7 @@ if (typeof BBN == "undefined" || !BBN)
 		gameContext: null,
 		pitchImage: null,
 		backgroundImage: "img/Pitch.jpg",
-		render: function() {
+		render: function() {			
 			this.renderPitchImage();
 		},
 		renderPitchImage: function() {
@@ -34,6 +34,9 @@ if (typeof BBN == "undefined" || !BBN)
 				unitBorderColour = this.unitBorderColour,
 				boundaryLineColour = this.boundaryLineColour;			
 			
+			var fullWidth = this.gameContext.canvasWidth * this.gameContext.pitchUnitSize + 0.5;
+			var fullHeight = this.gameContext.canvasHeight * this.gameContext.pitchUnitSize + 0.5;
+			
 			this.pitchStage.addChild(pitchBitmap);
 			pitchBitmap.x = 0;
 			pitchBitmap.y = 0;
@@ -48,6 +51,9 @@ if (typeof BBN == "undefined" || !BBN)
 			for (y=0.5; y < (height*unit)+unit; y+=unit) {
 				shape.graphics.beginStroke(boundaryLineColour).moveTo(0,y).lineTo(width*unit,y).endStroke();
 			}
+			
+			shape.graphics.beginStroke('#000').moveTo(0.5,0.5).lineTo(fullWidth, 0.5).lineTo(fullWidth, fullHeight).lineTo(0.5, fullHeight).lineTo(0.5, 0.5).endStroke();
+			
 			this.pitchStage.update();
 		},
 		init: function(pitchStage, gameContext) {

@@ -19,7 +19,6 @@ if (typeof BBN == "undefined" || !BBN)
 			this.gameStage = gameStage;
 			this.generateTeams();
 			this.dumpPlayersOntoPitchTemp();
-			
 			this.renderQueue.push(this.wrapFunction(this.renderGrid, this, [this.teams, "rgba(255,0,0,0.5)"]));
 			
 			this.render();
@@ -66,9 +65,6 @@ if (typeof BBN == "undefined" || !BBN)
 		},
 		generateTeams: function() {
 			var player, i, team1, team2;
-
-			console.log("generateGameTemp()");
-
 			this.ball = new BBN.Ball();
 
 			team1 = new BBN.Team("Reikland Reavers");
@@ -99,10 +95,7 @@ if (typeof BBN == "undefined" || !BBN)
 		},
 		dumpPlayersOntoPitchTemp: function() {
 
-			console.log('dumpPlayersOntoPitchTemp()');
-		
 			var i, j, x, y, grid, gridX, gridY, player, teams, gameContext, halfWayY, OffSetX, OffSetY;
-
 
 			teams = this.teams;
 			grid = this.grid;
@@ -116,7 +109,6 @@ if (typeof BBN == "undefined" || !BBN)
 			for (i = 0; i < teams.length; i++) {
 				
 				for (j = 0; j < teams[i].players.length; j++) {
-					//console.log('[' + i + '][' + j + ']');
 					x = (j*pitchUnitSize)+pitchUnitSize/2;
 					y = (i*pitchUnitSize)+pitchUnitSize/2;
 					gridX = grid.getGridX(x);
@@ -147,15 +139,16 @@ if (typeof BBN == "undefined" || !BBN)
 			}
 		},
 		renderPlayer: function(gridX, gridY) {
-		
+
 			try {
 			
 				var teamColours = ["rgba(255, 255, 255, 1)"],
 					player,
-					//canvasContext = this.canvasContext,
 					grid = this.grid,
 					gridUnit = grid.unit,
-					x, y, i;
+					x, y, i,
+					circle,
+					graphics = new Graphics();
 
 				x = (gridX*gridUnit)+gridUnit/2;
 				y = (gridY*gridUnit)+gridUnit/2;
@@ -169,61 +162,46 @@ if (typeof BBN == "undefined" || !BBN)
 				
 				teamColours = player.colours;
 				
-				//renderedColours = canvasContext.createLinearGradient(x, y, x+gridUnit/32, y);
-				
-				for (i = 0; i < teamColours.length; i++) {
-
-					if (i > 1) { break; } //not sure what to do if there are more than two colours
-
-					if (i % 2) {
-						//renderedColours.addColorStop(0, teamColours[i]);
-						//renderedColours.addColorStop(0.5, teamColours[i]);
-					} else {
-						//renderedColours.addColorStop(0.5, teamColours[i]);
-						//renderedColours.addColorStop(1, teamColours[i]);
-					}
-				}
-
-				//canvasContext.beginPath();
-				//canvasContext.arc(x, y, gridUnit/4, 0, Math.PI * 2, false);
-				//canvasContext.closePath();
-
-				//canvasContext.fillStyle = renderedColours;
-				//canvasContext.fill();
-				//canvasContext.strokeStyle = "rgba(0,0,0,1)";
-				//canvasContext.stroke();
-
-				//canvasContext.beginPath();
-				//canvasContext.arc(x, y, gridUnit/4 + 1, 0, Math.PI * 2, false);
-
-				//canvasContext.strokeStyle = "rgba(255,255,255,1)";
-				//canvasContext.stroke();
-				//canvasContext.closePath();
-
-				//canvasContext.font = "6px Arial";
-				//canvasContext.textBaseline = "middle";
-				//canvasContext.textAlign = "center";
-				//canvasContext.fillStyle = "black";
-				
-				//canvasContext.save();
-
-				if (player.isProne) {
-					//canvasContext.translate(x, y);
-					//canvasContext.rotate(90 * Math.PI / 180);
-					//canvasContext.fillText(player.number, 0, 0);
-				
-				} else if (player.isStunned) {
-				
-					//canvasContext.translate(x, y);
-					//canvasContext.rotate(180 * Math.PI / 180);
-					//canvasContext.fillText(player.number, 0, 0);
-					
+				if (teamColours.length === 2) {
+					graphics.beginLinearGradientFill([teamColours[0],teamColours[1]], [0, 0], x, y, x+3, y);				
 				} else {
 				
-					//canvasContext.fillText(player.number, x, y);
-				}					
+					graphics.beginFill(teamColours[0]);
+				}
 				
-				//canvasContext.restore();
+				graphics.setStrokeStyle(1).beginStroke("#fff");
+				graphics.drawCircle(x,y,7);
+				graphics.endStroke();
+				graphics.setStrokeStyle(1).beginStroke("#000");
+				graphics.drawCircle(x,y,6);
+				graphics.endStroke();
+				
+				circle = new Shape(graphics);
+				circle.shadow = new Shadow('#000', 0, 0, 1);
+				
+				var playerNumber = new Text();
+				playerNumber.text = player.number;
+				playerNumber.color = '#000';
+				playerNumber.font = 'bold 7px Arial';
+				playerNumber.textAlign = 'center';
+				playerNumber.textBaseline  = 'middle';
+				playerNumber.x = x;
+				playerNumber.y = y;	
+				playerNumber.shadow = new Shadow('#fff', 0, 0, 4);
+				
+				if (player.isProne) {
+					playerNumber.rotation = 90;				
+				
+				} else if (player.isStunned) {
+					playerNumber.rotation = 180;				
+					
+				}
+				
+				this.gameStage.addChild(circle);
+				
+				this.gameStage.addChild(playerNumber);
+				
+				this.gameStage.update();
 			
 			} catch(error) {
 			
@@ -231,27 +209,28 @@ if (typeof BBN == "undefined" || !BBN)
 			}
 		},
 		renderBall: function(gridX, gridY) {
+		
 			var teamColours,
-				//canvasContext = this.canvasContext,
 				grid = this.grid,
 				gridUnit = grid.unit,
-				x, y;
+				x, y,
+				circle,
+				graphics = new Graphics();
 
 			x = (gridX*gridUnit)+gridUnit/2;
 			y = (gridY*gridUnit)+gridUnit/2;
 
-			//canvasContext.beginPath();
-			//canvasContext.arc(x, y, gridUnit/4, 0, Math.PI * 2, false);
-			//canvasContext.closePath();
+			graphics.beginFill('rgba(255,255,0,1)');
+				
+			graphics.setStrokeStyle(1).beginStroke('#000');
+			
+			graphics.drawCircle(x+4,y+4,4);
 
-			//canvasContext.beginPath();
-			//canvasContext.arc(x+gridUnit/4, y+gridUnit/4, gridUnit/8 + 1, 0, Math.PI * 2, false);
-			//canvasContext.fillStyle = "rgba(255,255,0,1)";
-			//canvasContext.fill();
-			//canvasContext.strokeStyle = "rgba(0,0,0,1)";
-			//canvasContext.stroke();
-			//canvasContext.closePath();					
-
+			graphics.endStroke();
+			
+			circle = new Shape(graphics);
+			
+			this.gameStage.addChild(circle);
 		},
 	}
 	
