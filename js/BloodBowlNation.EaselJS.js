@@ -32,8 +32,22 @@ var BBN = BBN || (function(){
 			
 			$(this.gameCanvas).click({that: this}, this.gameCanvasClick);
 			
-			Ticker.setFPS(30);
-			//Ticker.addListener(window);
+			Ticker.setFPS(this.Variables.gameFps);
+			
+			Ticker.addListener(this);
+
+			$('#StopGameLoopLink').click({that:this},this.togglePauseGameLoopLinkClick);
+		},
+		togglePauseGameLoopLinkClick: function(e) {
+
+			console.log('pause/unpause game loop');
+
+			var that = e.data.that;
+
+			Ticker.setPaused(!Ticker.getPaused());
+		},
+		tick: function() {
+			console.log('gameTick');
 		},
 		gameCanvasMouseMove: function(e) {
 
@@ -45,19 +59,24 @@ var BBN = BBN || (function(){
 		},
 		gameCanvasClick: function(e) {
 
+			console.log('gameCanvasClick()');
+
 			var that = e.data.that;
 			
 			var grids = _convertPixelsToGrids(that.pitchStage.mouseX, that.pitchStage.mouseY, that.Game.pitchUnitSize);
 			
+			var gridEntities;
+
 			console.log(grids);
+
+			gridEntities = _castGridEntityHelper(that.Game.grid.space[grids[0]][grids[1]]);
+
+			console.log(gridEntities);
+
+			for (entity in gridEntities) {
+							
+					console.log(entity);						
+			}
 		}
 	}
 })();
-
-function tick() {
-	//console.log('test');
-	
-	
-	
-	
-}

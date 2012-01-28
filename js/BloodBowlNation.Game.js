@@ -70,7 +70,8 @@ if (typeof BBN == "undefined" || !BBN)
 			team1 = new BBN.Team("Reikland Reavers");
 			team2 = new BBN.Team("Orcland Raiders");
 
-			team1.colours = ["rgba(0,0,255,1)","rgba(255,255,255,1)"];
+			team1.colours = ["rgba(0,0,255,0.2)","rgba(255,255,255,1)"];
+			team2.colours = ["rgba(255,0,0,0.7)"];
 
 			//needs 'proper' implementation
 			team1.scoreZone = 0;

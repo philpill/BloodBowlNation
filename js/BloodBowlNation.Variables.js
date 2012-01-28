@@ -14,9 +14,8 @@ if (typeof BBN == "undefined" || !BBN)
 		pitchBitmapScaleY: 0.435,
 		pitchUnitSize: 20,
 		canvasHeight: 26,
-		canvasWidth: 15		
+		canvasWidth: 15,
+		gameFps: 1,
+		gamePausable: true
 	}
-	
 })();
-
-

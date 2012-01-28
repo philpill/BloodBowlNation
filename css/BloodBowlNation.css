@@ -24,7 +24,7 @@ aside article time { display: block; color: #999; }
 
 #DebugControls {  }
 #DebugControls label { display: block; padding: 0 10px 10px 10px; }
-#DebugControls a { margin: 10px; }
+#DebugControls a { margin: 10px; display: inline-block; }
 
 #DebugConsole { max-height: 200px; overflow: auto; }
 #DebugConsole code { font-family: Courier, sans-serif; font-size: 1.2em; display: block; margin: 0 0 5px 5px; }
