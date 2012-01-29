@@ -72,6 +72,10 @@ if (typeof BBN == "undefined" || !BBN)
 					this._gridHomeSection = value;
 				}
 			}		
+		},
+		tick: function () {
+			
+			//console.log('team tick');
 		}
 	}
 })();

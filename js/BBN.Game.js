@@ -38,12 +38,12 @@ if (typeof BBN == "undefined" || !BBN)
 			team2.scoreZone = 25;
 			
 			for (i = 0; i < 11; i++) {
-				player = new BBN.Player("human" + i, team1, i+1);
+				player = new BBN.Player(this.gameStage, "human" + i, team1, i+1);
 				team1.players.push(player);
 			}
 
 			for (i = 0; i < 11; i++) {
-				player = new BBN.Player("orc" + i, team2, i+1);
+				player = new BBN.Player(this.gameStage, "orc" + i, team2, i+1);
 				team2.players.push(player);
 			}
 
@@ -74,7 +74,9 @@ if (typeof BBN == "undefined" || !BBN)
 					y = (i*pitchUnitSize)+pitchUnitSize/2;
 					gridX = grid.getGridX(x);
 					gridY = grid.getGridY(y);
-					grid.space[gridX+OffSetX][gridY+halfWayY+OffSetY].push(teams[i].players[j]);							
+					grid.space[gridX+OffSetX][gridY+halfWayY+OffSetY].push(teams[i].players[j]);
+
+					teams[i].players[j].location = [gridX+OffSetX,gridY+halfWayY+OffSetY];
 				}
 			}
 

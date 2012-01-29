@@ -52,9 +52,31 @@ var BBN = BBN || (function(){
 
 			//do render stuff here
 
-			this.RenderEngine.renderMain(this.Game.grid);
+			//this.RenderEngine.renderMain(this.Game.grid);
 
 			console.log('gameTick');
+
+			//main game loop
+
+			var team;
+
+			var player;
+
+			for (team in BBN.Game.teams) {
+				
+				//console.log(BBN.Game.teams[team]);
+
+				BBN.Game.teams[team].tick();
+
+				for (player in BBN.Game.teams[team].players) {
+					
+					//console.log(BBN.Game.teams[team].players[player]);
+
+					BBN.Game.teams[team].players[player].tick();
+				}
+			}
+
+			this.mainStage.update();
 		},
 		gameCanvasMouseMove: function(e) {
 
@@ -82,7 +104,7 @@ var BBN = BBN || (function(){
 
 			for (entity in gridEntities) {
 							
-					console.log(entity);						
+				console.log(entity);						
 			}
 		}
 	}

@@ -5,7 +5,9 @@ if (typeof BBN == "undefined" || !BBN)
 
 (function() {
 
-	BBN.Player = function(playerName, playerTeam, playerNumber, playerRace, playerMovement, playerStrength, playerAgility, playerArmourValue) {
+	BBN.Player = function(stage, playerName, playerTeam, playerNumber, playerRace, playerMovement, playerStrength, playerAgility, playerArmourValue) {
+
+		this.stage = stage;
 
 		this.name = playerName;	
 		this.colours = playerTeam.colours;
@@ -13,6 +15,7 @@ if (typeof BBN == "undefined" || !BBN)
 		this.team = playerTeam.name;
 		this.race = playerRace;
 		
+		this.renderedObjects = [];
 		
 		//these values should come from a player type class (e.g. Human Blocker)
 		this.movementAllowance = playerMovement;
@@ -27,6 +30,14 @@ if (typeof BBN == "undefined" || !BBN)
 
 
 	BBN.Player.prototype = {
+		stage: {
+			get: function() { return this._stage; },
+			set: function(value) { 
+				if (typeof value === "string") {
+					this._stage = value;
+				}
+			}
+		},
 		name: {
 			get: function() { return this._name; },
 			set: function(value) { 
@@ -43,6 +54,14 @@ if (typeof BBN == "undefined" || !BBN)
 				}
 			}
 		},
+		location: {
+			get: function() { return this._location; },
+			set: function(value) { 
+				if (value instanceof Array) {
+					this._location = value; 
+				}
+			}
+		}, 		
 		number: {
 			get: function() { return this._number; },
 			set: function(value) { 
@@ -122,25 +141,99 @@ if (typeof BBN == "undefined" || !BBN)
 					this._isKnockedOut = value; 
 				}
 			}
-		}
-	}
-
-	BBN.Player.prototype.pickUpBall = function(ball) {
-		
-		//attempt to pickup
-		ball.inPossessionOf = this;
-		console.log("ball picked up");
-	}
-
-	BBN.Player.prototype.getTeam = function(teams) {
-		var player, team;	
-		for (team in teams) {
-			for (player in teams[team].players) {		
-				if (teams[team].players[player] === this) {
-					return team;
+		}, 
+		renderedObjects: {
+			get: function() { return this._renderedObjects; },
+			set: function(value) { 
+				if (value instanceof Array) {
+					this._renderedObjects = value; 
 				}
 			}
+		},
+		pickUpBall: function(ball) {	
+			//attempt to pickup
+			ball.inPossessionOf = this;
+			console.log("ball picked up");
+		},
+		getTeam: function(teams) {
+			var player, team;	
+			for (team in teams) {
+				for (player in teams[team].players) {		
+					if (teams[team].players[player] === this) {
+						return team;
+					}
+				}
+			}
+			return null;			
+		},
+		render: function() {
+			
+			//take this.location and render
+
+			
+				var teamColours,
+					gridUnit = Variables.pitchUnitSize,
+					x, y,
+					circle,
+					graphics = new Graphics();
+
+				if (this.renderedObjects.length === 0) {
+
+					console.log('initial render');
+
+				x = (this.location[0]*gridUnit)+gridUnit/2;
+				y = (this.location[1]*gridUnit)+gridUnit/2;
+
+				teamColours = this.colours;
+				
+				if (teamColours.length === 2) {
+					graphics.beginLinearGradientFill([teamColours[0],teamColours[1]], [0, 0], x, y, x+3, y);
+				} else {
+					graphics.beginFill(teamColours[0]);
+				}
+				
+				graphics.setStrokeStyle(1).beginStroke("#fff");
+				graphics.drawCircle(x,y,7);
+				graphics.endStroke();
+				graphics.setStrokeStyle(1).beginStroke("#000");
+				graphics.drawCircle(x,y,6);
+				graphics.endStroke();
+				
+				circle = new Shape(graphics);
+				circle.shadow = new Shadow('#000', 0, 0, 1);
+				
+				var playerNumber = new Text();
+				playerNumber.text = this.number;
+				playerNumber.color = '#000';
+				playerNumber.font = 'bold 7px Arial';
+				playerNumber.textAlign = 'center';
+				playerNumber.textBaseline  = 'middle';
+				playerNumber.x = x;
+				playerNumber.y = y;	
+				playerNumber.shadow = new Shadow('#fff', 0, 0, 4);
+				
+				if (this.isProne) {
+					playerNumber.rotation = 90;
+				} else if (this.isStunned) {
+					playerNumber.rotation = 180;	
+				}
+				
+				this.renderedObjects.push(circle);
+				this.renderedObjects.push(playerNumber);
+
+			}
+
+			for (var i = 0; i < this.renderedObjects.length;i++) {
+				this.stage.addChild(this.renderedObjects[i]);
+			}			
+		},
+		tick: function() {
+			
+			console.log('player tick');
+
+			this.render();
+
+			//render at this.location;
 		}
-		return null;
 	}
 })();
