@@ -14,9 +14,11 @@ if (typeof BBN == "undefined" || !BBN)
 		grid: null,
 		teams: [],
 		init: function(gameStage) {
-			var i, j;			
-			this.grid = new BBN.Grid(this.canvasWidth, this.canvasHeight, this.pitchUnitSize);				
+			var i, j;
+
 			this.gameStage = gameStage;
+
+			this.grid = new BBN.Grid(this.gameStage, this.canvasWidth, this.canvasHeight, this.pitchUnitSize);				
 			
 			BBN.RenderEngine.renderBackground();
 
@@ -30,8 +32,8 @@ if (typeof BBN == "undefined" || !BBN)
 			team1 = new BBN.Team("Reikland Reavers");
 			team2 = new BBN.Team("Orcland Raiders");
 
-			team1.colours = ["rgba(0,0,255,0.2)","rgba(255,255,255,1)"];
-			team2.colours = ["rgba(255,0,0,0.7)"];
+			team1.colours = ["rgba(150,150,255,1)","rgba(255,255,255,1)"];
+			team2.colours = ["rgba(200,100,100,1)"];
 
 			//needs 'proper' implementation
 			team1.scoreZone = 0;
@@ -50,7 +52,7 @@ if (typeof BBN == "undefined" || !BBN)
 			this.teams.push(team1);
 			this.teams.push(team2);
 
-			console.log(this.teams);
+			//console.log(this.teams);
 
 			//localStorage["teams"] = JSON.stringify(this.teams);
 		},

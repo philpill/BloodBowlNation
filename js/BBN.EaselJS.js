@@ -58,23 +58,19 @@ var BBN = BBN || (function(){
 
 			//main game loop
 
-			var team;
+			var team, player, players;
 
-			var player;
+			var teams = BBN.Game.teams;
 
-			for (team in BBN.Game.teams) {
-				
-				//console.log(BBN.Game.teams[team]);
-
-				BBN.Game.teams[team].tick();
-
-				for (player in BBN.Game.teams[team].players) {
-					
-					//console.log(BBN.Game.teams[team].players[player]);
-
-					BBN.Game.teams[team].players[player].tick();
+			for (var i = 0; i< teams.length; i++){
+				teams[i].tick();
+				players = teams[i].players;
+				for (var j = 0; j<players.length; j++) {
+					players[j].tick();
 				}
 			}
+
+			this.Game.grid.tick();
 
 			this.mainStage.update();
 		},

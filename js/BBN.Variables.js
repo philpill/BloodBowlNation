@@ -11,7 +11,7 @@ var Variables = {
 	pitchUnitSize: 20,
 	canvasHeight: 26,
 	canvasWidth: 15,
-	gameFps: 1,
+	gameFps: 30,
 	gamePausable: true,
 	pitchImageSrc: "img/Pitch.jpg"
 }

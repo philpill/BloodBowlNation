@@ -170,37 +170,34 @@ if (typeof BBN == "undefined" || !BBN)
 			
 			//take this.location and render
 
-			
-				var teamColours,
-					gridUnit = Variables.pitchUnitSize,
-					x, y,
-					circle,
-					graphics = new Graphics();
+			var teamColours,
+				gridUnit = Variables.pitchUnitSize,
+				x, y,
+				circle,
+				graphics = new Graphics();
 
-				if (this.renderedObjects.length === 0) {
-
-					console.log('initial render');
+			if (this.renderedObjects.length === 0) {
 
 				x = (this.location[0]*gridUnit)+gridUnit/2;
 				y = (this.location[1]*gridUnit)+gridUnit/2;
-
+				
 				teamColours = this.colours;
 				
-				if (teamColours.length === 2) {
-					graphics.beginLinearGradientFill([teamColours[0],teamColours[1]], [0, 0], x, y, x+3, y);
+				if (teamColours.length > 1) {
+					graphics.beginLinearGradientFill([teamColours[0],teamColours[1]], [0, 0.5], x, y, x+3, y);
 				} else {
 					graphics.beginFill(teamColours[0]);
 				}
-				
+
 				graphics.setStrokeStyle(1).beginStroke("#fff");
 				graphics.drawCircle(x,y,7);
-				graphics.endStroke();
+
 				graphics.setStrokeStyle(1).beginStroke("#000");
 				graphics.drawCircle(x,y,6);
+
 				graphics.endStroke();
-				
+
 				circle = new Shape(graphics);
-				circle.shadow = new Shadow('#000', 0, 0, 1);
 				
 				var playerNumber = new Text();
 				playerNumber.text = this.number;
@@ -210,14 +207,13 @@ if (typeof BBN == "undefined" || !BBN)
 				playerNumber.textBaseline  = 'middle';
 				playerNumber.x = x;
 				playerNumber.y = y;	
-				playerNumber.shadow = new Shadow('#fff', 0, 0, 4);
 				
 				if (this.isProne) {
 					playerNumber.rotation = 90;
 				} else if (this.isStunned) {
 					playerNumber.rotation = 180;	
 				}
-				
+			
 				this.renderedObjects.push(circle);
 				this.renderedObjects.push(playerNumber);
 
@@ -229,7 +225,7 @@ if (typeof BBN == "undefined" || !BBN)
 		},
 		tick: function() {
 			
-			console.log('player tick');
+			//console.log('player tick');
 
 			this.render();
 
