@@ -180,7 +180,7 @@ if (typeof BBN == "undefined" || !BBN)
 
 				x = (this.location[0]*gridUnit)+gridUnit/2;
 				y = (this.location[1]*gridUnit)+gridUnit/2;
-				
+
 				teamColours = this.colours;
 				
 				if (teamColours.length > 1) {

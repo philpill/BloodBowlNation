@@ -24,6 +24,9 @@ if (typeof BBN == "undefined" || !BBN)
 
 		this.cursor = new Shape();
 		this.stage.addChild(this.cursor);
+
+		this.selectedPlayerSquare = new Shape();
+		this.stage.addChild(this.selectedPlayerSquare);
 	}
 
 	BBN.Grid.prototype.initialise = function() {
@@ -44,12 +47,27 @@ if (typeof BBN == "undefined" || !BBN)
 	}
 
 	BBN.Grid.prototype = {
+		selectedPlayerSquare: {
+			get: function() { return this._selectedPlayer; },
+			set: function(value) { 
+				//test instanceof EaselJS Shape
+				this._selectedPlayer = value;
+			}
+		},	
+		selectedPlayer: {
+			get: function() { return this._selectedPlayer; },
+			set: function(value) { 
+				if (typeof value instanceof BBN.Player) {
+					this._selectedPlayer = value;
+				}
+			}
+		},		
 		cursor: {
 			get: function() { return this._cursor; },
 			set: function(value) { 
-				if (typeof value instanceof Array) {
-					this._cursor = value;
-				}
+				//test instanceof EaselJS Shape
+				this._cursor = value;
+
 			}
 		},
 		space: {
@@ -168,18 +186,28 @@ if (typeof BBN == "undefined" || !BBN)
 		},
 		tick: function() {
 			this.renderCursor(this.stage.mouseX, this.stage.mouseY);
+			this.renderSelectedPlayerSquare();
 		},
 		renderCursor: function(x, y) {
-
 			var cursorColour = 'rgba(0,0,0,0.5)';
 			var grids = Helpers.convertPixelsToGrids(x, y, this.unit);
 			var pixels = Helpers.convertGridsToPixels(grids[0], grids[1], this.unit);
-
 			this.cursor.graphics.clear();
 			this.cursor.graphics.beginFill(cursorColour);
 			this.cursor.graphics.drawRect(pixels[0], pixels[1], this.unit, this.unit);
 			this.cursor.graphics.endFill();
-		}		
+		},	
+		renderSelectedPlayerSquare: function() {
+			var grids = this.selectedPlayer.location;
+			if (typeof grids !== 'undefined') {
+				var playerSquareColour = 'rgba(0,0,0,0.5)';
+				var pixels = Helpers.convertGridsToPixels(grids[0], grids[1], this.unit);
+				this.selectedPlayerSquare.graphics.clear();
+				this.selectedPlayerSquare.graphics.beginFill(playerSquareColour);
+				this.selectedPlayerSquare.graphics.drawRect(pixels[0], pixels[1], this.unit, this.unit);
+				this.selectedPlayerSquare.graphics.endFill();
+			}
+		}	
 	}
 
 })();

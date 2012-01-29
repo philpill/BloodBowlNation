@@ -25,10 +25,10 @@ var Helpers = {
 		};
 	},
 	convertPixelsToGrids: function(x, y, unit) {
-		return [Math.ceil(x/unit), Math.ceil(y/unit)];
+		return [Math.floor(x/unit), Math.floor(y/unit)];
 	},
 	convertGridsToPixels: function(gridX, gridY, unit) {
-		return [gridX*unit-unit, gridY*unit-unit];
+		return [gridX*unit, gridY*unit];
 	},
 	castPlayerHelper: function(array) {
 		var i;

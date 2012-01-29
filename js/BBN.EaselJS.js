@@ -15,14 +15,15 @@ var BBN = BBN || (function(){
 			this.backgroundCanvas = document.getElementById("BackgroundCanvas");
 			this.mainCanvas = document.getElementById("MainCanvas");
 
-
-
 			this.canvasBounds = new Rectangle();
 			this.canvasBounds.width = this.mainCanvas.width;
 			this.canvasBounds.height = this.mainCanvas.height;
 			
 			this.backgroundStage = new Stage(this.backgroundCanvas);
 			this.mainStage = new Stage(this.mainCanvas);
+
+			this.backgroundStage.name = 'background';
+			this.mainStage.name = 'main';
 			
 			this.mainStage.mouseEventsEnabled = true;
 			
@@ -40,10 +41,9 @@ var BBN = BBN || (function(){
 			this.Pitch.init(this.backgroundStage, this.game);
 			
 			
-			$(this.gameCanvas).mousemove({that: this}, this.gameCanvasMouseMove);
+			//$(this.mainCanvas).mousemove({that: this}, this.gameCanvasMouseMove);
 			
-			$(this.gameCanvas).click({that: this}, this.gameCanvasClick);
-			
+			$(this.mainCanvas).click({that: this}, this.gameCanvasClick);
 
 			$('#StopGameLoopLink').click({that:this},this.togglePauseGameLoopLinkClick);
 
@@ -85,49 +85,32 @@ var BBN = BBN || (function(){
 
 			measuredFps.innerHTML= 'fps: ' + Ticker.getMeasuredFPS();
 
-			var team, player, players;
-
-			var teams = this.game.teams;
-
-			for (var i = 0; i< teams.length; i++){
-				teams[i].tick();
-				players = teams[i].players;
-				for (var j = 0; j<players.length; j++) {
-					players[j].tick();
-				}
-			}
-
-			this.game.grid.tick();
+			this.game.tick();
 
 			this.mainStage.update();
 		},
-		gameCanvasMouseMove: function(e) {
-
-			var that = e.data.that;
-			
-			var grids = Helpers._convertPixelsToGrids(that.pitchStage.mouseX, that.pitchStage.mouseY, that.Game.pitchUnitSize);
-			
-			that.game.grid.renderCursor(grids[0], grids[1], that.Game.pitchUnitSize, that.mainStage);
-		},
 		gameCanvasClick: function(e) {
 
-			console.log('gameCanvasClick()');
-
 			var that = e.data.that;
-			
-			var grids = Helpers._convertPixelsToGrids(that.mainStage.mouseX, that.mainStage.mouseY, that.Game.pitchUnitSize);
-			
-			var gridEntities;
 
-			console.log(grids);
+			var grids = Helpers.convertPixelsToGrids(that.mainStage.mouseX, that.mainStage.mouseY, that.variables.gridUnit);
+						
+			var gridEntities, entity, player = null;
 
-			gridEntities = Helpers._castGridEntityHelper(that.Game.grid.space[grids[0]][grids[1]]);
-
-			console.log(gridEntities);
+			gridEntities = Helpers.castGridEntityHelper(that.game.grid.space[grids[0]][grids[1]]);
 
 			for (entity in gridEntities) {
-							
-				console.log(entity);						
+
+				if (gridEntities[entity] instanceof BBN.Player) {
+					
+					if (player === null) {
+						player = that.game.selectedPlayer = gridEntities[entity];
+
+						console.log(player);
+					} else {
+						console.log('error: more than one BBN.player in grid.space');
+					}
+				}
 			}
 		}
 	}

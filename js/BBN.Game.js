@@ -13,6 +13,13 @@ if (typeof BBN == "undefined" || !BBN)
 	}
 
 	BBN.Game.prototype = {
+		selectedPlayer: {
+			get: function() { return this._selectedPlayer; },
+			set: function(value) { 
+				//test easelJS stage
+				this._selectedPlayer = value; 
+			}
+		},
 		stage: {
 			get: function() { return this._stage; },
 			set: function(value) { 
@@ -79,7 +86,7 @@ if (typeof BBN == "undefined" || !BBN)
 			OffSetX = 2;
 			OffSetY = -1;
 
-			halfWayY = Math.floor(grid.space[0].length/2);
+			halfWayY = Math.floor(grid.height/2);
 
 			for (i = 0; i < teams.length; i++) {
 				
@@ -107,8 +114,6 @@ if (typeof BBN == "undefined" || !BBN)
 			}
 
 			grid.insertEntity(randomX, randomY, this.ball);
-
-			console.log(grid);
 		},
 		init: function() {
 			
@@ -118,6 +123,24 @@ if (typeof BBN == "undefined" || !BBN)
 
 			this.generateTeams();
 			this.dumpPlayersOntoPitchTemp();
+		},
+		tick: function() {
+			
+			var team, player, players;
+
+			var teams = this.teams;
+
+			for (var i = 0; i< teams.length; i++){
+				teams[i].tick();
+				players = teams[i].players;
+				for (var j = 0; j<players.length; j++) {
+					players[j].tick();
+				}
+			}
+
+			this.grid.selectedPlayer = this.selectedPlayer;
+
+			this.grid.tick();
 		}
 	}
 
