@@ -40,10 +40,9 @@ var BBN = BBN || (function(){
 					
 			this.Pitch.init(this.backgroundStage, this.game);
 			
-			
-			//$(this.mainCanvas).mousemove({that: this}, this.gameCanvasMouseMove);
-			
-			$(this.mainCanvas).click({that: this}, this.gameCanvasClick);
+			var that = this;
+
+			this.mainStage.onPress = function(e) { that.gameCanvasClick(e) };
 
 			$('#StopGameLoopLink').click({that:this},this.togglePauseGameLoopLinkClick);
 
@@ -52,7 +51,6 @@ var BBN = BBN || (function(){
 			this.game.init();
 
 			Ticker.setFPS(Variables.gameFps);
-
 
 			Ticker.addListener(this);
 		},
@@ -91,9 +89,9 @@ var BBN = BBN || (function(){
 		},
 		gameCanvasClick: function(e) {
 
-			var that = e.data.that;
+			var that = this;
 
-			var grids = Helpers.convertPixelsToGrids(that.mainStage.mouseX, that.mainStage.mouseY, that.variables.gridUnit);
+			var grids = Helpers.convertPixelsToGrids(e.stageX, e.stageY, that.variables.gridUnit);
 						
 			var gridEntities, entity, player = null;
 

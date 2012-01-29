@@ -41,12 +41,12 @@ if (typeof BBN == "undefined" || !BBN)
 			this.renderPitchLines();
 		},
 		renderPitchLines: function() {
-			
+			console.log('renderPitchLines()');
 			var x, y,
 				shape = new Shape(),
-				unit = Variables.pitchUnitSize,
-				width = Variables.canvasWidth,
-				height = Variables.canvasHeight,
+				unit = Variables.gridUnit,
+				width = Variables.gridWidth,
+				height = Variables.gridHeight,
 				pitchGridLineColour = Variables.pitchGridLineColour,
 				gameGridLineColour = Variables.gameGridLineColour,
 				boundaryLineColour = Variables.boundaryLineColour;		
@@ -117,76 +117,6 @@ if (typeof BBN == "undefined" || !BBN)
 				this.renderPlayer(gridX, gridY);					
 			} else if (object instanceof BBN.Ball) {
 				this.renderBall(gridX, gridY);					
-			}
-		},
-		renderPlayer: function(gridX, gridY) {
-
-			try {
-			
-				var teamColours = ["rgba(255, 255, 255, 1)"],
-					player,
-					grid = this.grid,
-					gridUnit = grid.unit,
-					x, y, i,
-					circle,
-					graphics = new Graphics();
-
-				x = (gridX*gridUnit)+gridUnit/2;
-				y = (gridY*gridUnit)+gridUnit/2;
-				
-				player = Helpers.castPlayerHelper(grid.space[gridX][gridY]);
-				
-				if (player === null) {
-				
-					throw "match.renderPlayer() error: player at grid.space[" + gridX + "][" + gridY + "] === null";
-				}
-				
-				teamColours = player.colours;
-				
-				if (teamColours.length === 2) {
-					graphics.beginLinearGradientFill([teamColours[0],teamColours[1]], [0, 0], x, y, x+3, y);				
-				} else {
-				
-					graphics.beginFill(teamColours[0]);
-				}
-				
-				graphics.setStrokeStyle(1).beginStroke("#fff");
-				graphics.drawCircle(x,y,7);
-				graphics.endStroke();
-				graphics.setStrokeStyle(1).beginStroke("#000");
-				graphics.drawCircle(x,y,6);
-				graphics.endStroke();
-				
-				circle = new Shape(graphics);
-				circle.shadow = new Shadow('#000', 0, 0, 1);
-				
-				var playerNumber = new Text();
-				playerNumber.text = player.number;
-				playerNumber.color = '#000';
-				playerNumber.font = 'bold 7px Arial';
-				playerNumber.textAlign = 'center';
-				playerNumber.textBaseline  = 'middle';
-				playerNumber.x = x;
-				playerNumber.y = y;	
-				playerNumber.shadow = new Shadow('#fff', 0, 0, 4);
-				
-				if (player.isProne) {
-					playerNumber.rotation = 90;				
-				
-				} else if (player.isStunned) {
-					playerNumber.rotation = 180;				
-					
-				}
-				
-				this.mainStage.addChild(circle);
-				
-				this.mainStage.addChild(playerNumber);
-				
-				this.mainStage.update();
-			
-			} catch(error) {
-			
-				console.log(error);
 			}
 		},
 		renderBall: function(gridX, gridY) {
