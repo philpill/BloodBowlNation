@@ -171,7 +171,7 @@ if (typeof BBN == "undefined" || !BBN)
 			//take this.location and render
 
 			var teamColours,
-				gridUnit = Variables.pitchUnitSize,
+				gridUnit = Variables.gridUnit,
 				x, y,
 				circle,
 				graphics = new Graphics();

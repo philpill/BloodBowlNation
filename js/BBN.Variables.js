@@ -8,10 +8,10 @@ var Variables = {
 	pitchGridLineColour: "rgba(255,255,255,0.5)",
 	pitchBitmapScaleX: 0.435,
 	pitchBitmapScaleY: 0.435,
-	pitchUnitSize: 20,
-	canvasHeight: 26,
-	canvasWidth: 15,
-	gameFps: 30,
+	gridUnit: 20,
+	gridHeight: 26,
+	gridWidth: 15,
+	gameFps: 60,
 	gamePausable: true,
 	pitchImageSrc: "img/Pitch.jpg"
 }

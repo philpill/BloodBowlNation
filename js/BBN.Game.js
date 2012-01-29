@@ -6,24 +6,35 @@ if (typeof BBN == "undefined" || !BBN)
 
 (function() {
 
-	BBN.Game = {
-		pitchUnitSize: 20,
-		canvasHeight: 26,
-		canvasWidth: 15,
-		gameStage: null,
-		grid: null,
-		teams: [],
-		init: function(gameStage) {
-			var i, j;
+	BBN.Game = function(stage, grid) {
+		this.stage = stage;
+		this.grid = grid;
+		this.teams = [];
+	}
 
-			this.gameStage = gameStage;
-
-			this.grid = new BBN.Grid(this.gameStage, this.canvasWidth, this.canvasHeight, this.pitchUnitSize);				
-			
-			BBN.RenderEngine.renderBackground();
-
-			this.generateTeams();
-			this.dumpPlayersOntoPitchTemp();
+	BBN.Game.prototype = {
+		stage: {
+			get: function() { return this._stage; },
+			set: function(value) { 
+				//test easelJS stage
+				this._stage = value; 
+			}
+		},
+		grid: {
+			get: function() { return this._grid; },
+			set: function(value) { 
+				if (value instanceof BBN.Grid) {
+					this._grid = value; 
+				}
+			}
+		},
+		teams: {
+			get: function() { return this._teams; },
+			set: function(value) { 
+				if (value instanceof Array) {
+					this._teams = value; 
+				}
+			}
 		},
 		generateTeams: function() {
 			var player, i, team1, team2;
@@ -40,12 +51,12 @@ if (typeof BBN == "undefined" || !BBN)
 			team2.scoreZone = 25;
 			
 			for (i = 0; i < 11; i++) {
-				player = new BBN.Player(this.gameStage, "human" + i, team1, i+1);
+				player = new BBN.Player(this.stage, "human" + i, team1, i+1);
 				team1.players.push(player);
 			}
 
 			for (i = 0; i < 11; i++) {
-				player = new BBN.Player(this.gameStage, "orc" + i, team2, i+1);
+				player = new BBN.Player(this.stage, "orc" + i, team2, i+1);
 				team2.players.push(player);
 			}
 
@@ -54,15 +65,16 @@ if (typeof BBN == "undefined" || !BBN)
 
 			//console.log(this.teams);
 
-			//localStorage["teams"] = JSON.stringify(this.teams);
+			//localStorage["teams"] = JSON.stringify(this.teams);			
+
 		},
 		dumpPlayersOntoPitchTemp: function() {
-
-			var i, j, x, y, grid, gridX, gridY, player, teams, gameContext, halfWayY, OffSetX, OffSetY;
+			
+			var i, j, x, y, grid, gridX, gridY, player, teams, gameContext, halfWayY, OffSetX, OffSetY, unit;
 
 			teams = this.teams;
 			grid = this.grid;
-			pitchUnitSize = this.pitchUnitSize;
+			gridUnit = grid.unit;
 			
 			OffSetX = 2;
 			OffSetY = -1;
@@ -72,8 +84,8 @@ if (typeof BBN == "undefined" || !BBN)
 			for (i = 0; i < teams.length; i++) {
 				
 				for (j = 0; j < teams[i].players.length; j++) {
-					x = (j*pitchUnitSize)+pitchUnitSize/2;
-					y = (i*pitchUnitSize)+pitchUnitSize/2;
+					x = (j*gridUnit)+gridUnit/2;
+					y = (i*gridUnit)+gridUnit/2;
 					gridX = grid.getGridX(x);
 					gridY = grid.getGridY(y);
 					grid.space[gridX+OffSetX][gridY+halfWayY+OffSetY].push(teams[i].players[j]);
@@ -95,7 +107,18 @@ if (typeof BBN == "undefined" || !BBN)
 			}
 
 			grid.insertEntity(randomX, randomY, this.ball);
+
+			console.log(grid);
+		},
+		init: function() {
+			
+			var i, j;
+
+			BBN.RenderEngine.renderBackground();
+
+			this.generateTeams();
+			this.dumpPlayersOntoPitchTemp();
 		}
 	}
-	
+
 })();
