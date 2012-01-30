@@ -27,6 +27,9 @@ if (typeof BBN == "undefined" || !BBN)
 
 		this.selectedPlayerSquare = new Shape();
 		this.stage.addChild(this.selectedPlayerSquare);
+
+		this.cursorPathSquare = new Shape();
+		this.stage.addChild(this.cursorPathSquare);	
 	}
 
 	BBN.Grid.prototype.initialise = function() {
@@ -187,6 +190,8 @@ if (typeof BBN == "undefined" || !BBN)
 		tick: function() {
 			this.renderCursor(this.stage.mouseX, this.stage.mouseY);
 			this.renderSelectedPlayerSquare();
+							this.cursorPathSquare.graphics.clear();
+			this.renderSelectedPlayerSquareToCursor([this.stage.mouseX, this.stage.mouseY]);
 		},
 		renderCursor: function(x, y) {
 			var cursorColour = 'rgba(0,0,0,0.5)';
@@ -207,7 +212,37 @@ if (typeof BBN == "undefined" || !BBN)
 				this.selectedPlayerSquare.graphics.drawRect(pixels[0], pixels[1], this.unit, this.unit);
 				this.selectedPlayerSquare.graphics.endFill();
 			}
-		}	
+		},
+		renderSelectedPlayerSquareToCursor: function(cursor) {
+			if (typeof this.selectedPlayer.location != 'undefined') {
+				var grids = Helpers.convertPixelsToGrids(cursor[0], cursor[1], this.unit);
+				
+				var path = a_star(grids, this.selectedPlayer.location, this.createBoard(), this.width, this.height);
+				for (var i = 0; i < path.length; i++) {
+					this.renderCursorPath(path[i].x, path[i].y);            		
+            	}				
+			}
+		},
+		createBoard: function() {
+			//needs to represent entities on field
+			var board = [];
+	        for (var x = 0; x < this.width; x++)
+	        {
+	            board[x] = [];
+	            for (var y = 0; y < this.height; y++)
+	            {
+	            	board[x][y] = 0;
+				}
+			}
+			return board;
+		},
+		renderCursorPath: function(x, y) {
+			var pathSquareColour = 'rgba(0,0,0,0.5)';
+			var pixels = Helpers.convertGridsToPixels(x, y, this.unit);
+			this.cursorPathSquare.graphics.beginFill(pathSquareColour);
+			this.cursorPathSquare.graphics.drawRect(pixels[0], pixels[1], this.unit, this.unit);
+			this.cursorPathSquare.graphics.endFill();				
+		}
 	}
 
 })();

@@ -1,112 +1,156 @@
-// http://www.briangrinstead.com/blog/astar-search-algorithm-in-javascript
+/*
+Copyright (C) 2009 by Benjamin Hardin
 
-var astar = {
-	init: function(grid) {
-		for(var x = 0; x < grid.length; x++) {
-			for(var y = 0; y < grid[x].length; y++) {
-				grid[x][y].f = 0;
-				grid[x][y].g = 0;
-				grid[x][y].h = 0;
-				grid[x][y].debug = "";
-				grid[x][y].parent = null;
-			}	
-		}
-	},
-	search: function(grid, start, end) {
-		astar.init(grid);
- 
-		var openList   = [];
-		var closedList = [];
-		openList.push(start);
- 
-		while(openList.length > 0) {
- 
-			// Grab the lowest f(x) to process next
-			var lowInd = 0;
-			for(var i=0; i<openList.length; i++) {
-				if(openList[i].f < openList[lowInd].f) { lowInd = i; }
-			}
-			var currentNode = openList[lowInd];
- 
-			// End case -- result has been found, return the traced path
-			if(currentNode.pos == end.pos) {
-				var curr = currentNode;
-				var ret = [];
-				while(curr.parent) {
-					ret.push(curr);
-					curr = curr.parent;
-				}
-				return ret.reverse();
-			}
- 
-			// Normal case -- move currentNode from open to closed, process each of its neighbors
-			openList.removeGraphNode(currentNode);
-			closedList.push(currentNode);
-			var neighbors = astar.neighbors(grid, currentNode);
- 
-			for(var i=0; i<neighbors.length;i++) {
-				var neighbor = neighbors[i];
-				if(closedList.findGraphNode(neighbor) || neighbor.isWall()) {
-					// not a valid node to process, skip to next neighbor
-					continue;
-				}
- 
-				// g score is the shortest distance from start to current node, we need to check if
-				//	 the path we have arrived at this neighbor is the shortest one we have seen yet
-				var gScore = currentNode.g + 1; // 1 is the distance from a node to it's neighbor
-				var gScoreIsBest = false;
- 
- 
-				if(!openList.findGraphNode(neighbor)) {
-					// This the the first time we have arrived at this node, it must be the best
-					// Also, we need to take the h (heuristic) score since we haven't done so yet
- 
-					gScoreIsBest = true;
-					neighbor.h = astar.heuristic(neighbor.pos, end.pos);
-					openList.push(neighbor);
-				}
-				else if(gScore < neighbor.g) {
-					// We have already seen the node, but last time it had a worse g (distance from start)
-					gScoreIsBest = true;
-				}
- 
-				if(gScoreIsBest) {
-					// Found an optimal (so far) path to this node.	 Store info on how we got here and
-					//	just how good it really is...
-					neighbor.parent = currentNode;
-					neighbor.g = gScore;
-					neighbor.f = neighbor.g + neighbor.h;
-					neighbor.debug = "F: " + neighbor.f + "<br />G: " + neighbor.g + "<br />H: " + neighbor.h;
-				}
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
+
+function a_star(start, destination, board, columns, rows)
+{
+	//Create start and destination as true nodes
+	start = new node(start[0], start[1], -1, -1, -1, -1);
+	destination = new node(destination[0], destination[1], -1, -1, -1, -1);
+
+	var open = []; //List of open nodes (nodes to be inspected)
+	var closed = []; //List of closed nodes (nodes we've already inspected)
+
+	var g = 0; //Cost from start to current node
+	var h = heuristic(start, destination); //Cost from current node to destination
+	var f = g+h; //Cost from start to destination going through the current node
+
+	//Push the start node onto the list of open nodes
+	open.push(start); 
+
+	//Keep going while there's nodes in our open list
+	while (open.length > 0)
+	{
+		//Find the best open node (lowest f value)
+
+		//Alternately, you could simply keep the open list sorted by f value lowest to highest,
+		//in which case you always use the first node
+		var best_cost = open[0].f;
+		var best_node = 0;
+
+		for (var i = 1; i < open.length; i++)
+		{
+			if (open[i].f < best_cost)
+			{
+				best_cost = open[i].f;
+				best_node = i;
 			}
 		}
- 
-		// No result was found -- empty array signifies failure to find path
-		return [];
-	},
-	heuristic: function(pos0, pos1) {
-		// This is the Manhattan distance
-		var d1 = Math.abs (pos1.x - pos0.x);
-		var d2 = Math.abs (pos1.y - pos0.y);
-		return d1 + d2;
-	},
-	neighbors: function(grid, node) {
-		var ret = [];
-		var x = node.pos.x;
-		var y = node.pos.y;
- 
-		if(grid[x-1] && grid[x-1][y]) {
-			ret.push(grid[x-1][y]);
+
+		//Set it as our current node
+		var current_node = open[best_node];
+
+		//Check if we've reached our destination
+		if (current_node.x == destination.x && current_node.y == destination.y)
+		{
+			var path = [destination]; //Initialize the path with the destination node
+
+			//Go up the chain to recreate the path 
+			while (current_node.parent_index != -1)
+			{
+				current_node = closed[current_node.parent_index];
+				path.unshift(current_node);
+			}
+
+			return path;
 		}
-		if(grid[x+1] && grid[x+1][y]) {
-			ret.push(grid[x+1][y]);
-		}
-		if(grid[x][y-1] && grid[x][y-1]) {
-			ret.push(grid[x][y-1]);
-		}
-		if(grid[x][y+1] && grid[x][y+1]) {
-			ret.push(grid[x][y+1]);
-		}
-		return ret;
+
+		//Remove the current node from our open list
+		open.splice(best_node, 1);
+
+		//Push it onto the closed list
+		closed.push(current_node);
+
+		//Expand our current node (look in all 8 directions)
+		for (var new_node_x = Math.max(0, current_node.x-1); new_node_x <= Math.min(columns-1, current_node.x+1); new_node_x++)
+			for (var new_node_y = Math.max(0, current_node.y-1); new_node_y <= Math.min(rows-1, current_node.y+1); new_node_y++)
+			{
+				if (board[new_node_x][new_node_y] == 0 //If the new node is open
+					|| (destination.x == new_node_x && destination.y == new_node_y)) //or the new node is our destination
+				{
+					//See if the node is already in our closed list. If so, skip it.
+					var found_in_closed = false;
+					for (var i in closed)
+						if (closed[i].x == new_node_x && closed[i].y == new_node_y)
+						{
+							found_in_closed = true;
+							break;
+						}
+
+					if (found_in_closed)
+						continue;
+
+					//See if the node is in our open list. If not, use it.
+					var found_in_open = false;
+					for (var i in open)
+						if (open[i].x == new_node_x && open[i].y == new_node_y)
+						{
+							found_in_open = true;
+							break;
+						}
+
+					if (!found_in_open)
+					{
+						var new_node = new node(new_node_x, new_node_y, closed.length-1, -1, -1, -1);
+
+						new_node.g = current_node.g + Math.floor(Math.sqrt(Math.pow(new_node.x-current_node.x, 2)+Math.pow(new_node.y-current_node.y, 2)));
+						new_node.h = heuristic(new_node, destination);
+						new_node.f = new_node.g+new_node.h;
+
+						open.push(new_node);
+					}
+				}
+			}
 	}
-};
+
+	return [];
+}
+
+//An A* heurisitic must be admissible, meaning it must never overestimate the distance to the goal.
+//In other words, it must either underestimate or return exactly the distance to the goal.
+function heuristic(current_node, destination)
+{
+	//Find the straight-line distance between the current node and the destination. (Thanks to id for the improvement)
+	//return Math.floor(Math.sqrt(Math.pow(current_node.x-destination.x, 2)+Math.pow(current_node.y-destination.y, 2)));
+	var x = current_node.x-destination.x;
+	var y = current_node.y-destination.y;
+	return x*x+y*y;
+}
+
+
+/* Each node will have six values: 
+ X position
+ Y position
+ Index of the node's parent in the closed array
+ Cost from start to current node
+ Heuristic cost from current node to destination
+ Cost from start to destination going through the current node
+*/	
+
+function node(x, y, parent_index, g, h, f)
+{
+	this.x = x;
+	this.y = y;
+	this.parent_index = parent_index;
+	this.g = g;
+	this.h = h;
+	this.f = f;
+}
