@@ -43,6 +43,14 @@ if (typeof BBN == "undefined" || !BBN)
 				}
 			}
 		},
+		forceRenderRefresh: {
+			get: function() { return this._forceRenderRefresh; },
+			set: function(value) { 
+				if (value instanceof Boolean) {
+					this._forceRenderRefresh = value; 
+				}
+			}
+		},
 		generateTeams: function() {
 			var player, i, team1, team2;
 			this.ball = new BBN.Ball();
@@ -123,23 +131,52 @@ if (typeof BBN == "undefined" || !BBN)
 
 			this.generateTeams();
 			this.dumpPlayersOntoPitchTemp();
+			this.forceRenderRefresh = false;
+		},
+		removeAllRenderedPlayers: function() {
+			var stage = this.stage, child, count;
+			count = stage.getNumChildren();
+			for (var i=0;i<count;i++) {
+				child = stage.getChildAt(i);
+				if (child.name === 'playerCircle' || child.name === 'playerNumber') {
+					stage.removeChild(child);
+					i--;
+					count--;
+				}
+			}
 		},
 		tick: function() {
 			
-			var team, player, players;
-
+			var team, player, players, i, j;
 			var teams = this.teams;
 
-			for (var i = 0; i< teams.length; i++){
-				teams[i].tick();
-				players = teams[i].players;
-				for (var j = 0; j<players.length; j++) {
-					players[j].tick();
+			if (this.forceRenderRefresh) {
+				
+				this.removeAllRenderedPlayers();
+
+				for (i = 0; i< teams.length; i++){
+					teams[i].tick();
+					players = teams[i].players;
+					for (j = 0; j<players.length; j++) {
+						players[j].refreshRender();
+						players[j].tick();
+					}
 				}
+
+				this.forceRenderRefresh = false;	
+
+			} else {
+				
+				for (i = 0; i< teams.length; i++){
+					teams[i].tick();
+					players = teams[i].players;
+					for (j = 0; j<players.length; j++) {
+						players[j].tick();
+					}
+				}				
 			}
 
 			this.grid.selectedPlayer = this.selectedPlayer;
-
 			this.grid.tick();
 		}
 	}

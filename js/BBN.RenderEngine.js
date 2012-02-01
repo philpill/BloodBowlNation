@@ -41,7 +41,6 @@ if (typeof BBN == "undefined" || !BBN)
 			this.renderPitchLines();
 		},
 		renderPitchLines: function() {
-			console.log('renderPitchLines()');
 			var x, y,
 				shape = new Shape(),
 				unit = Variables.gridUnit,

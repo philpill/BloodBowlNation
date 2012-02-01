@@ -26,6 +26,9 @@ if (typeof BBN == "undefined" || !BBN)
 		this.isProne = false;
 		this.isStunned = false;
 		this.isKnockedOut = false;
+		
+		this.hasMoved = false;
+		this.hasActioned = false;
 	}
 
 
@@ -142,6 +145,22 @@ if (typeof BBN == "undefined" || !BBN)
 				}
 			}
 		}, 
+		hasMoved: {
+			get: function() { return this._hasMoved; },
+			set: function(value) { 
+				if (value instanceof Boolean) {
+					this._hasMoved = value; 
+				}
+			}
+		}, 
+		hasActioned: {
+			get: function() { return this._hasActioned; },
+			set: function(value) { 
+				if (value instanceof Boolean) {
+					this._hasActioned = value; 
+				}
+			}
+		}, 
 		renderedObjects: {
 			get: function() { return this._renderedObjects; },
 			set: function(value) { 
@@ -149,6 +168,9 @@ if (typeof BBN == "undefined" || !BBN)
 					this._renderedObjects = value; 
 				}
 			}
+		},
+		refreshRender: function() {
+			this.renderedObjects = [];
 		},
 		pickUpBall: function(ball) {	
 			//attempt to pickup
@@ -169,14 +191,9 @@ if (typeof BBN == "undefined" || !BBN)
 		render: function() {
 			
 			//take this.location and render
-
-			var teamColours,
-				gridUnit = Variables.gridUnit,
-				x, y,
-				circle,
-				graphics = new Graphics();
-
 			if (this.renderedObjects.length === 0) {
+
+				var teamColours, gridUnit = Variables.gridUnit, x, y, circle, graphics = new Graphics();
 
 				x = (this.location[0]*gridUnit)+gridUnit/2;
 				y = (this.location[1]*gridUnit)+gridUnit/2;
@@ -213,15 +230,17 @@ if (typeof BBN == "undefined" || !BBN)
 				} else if (this.isStunned) {
 					playerNumber.rotation = 180;	
 				}
+
+				circle.name = 'playerCircle';
+				playerNumber.name = 'playerNumber';
 			
 				this.renderedObjects.push(circle);
 				this.renderedObjects.push(playerNumber);
 
+				for (var i = 0; i < this.renderedObjects.length;i++) {
+					this.stage.addChild(this.renderedObjects[i]);
+				}
 			}
-
-			for (var i = 0; i < this.renderedObjects.length;i++) {
-				this.stage.addChild(this.renderedObjects[i]);
-			}			
 		},
 		tick: function() {
 			

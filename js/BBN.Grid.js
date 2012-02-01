@@ -135,15 +135,15 @@ if (typeof BBN == "undefined" || !BBN)
 			}
 			if (object instanceof BBN.Player) {
 				player = object;	
-				ball = BBN.game.match.ball;
+				//ball = BBN.game.match.ball;
 				//check ball is in possession of player and move
-				if (ball.inPossessionOf === player) {
-					this.removeEntity(ball);	
-					this.insertEntity(destinationGridX, destinationGridY, ball);		
+				//if (ball.inPossessionOf === player) {
+					//this.moveEntity(destinationGridX, destinationGridY, ball);
 					//check win condition
-				}
+				//}
+				player.location = [destinationGridX, destinationGridY];
 			}
-			this.removeEntity(object);	
+			this.removeEntity(object);
 			this.insertEntity(destinationGridX, destinationGridY, object);
 		},
 		removeEntity: function(object) {	
@@ -214,7 +214,7 @@ if (typeof BBN == "undefined" || !BBN)
 			}
 		},
 		renderSelectedPlayerSquareToCursor: function(cursor) {
-			if (typeof this.selectedPlayer.location != 'undefined') {
+			if (typeof this.selectedPlayer.location != 'undefined' && this.selectedPlayer.hasMoved === false) {
 				var grids = Helpers.convertPixelsToGrids(cursor[0], cursor[1], this.unit);
 				
 				var path = a_star(grids, this.selectedPlayer.location, this.createBoard(), this.width, this.height);

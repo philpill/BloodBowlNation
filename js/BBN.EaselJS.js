@@ -93,22 +93,46 @@ var BBN = BBN || (function(){
 
 			var grids = Helpers.convertPixelsToGrids(e.stageX, e.stageY, that.variables.gridUnit);
 						
-			var gridEntities, entity, player = null;
+			var gridEntities, entity;
+
+			if (grids[0] > that.variables.gridWidth || grids[1] > that.variables.gridLength) {
+				return false;
+			}
 
 			gridEntities = Helpers.castGridEntityHelper(that.game.grid.space[grids[0]][grids[1]]);
+
+			var isPlayerSelected = that.game.selectedPlayer instanceof BBN.Player;
+
+			if (isPlayerSelected && gridEntities.length === 0) {
+				that.game.grid.moveEntity(grids[0], grids[1], that.game.selectedPlayer);
+				that.game.forceRenderRefresh = true;
+				that.game.selectedPlayer.hasMoved = true;
+			}
 
 			for (entity in gridEntities) {
 
 				if (gridEntities[entity] instanceof BBN.Player) {
-					
-					if (player === null) {
-						player = that.game.selectedPlayer = gridEntities[entity];
 
-						console.log(player);
+					if (isPlayerSelected) {
+						//block or switch selected player
+						that.resolvePlayerAction(gridEntities[entity]);
+
 					} else {
-						console.log('error: more than one BBN.player in grid.space');
+						//select player
+						that.game.selectedPlayer = gridEntities[entity];
 					}
+				
+				} else if (gridEntities[entity] instanceof BBN.Ball) {
+					//pickup ball
 				}
+			}
+		},
+		resolvePlayerAction: function(player) {
+			console.log('resolvePlayerAction()');
+
+			if (player.team === this.game.selectedPlayer.team) {
+				
+				this.game.selectedPlayer = player;
 			}
 		}
 	}
