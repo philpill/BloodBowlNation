@@ -136,46 +136,44 @@ if (typeof BBN == "undefined" || !BBN)
 		removeAllRenderedPlayers: function() {
 			var stage = this.stage, child, count;
 			count = stage.getNumChildren();
-			for (var i=0;i<count;i++) {
-				child = stage.getChildAt(i);
+			while (count--) {
+				child = stage.getChildAt(count);
 				if (child.name === 'playerCircle' || child.name === 'playerNumber') {
 					stage.removeChild(child);
-					i--;
-					count--;
-				}
-			}
-		},
-		tick: function() {
-			
-			var team, player, players, i, j;
-			var teams = this.teams;
-
-			if (this.forceRenderRefresh) {
-				
-				this.removeAllRenderedPlayers();
-
-				for (i = 0; i< teams.length; i++){
-					teams[i].tick();
-					players = teams[i].players;
-					for (j = 0; j<players.length; j++) {
-						players[j].refreshRender();
-						players[j].tick();
-					}
-				}
-
-				this.forceRenderRefresh = false;	
-
-			} else {
-				
-				for (i = 0; i< teams.length; i++){
-					teams[i].tick();
-					players = teams[i].players;
-					for (j = 0; j<players.length; j++) {
-						players[j].tick();
-					}
 				}				
 			}
-
+		},
+		getAllPlayers: function() {
+			var teams, players, teamCount, playerCount, allPlayers = [];
+			
+			teams = this.teams;
+			teamCount = teams.length;
+			while (teamCount--) {
+				players = teams[teamCount].players;
+				playerCount = players.length;
+				while (playerCount--) {
+					allPlayers.push(players[playerCount]);
+				}
+			}
+			
+			return allPlayers;
+		},
+		tick: function() {
+			var allPlayers = this.getAllPlayers();				
+			var playerCount = allPlayers.length;
+			if (this.forceRenderRefresh) {				
+				this.removeAllRenderedPlayers();				
+				while(playerCount--) {
+					allPlayers[playerCount].refreshRender();
+					allPlayers[playerCount].tick();				
+				}				
+				this.forceRenderRefresh = false;	
+			} else {				
+				while(playerCount--) {				
+					allPlayers[playerCount].tick();				
+				}			
+			}
+			//this doesn't need to be done every tick - just on player select
 			this.grid.selectedPlayer = this.selectedPlayer;
 			this.grid.tick();
 		}
