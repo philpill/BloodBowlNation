@@ -104,9 +104,16 @@ var BBN = BBN || (function(){
 			var isPlayerSelected = that.game.selectedPlayer instanceof BBN.Player;
 
 			if (isPlayerSelected && gridEntities.length === 0) {
-				that.game.grid.moveEntity(grids[0], grids[1], that.game.selectedPlayer);
-				that.game.forceRenderRefresh = true;
-				that.game.selectedPlayer.hasMoved = true;
+
+				if (that.game.selectedPlayer.hasMoved === true) {
+					console.log('player has already moved');
+				
+				} else {
+
+					that.game.grid.moveEntity(grids[0], grids[1], that.game.selectedPlayer);
+					that.game.forceRenderRefresh = true;
+					that.game.selectedPlayer.hasMoved = true;
+				}
 			}
 
 			for (entity in gridEntities) {
@@ -128,11 +135,12 @@ var BBN = BBN || (function(){
 			}
 		},
 		resolvePlayerAction: function(player) {
-			console.log('resolvePlayerAction()');
-
 			if (player.team === this.game.selectedPlayer.team) {
 				
 				this.game.selectedPlayer = player;
+			} else {
+				
+				//block!
 			}
 		}
 	}
