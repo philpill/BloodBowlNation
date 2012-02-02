@@ -43,6 +43,14 @@ if (typeof BBN == "undefined" || !BBN)
 				}
 			}
 		},
+		allPlayersCache: {
+			get: function() { return this._allPlayersCache; },
+			set: function(value) { 
+				if (value instanceof Array) {
+					this._allPlayersCache = value; 
+				}
+			}
+		},
 		forceRenderRefresh: {
 			get: function() { return this._forceRenderRefresh; },
 			set: function(value) { 
@@ -144,18 +152,29 @@ if (typeof BBN == "undefined" || !BBN)
 			}
 		},
 		getAllPlayers: function() {
-			var teams, players, teamCount, playerCount, allPlayers = [];
-			
-			teams = this.teams;
-			teamCount = teams.length;
-			while (teamCount--) {
-				players = teams[teamCount].players;
-				playerCount = players.length;
-				while (playerCount--) {
-					allPlayers.push(players[playerCount]);
+
+			var teams, players, teamCount, playerCount;
+			var allPlayers = [];
+
+			if (this.allPlayersCache.length > 0) {
+
+				allPlayers = this.allPlayersCache;
+
+			} else {
+
+				teams = this.teams;
+				teamCount = teams.length;
+				while (teamCount--) {
+					players = teams[teamCount].players;
+					playerCount = players.length;
+					while (playerCount--) {
+						allPlayers.push(players[playerCount]);
+					}
 				}
+				
+				this.allPlayersCache = allPlayers;
 			}
-			
+
 			return allPlayers;
 		},
 		tick: function() {
@@ -173,8 +192,6 @@ if (typeof BBN == "undefined" || !BBN)
 					allPlayers[playerCount].tick();				
 				}			
 			}
-			//this doesn't need to be done every tick - just on player select
-			this.grid.selectedPlayer = this.selectedPlayer;
 			this.grid.tick();
 		}
 	}

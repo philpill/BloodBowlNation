@@ -71,17 +71,11 @@ var BBN = BBN || (function(){
 
 			//do render stuff here
 
-			//this.RenderEngine.renderMain(this.Game.grid);
-
 			//main game loop
 
-			var ticks = document.getElementById('Ticks');
+			document.getElementById('Ticks').innerHTML = 'ticks: ' + Ticker.getTicks(Variables.gamePausable);
 
-			ticks.innerHTML= 'ticks: ' + Ticker.getTicks(Variables.gamePausable);
-
-			var measuredFps = document.getElementById('MeasuredFps');
-
-			measuredFps.innerHTML= 'fps: ' + Ticker.getMeasuredFPS();
+			document.getElementById('MeasuredFps').innerHTML = 'fps: ' + Ticker.getMeasuredFPS();
 
 			this.game.tick();
 
@@ -126,7 +120,7 @@ var BBN = BBN || (function(){
 
 					} else {
 						//select player
-						that.game.selectedPlayer = gridEntities[entity];
+						that.game.selectedPlayer = that.game.grid.selectedPlayer = gridEntities[entity];
 					}
 				
 				} else if (gridEntities[entity] instanceof BBN.Ball) {
@@ -137,7 +131,7 @@ var BBN = BBN || (function(){
 		resolvePlayerAction: function(player) {
 			if (player.team === this.game.selectedPlayer.team) {
 				
-				this.game.selectedPlayer = player;
+				this.game.selectedPlayer = this.game.grid.selectedPlayer = player;
 			} else {
 				
 				//block!

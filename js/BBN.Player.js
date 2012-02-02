@@ -15,7 +15,7 @@ if (typeof BBN == "undefined" || !BBN)
 		this.team = playerTeam.name;
 		this.race = playerRace;
 		
-		this.renderedObjects = [];
+		this.renderedPlayerCache = [];
 		
 		//these values should come from a player type class (e.g. Human Blocker)
 		this.movementAllowance = playerMovement;
@@ -161,16 +161,16 @@ if (typeof BBN == "undefined" || !BBN)
 				}
 			}
 		}, 
-		renderedObjects: {
-			get: function() { return this._renderedObjects; },
+		renderedPlayerCache: {
+			get: function() { return this._renderedPlayerCache; },
 			set: function(value) { 
 				if (value instanceof Array) {
-					this._renderedObjects = value; 
+					this._renderedPlayerCache = value; 
 				}
 			}
 		},
 		refreshRender: function() {
-			this.renderedObjects = [];
+			this.renderedPlayerCache = [];
 		},
 		pickUpBall: function(ball) {	
 			//attempt to pickup
@@ -191,9 +191,9 @@ if (typeof BBN == "undefined" || !BBN)
 		render: function() {
 			
 			//take this.location and render
-			if (this.renderedObjects.length === 0) {
+			if (this.renderedPlayerCache.length === 0) {
 
-				var teamColours, gridUnit = Variables.gridUnit, x, y, circle, graphics = new Graphics();
+				var teamColours, gridUnit = Variables.gridUnit, x, y, circle, graphics = new Graphics(), playerNumber, i;
 
 				x = (this.location[0]*gridUnit)+gridUnit/2;
 				y = (this.location[1]*gridUnit)+gridUnit/2;
@@ -216,7 +216,7 @@ if (typeof BBN == "undefined" || !BBN)
 
 				circle = new Shape(graphics);
 				
-				var playerNumber = new Text();
+				playerNumber = new Text();
 				playerNumber.text = this.number;
 				playerNumber.color = '#000';
 				playerNumber.font = 'bold 7px Arial';
@@ -234,11 +234,11 @@ if (typeof BBN == "undefined" || !BBN)
 				circle.name = 'playerCircle';
 				playerNumber.name = 'playerNumber';
 			
-				this.renderedObjects.push(circle);
-				this.renderedObjects.push(playerNumber);
+				this.renderedPlayerCache.push(circle);
+				this.renderedPlayerCache.push(playerNumber);
 
-				for (var i = 0; i < this.renderedObjects.length;i++) {
-					this.stage.addChild(this.renderedObjects[i]);
+				for (i = 0; i < this.renderedPlayerCache.length;i++) {
+					this.stage.addChild(this.renderedPlayerCache[i]);
 				}
 			}
 		},

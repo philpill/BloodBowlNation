@@ -11,7 +11,7 @@ var Variables = {
 	gridUnit: 20,
 	gridHeight: 26,
 	gridWidth: 15,
-	gameFps: 30,
+	gameFps: 20,
 	gamePausable: true,
 	pitchImageSrc: "img/Pitch.jpg"
 }

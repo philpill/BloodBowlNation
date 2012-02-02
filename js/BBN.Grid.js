@@ -56,6 +56,13 @@ if (typeof BBN == "undefined" || !BBN)
 				//test instanceof EaselJS Shape
 				this._selectedPlayer = value;
 			}
+		},
+		cursorPathSquare: {
+			get: function() { return this._cursorPathSquare; },
+			set: function(value) { 
+				//test instanceof EaselJS Shape
+				this._cursorPathSquare = value;
+			}
 		},	
 		selectedPlayer: {
 			get: function() { return this._selectedPlayer; },
@@ -189,9 +196,11 @@ if (typeof BBN == "undefined" || !BBN)
 		},
 		tick: function() {
 			this.renderCursor(this.stage.mouseX, this.stage.mouseY);
-			this.renderSelectedPlayerSquare();
-							this.cursorPathSquare.graphics.clear();
-			this.renderSelectedPlayerSquareToCursor([this.stage.mouseX, this.stage.mouseY]);
+			if (this.selectedPlayer instanceof BBN.Player) {
+				this.renderSelectedPlayerSquare();
+				this.cursorPathSquare.graphics.clear();
+				this.renderSelectedPlayerSquareToCursor([this.stage.mouseX, this.stage.mouseY]);
+			}
 		},
 		renderCursor: function(x, y) {
 			var cursorColour = 'rgba(0,0,0,0.5)';
