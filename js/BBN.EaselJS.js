@@ -44,7 +44,11 @@ var BBN = BBN || (function(){
 
 			this.mainStage.onPress = function(e) { that.gameCanvasClick(e) };
 
-			$('#StopGameLoopLink').click({that:this},this.togglePauseGameLoopLinkClick);
+			$('#ClearCacheLink').click({that:this}, this.clearCacheLinkClick);
+
+			$('#StopGameLoopLink').click({that:this}, this.togglePauseGameLoopLinkClick);
+
+			$('#TurnoverLink').click({that:this}, this.turnoverLinkClick);
 
 			this.RenderEngine.init(this.mainStage, this.backgroundStage);
 
@@ -55,7 +59,38 @@ var BBN = BBN || (function(){
 			Ticker.addListener(this);
 		},
 		loadVariables: function () {
+
 			this.variables = Variables;
+		},
+		clearCacheLinkClick: function (e) {
+
+			console.log('clear cache - not in use');
+			
+			e.preventDefault();
+		},
+		turnoverLinkClick: function (e) {
+
+			var that, activeTeam, teams, teamIndex;
+
+			console.log('turnover');
+
+			that = e.data.that;
+
+			activeTeam = that.game.activeTeam;
+
+			teams = [];
+
+			$.extend(teams, that.game.teams);
+
+			teamIndex = teams.indexOf(activeTeam);
+
+			teams.splice(teamIndex, 1);
+
+			that.game.activeTeam = teams[Math.floor(Math.random()*teams.length)];
+
+			that.game.selectedPlayer = that.game.grid.selectedPlayer = null;
+
+			e.preventDefault();
 		},
 		togglePauseGameLoopLinkClick: function(e) {
 
@@ -120,7 +155,11 @@ var BBN = BBN || (function(){
 
 					} else {
 						//select player
-						that.game.selectedPlayer = that.game.grid.selectedPlayer = gridEntities[entity];
+
+
+						if (that.game.activeTeam.name === gridEntities[entity].team) {
+							that.game.selectedPlayer = that.game.grid.selectedPlayer = gridEntities[entity];
+						}
 					}
 				
 				} else if (gridEntities[entity] instanceof BBN.Ball) {

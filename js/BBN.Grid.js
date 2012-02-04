@@ -50,6 +50,22 @@ if (typeof BBN == "undefined" || !BBN)
 	}
 
 	BBN.Grid.prototype = {
+		selectedPlayerLocationCache: {
+			get: function() { return this._selectedPlayerLocationCache; },
+			set: function(value) { 
+				if (typeof value instanceof Array) {
+					this._selectedPlayerLocationCache = value;
+				}
+			}			
+		},
+		activeTeamCache: {
+			get: function() { return this._activeTeamCache; },
+			set: function(value) { 
+				if (typeof value instanceof BBN.Team) {
+					this._activeTeamCache = value;
+				}
+			}
+		},
 		selectedPlayerSquare: {
 			get: function() { return this._selectedPlayer; },
 			set: function(value) { 
@@ -194,13 +210,22 @@ if (typeof BBN == "undefined" || !BBN)
 				this.space[gridX][gridY].push(object);
 			}
 		},
-		tick: function() {
+		tick: function(activeTeam) {
+			if (this.activeTeamCache !== activeTeam) {
+				this.activeTeamCache = activeTeam;
+				this.renderActiveTeamPlayerSquares()
+			}
 			this.renderCursor(this.stage.mouseX, this.stage.mouseY);
 			if (this.selectedPlayer instanceof BBN.Player) {
 				this.renderSelectedPlayerSquare();
 				this.cursorPathSquare.graphics.clear();
 				this.renderSelectedPlayerSquareToCursor([this.stage.mouseX, this.stage.mouseY]);
+			} else {
+				this.clearSelectedPlayerSquare();
 			}
+		},
+		clearSelectedPlayerSquare: function() {
+			this.selectedPlayerSquare.graphics.clear();
 		},
 		renderCursor: function(x, y) {
 			var cursorColour = 'rgba(0,0,0,0.5)';
@@ -213,7 +238,9 @@ if (typeof BBN == "undefined" || !BBN)
 		},	
 		renderSelectedPlayerSquare: function() {
 			var grids = this.selectedPlayer.location;
-			if (typeof grids !== 'undefined') {
+			if (typeof grids === 'undefined') {
+				this.selectedPlayerSquare.graphics.clear();
+			} else {
 				var playerSquareColour = 'rgba(0,0,0,0.5)';
 				var pixels = Helpers.convertGridsToPixels(grids[0], grids[1], this.unit);
 				this.selectedPlayerSquare.graphics.clear();
@@ -232,14 +259,20 @@ if (typeof BBN == "undefined" || !BBN)
             	}				
 			}
 		},
+		renderActiveTeamPlayerSquares: function() {
+			var team = this.activeTeamCache;
+			if (this.selectedPlayer === null) {
+				//render squares for all players
+				
+			}
+
+		},
 		createBoard: function() {
 			//needs to represent entities on field
 			var board = [];
-	        for (var x = 0; x < this.width; x++)
-	        {
+	        for (var x = 0; x < this.width; x++) {
 	            board[x] = [];
-	            for (var y = 0; y < this.height; y++)
-	            {
+	            for (var y = 0; y < this.height; y++) {
 	            	board[x][y] = 0;
 				}
 			}

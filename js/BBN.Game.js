@@ -13,10 +13,17 @@ if (typeof BBN == "undefined" || !BBN)
 	}
 
 	BBN.Game.prototype = {
+		activeTeam: {
+			get: function() { return this._activeTeam; },
+			set: function(value) { 
+				if (value instanceof BBN.Team) {
+					this._activeTeam = value; 
+				}
+			}
+		}, 
 		selectedPlayer: {
 			get: function() { return this._selectedPlayer; },
 			set: function(value) { 
-				//test easelJS stage
 				this._selectedPlayer = value; 
 			}
 		},
@@ -138,6 +145,7 @@ if (typeof BBN == "undefined" || !BBN)
 			BBN.RenderEngine.renderBackground();
 
 			this.generateTeams();
+			this.activeTeam = this.teams[0];
 			this.dumpPlayersOntoPitchTemp();
 			this.forceRenderRefresh = false;
 		},
@@ -192,7 +200,7 @@ if (typeof BBN == "undefined" || !BBN)
 					allPlayers[playerCount].tick();				
 				}			
 			}
-			this.grid.tick();
+			this.grid.tick(this.activeTeam);
 		}
 	}
 

@@ -177,78 +177,63 @@ if (typeof BBN == "undefined" || !BBN)
 			ball.inPossessionOf = this;
 			console.log("ball picked up");
 		},
-		getTeam: function(teams) {
-			var player, team;	
-			for (team in teams) {
-				for (player in teams[team].players) {		
-					if (teams[team].players[player] === this) {
-						return team;
-					}
-				}
-			}
-			return null;			
-		},
 		render: function() {
 			
-			//take this.location and render
-			if (this.renderedPlayerCache.length === 0) {
+			var teamColours, gridUnit = Variables.gridUnit, x, y, circle, graphics = new Graphics(), playerNumber, i;
 
-				var teamColours, gridUnit = Variables.gridUnit, x, y, circle, graphics = new Graphics(), playerNumber, i;
+			x = (this.location[0]*gridUnit)+gridUnit/2;
+			y = (this.location[1]*gridUnit)+gridUnit/2;
 
-				x = (this.location[0]*gridUnit)+gridUnit/2;
-				y = (this.location[1]*gridUnit)+gridUnit/2;
-
-				teamColours = this.colours;
-				
-				if (teamColours.length > 1) {
-					graphics.beginLinearGradientFill([teamColours[0],teamColours[1]], [0, 0.5], x, y, x+3, y);
-				} else {
-					graphics.beginFill(teamColours[0]);
-				}
-
-				graphics.setStrokeStyle(1).beginStroke("#fff");
-				graphics.drawCircle(x,y,7);
-
-				graphics.setStrokeStyle(1).beginStroke("#000");
-				graphics.drawCircle(x,y,6);
-
-				graphics.endStroke();
-
-				circle = new Shape(graphics);
-				
-				playerNumber = new Text();
-				playerNumber.text = this.number;
-				playerNumber.color = '#000';
-				playerNumber.font = 'bold 7px Arial';
-				playerNumber.textAlign = 'center';
-				playerNumber.textBaseline  = 'middle';
-				playerNumber.x = x;
-				playerNumber.y = y;	
-				
-				if (this.isProne) {
-					playerNumber.rotation = 90;
-				} else if (this.isStunned) {
-					playerNumber.rotation = 180;	
-				}
-
-				circle.name = 'playerCircle';
-				playerNumber.name = 'playerNumber';
+			teamColours = this.colours;
 			
-				this.renderedPlayerCache.push(circle);
-				this.renderedPlayerCache.push(playerNumber);
-
-				for (i = 0; i < this.renderedPlayerCache.length;i++) {
-					this.stage.addChild(this.renderedPlayerCache[i]);
-				}
+			if (teamColours.length > 1) {
+				graphics.beginLinearGradientFill([teamColours[0],teamColours[1]], [0, 0.5], x, y, x+3, y);
+			} else {
+				graphics.beginFill(teamColours[0]);
 			}
+
+			graphics.setStrokeStyle(1).beginStroke("#fff");
+			graphics.drawCircle(x,y,7);
+
+			graphics.setStrokeStyle(1).beginStroke("#000");
+			graphics.drawCircle(x,y,6);
+
+			graphics.endStroke();
+
+			circle = new Shape(graphics);
+			
+			playerNumber = new Text();
+			playerNumber.text = this.number;
+			playerNumber.color = '#000';
+			playerNumber.font = 'bold 7px Arial';
+			playerNumber.textAlign = 'center';
+			playerNumber.textBaseline  = 'middle';
+			playerNumber.x = x;
+			playerNumber.y = y;	
+			
+			if (this.isProne) {
+				playerNumber.rotation = 90;
+			} else if (this.isStunned) {
+				playerNumber.rotation = 180;	
+			}
+
+			circle.name = 'playerCircle';
+			playerNumber.name = 'playerNumber';
+		
+			this.renderedPlayerCache.push(circle);
+			this.renderedPlayerCache.push(playerNumber);
+
+			for (i = 0; i < this.renderedPlayerCache.length;i++) {
+				this.stage.addChild(this.renderedPlayerCache[i]);
+			}
+			
 		},
 		tick: function() {
 			
-			//console.log('player tick');
+			if (this.renderedPlayerCache.length === 0) {
 
-			this.render();
-
-			//render at this.location;
+				this.render();
+			}
 		}
 	}
 })();
