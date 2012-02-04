@@ -73,6 +73,14 @@ if (typeof BBN == "undefined" || !BBN)
 				this._selectedPlayer = value;
 			}
 		},
+		playerSquares: {
+			get: function() { return this._playerSquares; },
+			set: function(value) { 
+				if (typeof value instanceof Array) {
+					this._playerSquares = value;
+				}
+			}			
+		},
 		cursorPathSquare: {
 			get: function() { return this._cursorPathSquare; },
 			set: function(value) { 
@@ -183,8 +191,8 @@ if (typeof BBN == "undefined" || !BBN)
 		},
 		getEntityLocation: function(object) {
 			var i, x, y;
-			for (x = 0; x < this.width; x++) {		
-				for (y = 0; y < this.height; y++) {
+			for (x = 0, gridWidth = this.width; x < gridWidth; x++) {		
+				for (y = 0, gridHeight = this.height; y < gridHeight; y++) {
 					for (i = 0; i < this.space[x][y].length; i++) {
 						if (this.space[x][y][i] === object) {
 							return [x, y, i]
@@ -222,6 +230,7 @@ if (typeof BBN == "undefined" || !BBN)
 				this.renderSelectedPlayerSquareToCursor([this.stage.mouseX, this.stage.mouseY]);
 			} else {
 				this.clearSelectedPlayerSquare();
+				this.renderActiveTeamPlayerSquares();
 			}
 		},
 		clearSelectedPlayerSquare: function() {
@@ -241,7 +250,7 @@ if (typeof BBN == "undefined" || !BBN)
 			if (typeof grids === 'undefined') {
 				this.selectedPlayerSquare.graphics.clear();
 			} else {
-				var playerSquareColour = 'rgba(0,0,0,0.5)';
+				var playerSquareColour = 'rgb(0, 0, 0, 0.5)';
 				var pixels = Helpers.convertGridsToPixels(grids[0], grids[1], this.unit);
 				this.selectedPlayerSquare.graphics.clear();
 				this.selectedPlayerSquare.graphics.beginFill(playerSquareColour);
@@ -252,9 +261,8 @@ if (typeof BBN == "undefined" || !BBN)
 		renderSelectedPlayerSquareToCursor: function(cursor) {
 			if (typeof this.selectedPlayer.location != 'undefined' && this.selectedPlayer.hasMoved === false) {
 				var grids = Helpers.convertPixelsToGrids(cursor[0], cursor[1], this.unit);
-				
 				var path = a_star(grids, this.selectedPlayer.location, this.createBoard(), this.width, this.height);
-				for (var i = 0; i < path.length; i++) {
+				for (var i = 0, pathLength = path.length; i < pathLength; i++) {
 					this.renderCursorPath(path[i].x, path[i].y);            		
             	}				
 			}
@@ -265,14 +273,13 @@ if (typeof BBN == "undefined" || !BBN)
 				//render squares for all players
 				
 			}
-
 		},
 		createBoard: function() {
 			//needs to represent entities on field
 			var board = [];
-	        for (var x = 0; x < this.width; x++) {
+	        for (var x = 0, boardWidth = this.width; x < boardWidth; x++) {
 	            board[x] = [];
-	            for (var y = 0; y < this.height; y++) {
+	            for (var y = 0, boardHeight = this.height; y < boardHeight; y++) {
 	            	board[x][y] = 0;
 				}
 			}

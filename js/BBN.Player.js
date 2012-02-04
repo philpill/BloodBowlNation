@@ -223,7 +223,7 @@ if (typeof BBN == "undefined" || !BBN)
 			this.renderedPlayerCache.push(circle);
 			this.renderedPlayerCache.push(playerNumber);
 
-			for (i = 0; i < this.renderedPlayerCache.length;i++) {
+			for (i = 0, renderedPlayerCacheLength = this.renderedPlayerCache.length; i < renderedPlayerCacheLength;i++) {
 				this.stage.addChild(this.renderedPlayerCache[i]);
 			}
 			

@@ -70,9 +70,7 @@ var BBN = BBN || (function(){
 		},
 		turnoverLinkClick: function (e) {
 
-			var that, activeTeam, teams, teamIndex;
-
-			console.log('turnover');
+			var that, activeTeam, teams, teamIndex, players, playerCount;
 
 			that = e.data.that;
 
@@ -87,6 +85,15 @@ var BBN = BBN || (function(){
 			teams.splice(teamIndex, 1);
 
 			that.game.activeTeam = teams[Math.floor(Math.random()*teams.length)];
+
+			console.log('turnover: ' + that.game.activeTeam.name);
+
+			players = that.game.activeTeam.players;
+			playerCount = players.length;
+			while (playerCount--) {
+				players[playerCount].hasMoved = false;
+				players[playerCount].hasActioned = false;
+			}
 
 			that.game.selectedPlayer = that.game.grid.selectedPlayer = null;
 

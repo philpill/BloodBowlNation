@@ -111,9 +111,9 @@ if (typeof BBN == "undefined" || !BBN)
 
 			halfWayY = Math.floor(grid.height/2);
 
-			for (i = 0; i < teams.length; i++) {
+			for (i = 0, teamLength = teams.length; i < teamLength; i++) {
 				
-				for (j = 0; j < teams[i].players.length; j++) {
+				for (j = 0, teamPlayersLength = teams[i].players.length; j < teamPlayersLength; j++) {
 					x = (j*gridUnit)+gridUnit/2;
 					y = (i*gridUnit)+gridUnit/2;
 					gridX = grid.getGridX(x);
