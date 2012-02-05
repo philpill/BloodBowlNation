@@ -279,26 +279,41 @@ if (typeof BBN == "undefined" || !BBN)
 		renderAdjacentOppositionSquares: function(grids) {
 
 			var adjacentSquares = this.getAdjacentSquares(grids), 
-			adjacentSquaresLength = adjacentSquares.length,
-			adjacentOppositionSquares = [], gridEntities, gridEntity;
+			adjacentLength = adjacentSquares.length,
+			validSquaresArray = [], 
+			gridEntities, gridEntity, 
+			x, y,
+			entitiesLength;
 
-			while(adjacentSquaresLength--) {
+			while(adjacentLength--) {
 
-				gridEntities = Helpers.castGridEntityHelper(adjacentSquares[adjacentSquaresLength]);
+				x = adjacentSquares[adjacentLength][0];
 
-				for (entity in gridEntities) {
+				y = adjacentSquares[adjacentLength][1];
 
-					if (gridEntities[entity] instanceof BBN.Player) {
+				if (typeof this.space[x] === 'undefined' || typeof this.space[x][y] === 'undefined') {
+					continue;
+				}
+
+				z = this.space[x][y];
+
+				gridEntities = Helpers.castGridEntityHelper(z);
+
+				entitiesLength = gridEntities.length;
+
+				while (entitiesLength--) {
+
+					if (gridEntities[entitiesLength] instanceof BBN.Player) {
 				
-						if (gridEntities[entity].team !== this.selectedPlayer.team) {
+						if (gridEntities[entitiesLength].team !== this.selectedPlayer.team) {
 							
-							adjacentOppositionSquares.push(adjacentSquares[adjacentSquaresLength]);
+							validSquaresArray.push(adjacentSquares[adjacentLength]);
 						}
 					}
 				}
 			}
 
-			this.renderSquares(this.oppositionPlayerSquares, adjacentOppositionSquares, this.unit, 'rgb(0.5, 0, 0, 0.5)');
+			this.renderSquares(this.oppositionPlayerSquares, validSquaresArray, this.unit, 'rgba(200, 0, 0, 0.5)');
 
 		},
 		getAdjacentSquares: function(grids) {
@@ -326,8 +341,8 @@ if (typeof BBN == "undefined" || !BBN)
 		renderSelectedPlayerSquareToCursor: function(cursor) {
 			if (typeof this.selectedPlayer.location != 'undefined' && this.selectedPlayer.hasMoved === false) {
 				var grids = Helpers.convertPixelsToGrids(cursor[0], cursor[1], this.unit);
-				var path = a_star(grids, this.selectedPlayer.location, this.createBoard(), this.width, this.height);
-				for (var i = 0, pathLength = path.length; i < pathLength; i++) {
+				var path = a_star(this.selectedPlayer.location, grids, this.createBoard(), this.width, this.height);
+				for (var i = 0, pathLength = path.length; i < pathLength && i < this.selectedPlayer.movementAllowance; i++) {
 					this.renderCursorPath(path[i].x, path[i].y);            		
             	}				
 			}

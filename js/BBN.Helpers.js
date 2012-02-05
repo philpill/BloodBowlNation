@@ -50,7 +50,7 @@ var Helpers = {
 	},
 	castGridEntityHelper: function(array) {
 		var i, entityArray = [];
-		for (i = 0; i < array.length; i++) {
+		for (i = 0, arrayLength = array.length; i < arrayLength; i++) {
 			if (array[i] instanceof BBN.Player || array[i] instanceof BBN.Ball) {
 				entityArray.push(array[i]);
 			}

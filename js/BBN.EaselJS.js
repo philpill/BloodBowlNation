@@ -129,13 +129,21 @@ var BBN = BBN || (function(){
 
 			var grids = Helpers.convertPixelsToGrids(e.stageX, e.stageY, that.variables.gridUnit);
 						
-			var gridEntities, entity;
+			var gridEntities, entity, space;
 
 			if (grids[0] > that.variables.gridWidth || grids[1] > that.variables.gridLength) {
+				console.log('gameCanvasClick(): out of bounds');
 				return false;
 			}
 
-			gridEntities = Helpers.castGridEntityHelper(that.game.grid.space[grids[0]][grids[1]]);
+			if (typeof that.game.grid.space[grids[0]] === 'undefined') {
+				console.log('gameCanvasClick(): out of bounds');
+				return false;				
+			}
+
+			space = that.game.grid.space[grids[0]][grids[1]];
+
+			gridEntities = Helpers.castGridEntityHelper(space);
 
 			var isPlayerSelected = that.game.selectedPlayer instanceof BBN.Player;
 
