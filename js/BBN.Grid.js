@@ -30,6 +30,9 @@ if (typeof BBN == "undefined" || !BBN)
 
 		this.cursorPathSquare = new Shape();
 		this.stage.addChild(this.cursorPathSquare);	
+
+		this.oppositionPlayerSquares = new Shape();
+		this.stage.addChild(this.oppositionPlayerSquares);	
 	}
 
 	BBN.Grid.prototype.initialise = function() {
@@ -66,6 +69,13 @@ if (typeof BBN == "undefined" || !BBN)
 				}
 			}
 		},
+		oppositionPlayerSquares: {
+			get: function() { return this._oppositionPlayerSquares; },
+			set: function(value) { 
+				//test instanceof EaselJS Shape
+				this._oppositionPlayerSquares = value;
+			}
+		}, 
 		selectedPlayerSquare: {
 			get: function() { return this._selectedPlayer; },
 			set: function(value) { 
@@ -239,11 +249,7 @@ if (typeof BBN == "undefined" || !BBN)
 		renderCursor: function(x, y) {
 			var cursorColour = 'rgba(0,0,0,0.5)';
 			var grids = Helpers.convertPixelsToGrids(x, y, this.unit);
-			var pixels = Helpers.convertGridsToPixels(grids[0], grids[1], this.unit);
-			this.cursor.graphics.clear();
-			this.cursor.graphics.beginFill(cursorColour);
-			this.cursor.graphics.drawRect(pixels[0], pixels[1], this.unit, this.unit);
-			this.cursor.graphics.endFill();
+			this.renderSquares(this.cursor, [grids], this.unit, cursorColour);
 		},	
 		renderSelectedPlayerSquare: function() {
 			var grids = this.selectedPlayer.location;
@@ -251,12 +257,71 @@ if (typeof BBN == "undefined" || !BBN)
 				this.selectedPlayerSquare.graphics.clear();
 			} else {
 				var playerSquareColour = 'rgb(0, 0, 0, 0.5)';
-				var pixels = Helpers.convertGridsToPixels(grids[0], grids[1], this.unit);
-				this.selectedPlayerSquare.graphics.clear();
-				this.selectedPlayerSquare.graphics.beginFill(playerSquareColour);
-				this.selectedPlayerSquare.graphics.drawRect(pixels[0], pixels[1], this.unit, this.unit);
-				this.selectedPlayerSquare.graphics.endFill();
+				this.renderSquares(this.selectedPlayerSquare, [grids], this.unit, playerSquareColour);
 			}
+			this.renderAdjacentOppositionSquares(grids);
+		},
+		renderSquares: function(shape, gridsArray, gridUnit, colour) {
+
+			var gridsArrayLength = gridsArray.length;
+			var pixels;
+
+			shape.graphics.clear();
+			while (gridsArrayLength--) {
+				pixels = Helpers.convertGridsToPixels(gridsArray[gridsArrayLength][0], gridsArray[gridsArrayLength][1], gridUnit);
+				shape.graphics.beginFill(colour);
+				shape.graphics.drawRect(pixels[0], pixels[1], gridUnit, gridUnit);
+				shape.graphics.endFill();
+			}
+
+			
+		},
+		renderAdjacentOppositionSquares: function(grids) {
+
+			var adjacentSquares = this.getAdjacentSquares(grids), 
+			adjacentSquaresLength = adjacentSquares.length,
+			adjacentOppositionSquares = [], gridEntities, gridEntity;
+
+			while(adjacentSquaresLength--) {
+
+				gridEntities = Helpers.castGridEntityHelper(adjacentSquares[adjacentSquaresLength]);
+
+				for (entity in gridEntities) {
+
+					if (gridEntities[entity] instanceof BBN.Player) {
+				
+						if (gridEntities[entity].team !== this.selectedPlayer.team) {
+							
+							adjacentOppositionSquares.push(adjacentSquares[adjacentSquaresLength]);
+						}
+					}
+				}
+			}
+
+			this.renderSquares(this.oppositionPlayerSquares, adjacentOppositionSquares, this.unit, 'rgb(0.5, 0, 0, 0.5)');
+
+		},
+		getAdjacentSquares: function(grids) {
+		
+			var adjacentSquares = [], x = grids[0], y = grids[1];
+			
+			// 1 2 3
+			// 4 5 6
+			// 7 8 9
+		
+			adjacentSquares[0] = [x-1, y-1];
+			adjacentSquares[1] = [x-1, y];
+			adjacentSquares[2] = [x-1, y+1];
+			
+			adjacentSquares[3] = [x, y+1];
+			adjacentSquares[4] = [x, y];
+			adjacentSquares[5] = [x, y-1];
+			
+			adjacentSquares[6] = [x+1, y+1];
+			adjacentSquares[7] = [x+1, y];
+			adjacentSquares[8] = [x+1, y-1];
+			
+			return adjacentSquares;			
 		},
 		renderSelectedPlayerSquareToCursor: function(cursor) {
 			if (typeof this.selectedPlayer.location != 'undefined' && this.selectedPlayer.hasMoved === false) {
