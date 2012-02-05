@@ -123,20 +123,30 @@ var BBN = BBN || (function(){
 
 			this.mainStage.update();
 		},
+		movePlayer: function(grids) {
+			var game = this.game;
+			if (game.selectedPlayer.hasMoved === true) {
+				console.log('player has already moved');
+			
+			} else {
+
+				game.grid.moveEntity(grids[0], grids[1], game.selectedPlayer);
+				game.forceRenderRefresh = true;
+				game.selectedPlayer.hasMoved = true;
+			}			
+		},
 		gameCanvasClick: function(e) {
 
-			var that = this;
-
-			var grids = Helpers.convertPixelsToGrids(e.stageX, e.stageY, that.variables.gridUnit);
-						
-			var gridEntities, entity, space;
+			var that = this, isPlayerSelected,
+			grids = Helpers.convertPixelsToGrids(e.stageX, e.stageY, that.variables.gridUnit),
+			gridEntities, entity, space;
 
 			if (grids[0] > that.variables.gridWidth || grids[1] > that.variables.gridLength) {
 				console.log('gameCanvasClick(): out of bounds');
 				return false;
 			}
 
-			if (typeof that.game.grid.space[grids[0]] === 'undefined') {
+			if (typeof that.game.grid.space[grids[0]] === 'undefined' || typeof that.game.grid.space[grids[0]][grids[1]] === 'undefined') {
 				console.log('gameCanvasClick(): out of bounds');
 				return false;				
 			}
@@ -145,40 +155,34 @@ var BBN = BBN || (function(){
 
 			gridEntities = Helpers.castGridEntityHelper(space);
 
-			var isPlayerSelected = that.game.selectedPlayer instanceof BBN.Player;
+			isPlayerSelected = that.game.selectedPlayer instanceof BBN.Player;
 
 			if (isPlayerSelected && gridEntities.length === 0) {
 
-				if (that.game.selectedPlayer.hasMoved === true) {
-					console.log('player has already moved');
-				
-				} else {
+				this.movePlayer(grids);
+			
+			} else {
 
-					that.game.grid.moveEntity(grids[0], grids[1], that.game.selectedPlayer);
-					that.game.forceRenderRefresh = true;
-					that.game.selectedPlayer.hasMoved = true;
-				}
-			}
+				for (entity in gridEntities) {
 
-			for (entity in gridEntities) {
+					if (gridEntities[entity] instanceof BBN.Player) {
 
-				if (gridEntities[entity] instanceof BBN.Player) {
+						if (isPlayerSelected) {
+							//block or switch selected player
+							that.resolvePlayerAction(gridEntities[entity]);
 
-					if (isPlayerSelected) {
-						//block or switch selected player
-						that.resolvePlayerAction(gridEntities[entity]);
-
-					} else {
-						//select player
+						} else {
+							//select player
 
 
-						if (that.game.activeTeam.name === gridEntities[entity].team) {
-							that.game.selectedPlayer = that.game.grid.selectedPlayer = gridEntities[entity];
+							if (that.game.activeTeam.name === gridEntities[entity].team) {
+								that.game.selectedPlayer = that.game.grid.selectedPlayer = gridEntities[entity];
+							}
 						}
+					
+					} else if (gridEntities[entity] instanceof BBN.Ball) {
+						//pickup ball
 					}
-				
-				} else if (gridEntities[entity] instanceof BBN.Ball) {
-					//pickup ball
 				}
 			}
 		},
