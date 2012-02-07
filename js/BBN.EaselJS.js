@@ -10,12 +10,16 @@ var BBN = BBN || (function(){
 		grid: null,
 		variables: null,
 		init: function() {
+
+			var that, gridWidth, gridHeight, gridUnit;
+
 			console.log('-- BloodBowlNation --');
 			
-			this.backgroundCanvas = document.getElementById("BackgroundCanvas");
+			this.backgroundCanvas = document.getElementById("BackgroundCanvas");			
 			this.mainCanvas = document.getElementById("MainCanvas");
 
 			this.canvasBounds = new Rectangle();
+
 			this.canvasBounds.width = this.mainCanvas.width;
 			this.canvasBounds.height = this.mainCanvas.height;
 			
@@ -31,23 +35,21 @@ var BBN = BBN || (function(){
 
 			this.loadVariables();
 
-			var gridWidth = this.variables.gridWidth;
-			var gridHeight = this.variables.gridHeight;
-			var gridUnit = this.variables.gridUnit;
+			gridWidth = this.variables.gridWidth;
+			gridHeight = this.variables.gridHeight;
+			gridUnit = this.variables.gridUnit;
 
-			this.grid = new BBN.Grid(this.mainStage, gridWidth, gridHeight, gridUnit);	
-			this.game = new BBN.Game(this.mainStage, this.grid);	
-					
+			this.grid = new BBN.Grid(this.mainStage, gridWidth, gridHeight, gridUnit);
+			this.game = new BBN.Game(this.mainStage, this.grid);
+								
 			this.Pitch.init(this.backgroundStage, this.game);
 			
-			var that = this;
+			that = this;
 
 			this.mainStage.onPress = function(e) { that.gameCanvasClick(e) };
 
 			$('#ClearCacheLink').click({that:this}, this.clearCacheLinkClick);
-
 			$('#StopGameLoopLink').click({that:this}, this.togglePauseGameLoopLinkClick);
-
 			$('#TurnoverLink').click({that:this}, this.turnoverLinkClick);
 
 			this.RenderEngine.init(this.mainStage, this.backgroundStage);
@@ -86,12 +88,16 @@ var BBN = BBN || (function(){
 
 			that.game.activeTeam = teams[Math.floor(Math.random()*teams.length)];
 
-			console.log('turnover: ' + that.game.activeTeam.name);
+			console.log('turnover: ' + activeTeam.name);
 
-			players = that.game.activeTeam.players;
+			players = activeTeam.players;
+
 			playerCount = players.length;
+
 			while (playerCount--) {
+
 				players[playerCount].hasMoved = false;
+
 				players[playerCount].hasActioned = false;
 			}
 
@@ -110,10 +116,6 @@ var BBN = BBN || (function(){
 			e.preventDefault();
 		},
 		tick: function() {
-
-			//do render stuff here
-
-			//main game loop
 
 			document.getElementById('Ticks').innerHTML = 'ticks: ' + Ticker.getTicks(Variables.gamePausable);
 
@@ -139,7 +141,7 @@ var BBN = BBN || (function(){
 
 			var that = this, isPlayerSelected,
 			grids = Helpers.convertPixelsToGrids(e.stageX, e.stageY, that.variables.gridUnit),
-			gridEntities, entity, space;
+			gridEntities, entity, space, isSquareEmpty, entitiesLength, isEntityActive;
 
 			if (grids[0] > that.variables.gridWidth || grids[1] > that.variables.gridLength) {
 				console.log('gameCanvasClick(): out of bounds');
@@ -151,48 +153,58 @@ var BBN = BBN || (function(){
 				return false;				
 			}
 
-			space = that.game.grid.space[grids[0]][grids[1]];
+			space = that.game.grid.getSpace(grids[0], grids[1]);
 
 			gridEntities = Helpers.castGridEntityHelper(space);
 
-			isPlayerSelected = that.game.selectedPlayer instanceof BBN.Player;
+			entitiesLength = gridEntities.length;
 
-			if (isPlayerSelected && gridEntities.length === 0) {
+			isPlayerSelected = (that.game.selectedPlayer instanceof BBN.Player);
+
+			isSquareEmpty = (entitiesLength === 0);
+
+			if (isPlayerSelected && isSquareEmpty) {
 
 				this.movePlayer(grids);
 			
-			} else {
+			} else if (!isSquareEmpty) {
 
-				for (entity in gridEntities) {
+				while (entitiesLength--) {
+					
+					entity = gridEntities[entitiesLength];
 
-					if (gridEntities[entity] instanceof BBN.Player) {
+					if (entity instanceof BBN.Player) {
+
+						isActive = (that.game.activeTeam.name === entity.team);
 
 						if (isPlayerSelected) {
+
 							//block or switch selected player
-							that.resolvePlayerAction(gridEntities[entity]);
+							that.resolvePlayerAction(entity);
 
-						} else {
+						} else if (isActive) {
+
 							//select player
-
-
-							if (that.game.activeTeam.name === gridEntities[entity].team) {
-								that.game.selectedPlayer = that.game.grid.selectedPlayer = gridEntities[entity];
-							}
+							that.game.setSelectedPlayer(entity);
 						}
 					
-					} else if (gridEntities[entity] instanceof BBN.Ball) {
+					} else if (entity instanceof BBN.Ball) {
 						//pickup ball
 					}
 				}
 			}
 		},
 		resolvePlayerAction: function(player) {
+
 			if (player.team === this.game.selectedPlayer.team) {
 				
-				this.game.selectedPlayer = this.game.grid.selectedPlayer = player;
+				this.game.setSelectedPlayer(player);
+
 			} else {
 				
 				//block!
+
+				console.log('blocker: ' + this.game.selectedPlayer.name + ' defender: ' + player.name);
 			}
 		}
 	}

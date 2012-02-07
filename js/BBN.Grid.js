@@ -169,6 +169,9 @@ if (typeof BBN == "undefined" || !BBN)
 			if (gridY < 0) { gridY = 0; }  
 			return gridY*this.unit;
 		},
+		getSpace: function(x, y) {
+			return this.space[x][y];
+		},
 		moveEntity: function(destinationGridX, destinationGridY, object) {
 			var player, ball;
 			if (!object instanceof BBN.Player && !object instanceof BBN.Ball) {		
@@ -247,19 +250,34 @@ if (typeof BBN == "undefined" || !BBN)
 			this.selectedPlayerSquare.graphics.clear();
 		},
 		renderCursor: function(x, y) {
-			var cursorColour = 'rgba(0,0,0,0.5)';
+			var cursorColour = 'rgba(255, 255, 255, 1)';
 			var grids = Helpers.convertPixelsToGrids(x, y, this.unit);
-			this.renderSquares(this.cursor, [grids], this.unit, cursorColour);
+			this.renderBox(this.cursor, [grids], this.unit, cursorColour);
 		},	
 		renderSelectedPlayerSquare: function() {
 			var grids = this.selectedPlayer.location;
 			if (typeof grids === 'undefined') {
 				this.selectedPlayerSquare.graphics.clear();
 			} else {
-				var playerSquareColour = 'rgb(0, 0, 0, 0.5)';
+				var playerSquareColour = 'rgba(0, 0, 0, 0.5)';
 				this.renderSquares(this.selectedPlayerSquare, [grids], this.unit, playerSquareColour);
 			}
 			this.renderAdjacentOppositionSquares(grids);
+		},
+		renderBox: function(shape, gridsArray, gridUnit, colour) {
+
+			var gridsArrayLength = gridsArray.length;
+			var pixels, x, y;
+
+			shape.graphics.clear();
+			while (gridsArrayLength--) {
+				pixels = Helpers.convertGridsToPixels(gridsArray[gridsArrayLength][0], gridsArray[gridsArrayLength][1], gridUnit);
+
+				x = gridsArray[gridsArrayLength][0]*gridUnit+0.5;
+				y = gridsArray[gridsArrayLength][1]*gridUnit+0.5;
+
+				shape.graphics.setStrokeStyle(1).beginStroke(colour).moveTo(x, y).lineTo(x + gridUnit, y).lineTo(x + gridUnit, y + gridUnit).lineTo(x, y + gridUnit).lineTo(x, y).endStroke();
+			}			
 		},
 		renderSquares: function(shape, gridsArray, gridUnit, colour) {
 
@@ -270,11 +288,9 @@ if (typeof BBN == "undefined" || !BBN)
 			while (gridsArrayLength--) {
 				pixels = Helpers.convertGridsToPixels(gridsArray[gridsArrayLength][0], gridsArray[gridsArrayLength][1], gridUnit);
 				shape.graphics.beginFill(colour);
-				shape.graphics.drawRect(pixels[0], pixels[1], gridUnit, gridUnit);
+				shape.graphics.drawRect(pixels[0]+0.5, pixels[1]+0.5, gridUnit, gridUnit);
 				shape.graphics.endFill();
 			}
-
-			
 		},
 		renderAdjacentOppositionSquares: function(grids) {
 
@@ -339,10 +355,11 @@ if (typeof BBN == "undefined" || !BBN)
 			return adjacentSquares;			
 		},
 		renderSelectedPlayerSquareToCursor: function(cursor) {
-			if (typeof this.selectedPlayer.location != 'undefined' && this.selectedPlayer.hasMoved === false) {
-				var grids = Helpers.convertPixelsToGrids(cursor[0], cursor[1], this.unit);
-				var path = a_star(this.selectedPlayer.location, grids, this.createBoard(), this.width, this.height);
-				for (var i = 0, pathLength = path.length; i < pathLength && i < this.selectedPlayer.movementAllowance; i++) {
+			var grids, path, i;
+			if (this.selectedPlayer instanceof BBN.Player && this.selectedPlayer.hasMoved === false) {
+				grids = Helpers.convertPixelsToGrids(cursor[0], cursor[1], this.unit);
+				path = a_star(this.selectedPlayer.location, grids, this.createBoard(), this.width, this.height);
+				for (i = 0, pathLength = path.length; i < pathLength && i < this.selectedPlayer.movementAllowance; i++) {
 					this.renderCursorPath(path[i].x, path[i].y);            		
             	}				
 			}
@@ -366,7 +383,7 @@ if (typeof BBN == "undefined" || !BBN)
 			return board;
 		},
 		renderCursorPath: function(x, y) {
-			var pathSquareColour = 'rgba(0,0,0,0.5)';
+			var pathSquareColour = 'rgba(0,0,255,0.2)';
 			var pixels = Helpers.convertGridsToPixels(x, y, this.unit);
 			this.cursorPathSquare.graphics.beginFill(pathSquareColour);
 			this.cursorPathSquare.graphics.drawRect(pixels[0], pixels[1], this.unit, this.unit);

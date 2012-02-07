@@ -66,6 +66,12 @@ if (typeof BBN == "undefined" || !BBN)
 				}
 			}
 		},
+		setSelectedPlayer: function(player) {
+			if (player instanceof BBN.Player) {
+			
+				this.selectedPlayer = this.grid.selectedPlayer = player;
+			}
+		},
 		generateTeams: function() {
 			var player, i, team1, team2;
 			this.ball = new BBN.Ball();
