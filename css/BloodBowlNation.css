@@ -3,6 +3,7 @@ body {}
 h1 { font-family: 'Covered By Your Grace', arial, serif; font-size: 3em; line-height: 2em; }
 h1 a { border: none 0; }
 h1 a:hover { border: none 0; color: #999; }
+h2 { font-size: 1em; margin: 0 0 10px 0; }
 footer { clear: both; padding: 10px 0; }
 a { color: #999; text-decoration: none; border-bottom: solid 1px #ddd; }
 a:visited { color: #999; }
@@ -12,6 +13,7 @@ a:hover { color: #f00; border-bottom: solid 1px #f00;  }
 #Canvases { float: left; position: relative; padding: 10px; border: solid 1px #efefef; margin: 0 1px 0 0; }
 #BackgroundCanvas { z-index: 0; }
 #MainCanvas { position: absolute; top: 10px; left: 10px; z-index: 1; }
+#TestContainer { font-size:1.4em; }
 
 aside { float: left; width: 250px; font-size: 1em; }
 aside section header { padding: 0 0 10px 0; border-bottom: solid 1px #efefef; text-transform: uppercase; line-height: 1em; display: block; margin: 0 0 10px; }

@@ -14,9 +14,9 @@ var requires = [
 	'js/lib/jquery-1.7.1.min',
 	'js/lib/modernizr',
 	'js/lib/jasmine-1.1.0/jasmine',
-	'js/lib/jasmine-1.1.0/jasmine-html'
+	'js/lib/jasmine-1.1.0/jasmine-html',
+	'js/test/test',
+	'js/test/spec'
 ];
 
-require(requires, function() {
-	$(BBN.init());	
-});
+require(requires, function() {});

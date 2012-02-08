@@ -29,7 +29,7 @@ jasmine.TrivialReporter.prototype.createDom = function(type, attrs, childrenVarA
 };
 
 jasmine.TrivialReporter.prototype.reportRunnerStarting = function(runner) {
-  var showPassed, showSkipped;
+  var showPassed, showSkipped, container;
 
   this.outerDiv = this.createDom('div', { className: 'jasmine_reporter' },
       this.createDom('div', { className: 'banner' },
@@ -51,8 +51,12 @@ jasmine.TrivialReporter.prototype.reportRunnerStarting = function(runner) {
           this.finishedAtSpan = this.createDom('span', { className: 'finished-at' }, ""))
       );
 
-  this.document.body.appendChild(this.outerDiv);
+  container = document.getElementById('TestContainer');
 
+  if (container !== null) {
+    container.appendChild(this.outerDiv);
+  }
+  
   var suites = runner.suites();
   for (var i = 0; i < suites.length; i++) {
     var suite = suites[i];
