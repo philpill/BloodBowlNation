@@ -203,16 +203,23 @@ if (typeof BBN == "undefined" || !BBN)
 			this.space[x][y].splice(i, 1);
 		},
 		getEntityLocation: function(object) {
-			var i, x, y;
-			for (x = 0, gridWidth = this.width; x < gridWidth; x++) {		
-				for (y = 0, gridHeight = this.height; y < gridHeight; y++) {
-					for (i = 0; i < this.space[x][y].length; i++) {
-						if (this.space[x][y][i] === object) {
-							return [x, y, i]
-						}
+			var entityIndex;
+			var gridWidth = this.width;
+			var gridHeight = this.height;
+			var space = this.space;
+
+			while (gridWidth--) {
+				gridHeight = this.height;
+				while (gridHeight--) {
+					entityIndex = space[gridWidth][gridHeight].length;
+					while (entityIndex--) {
+						if (space[gridWidth][gridHeight][entityIndex] === object) {
+							return [gridWidth, gridHeight, entityIndex]
+						}						
 					}
 				}
 			}
+
 			return null;
 		},
 		insertEntity: function(gridX, gridY, object) {	
@@ -273,8 +280,8 @@ if (typeof BBN == "undefined" || !BBN)
 			while (gridsArrayLength--) {
 				pixels = Helpers.convertGridsToPixels(gridsArray[gridsArrayLength][0], gridsArray[gridsArrayLength][1], gridUnit);
 
-				x = gridsArray[gridsArrayLength][0]*gridUnit+0.5;
-				y = gridsArray[gridsArrayLength][1]*gridUnit+0.5;
+				x = pixels[0]+0.5;
+				y = pixels[1]+0.5;
 
 				shape.graphics.setStrokeStyle(1).beginStroke(colour).moveTo(x, y).lineTo(x + gridUnit, y).lineTo(x + gridUnit, y + gridUnit).lineTo(x, y + gridUnit).lineTo(x, y).endStroke();
 			}			
@@ -355,10 +362,13 @@ if (typeof BBN == "undefined" || !BBN)
 			return adjacentSquares;			
 		},
 		renderSelectedPlayerSquareToCursor: function(cursor) {
-			var grids, path, i;
+			var grids, path, i, board;
 			if (this.selectedPlayer instanceof BBN.Player && this.selectedPlayer.hasMoved === false) {
 				grids = Helpers.convertPixelsToGrids(cursor[0], cursor[1], this.unit);
-				path = a_star(this.selectedPlayer.location, grids, this.createBoard(), this.width, this.height);
+				
+				board = this.getBoard();
+
+				path = a_star(this.selectedPlayer.location, grids, board, this.width, this.height);
 				for (i = 0, pathLength = path.length; i < pathLength && i < this.selectedPlayer.movementAllowance; i++) {
 					this.renderCursorPath(path[i].x, path[i].y);            		
             	}				
@@ -371,15 +381,31 @@ if (typeof BBN == "undefined" || !BBN)
 				
 			}
 		},
+		getBoard: function() {
+			var board = this.createBoard();
+			board = this.populateBoard(board);
+
+			return board;
+		},
 		createBoard: function() {
 			//needs to represent entities on field
 			var board = [];
-	        for (var x = 0, boardWidth = this.width; x < boardWidth; x++) {
-	            board[x] = [];
-	            for (var y = 0, boardHeight = this.height; y < boardHeight; y++) {
-	            	board[x][y] = 0;
+			var boardWidth = this.width;
+			var boardHeight = this.height;
+
+			while (boardWidth--) {				
+				boardHeight = this.height;
+				board[boardWidth] = [];
+				while (boardHeight--) {
+					board[boardWidth][boardHeight] = 0;
 				}
 			}
+			return board;
+		},
+		populateBoard: function(board) {
+
+			//console.log(this.space);
+			
 			return board;
 		},
 		renderCursorPath: function(x, y) {

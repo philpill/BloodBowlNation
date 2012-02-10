@@ -16,7 +16,9 @@ var requires = [
 	'js/lib/jasmine-1.1.0/jasmine',
 	'js/lib/jasmine-1.1.0/jasmine-html',
 	'js/test/test',
-	'js/test/spec'
+	'js/test/spec',
+	'js/test/spec.EaselJS',
+	'js/test/spec.Helpers'
 ];
 
 require(requires, function() {});

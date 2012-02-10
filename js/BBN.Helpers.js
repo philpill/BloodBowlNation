@@ -25,10 +25,16 @@ var Helpers = {
 		};
 	},
 	convertPixelsToGrids: function(x, y, unit) {
-		return [Math.floor(x/unit), Math.floor(y/unit)];
+		if ((typeof(x) === 'number')&&(typeof(y) === 'number')&&(typeof(unit) === 'number')) {
+			return [Math.floor(x/unit), Math.floor(y/unit)];
+		}
+		return null;
 	},
 	convertGridsToPixels: function(gridX, gridY, unit) {
-		return [gridX*unit, gridY*unit];
+		if ((typeof(gridX) === 'number')&&(typeof(gridY) === 'number')&&(typeof(unit) === 'number')) {
+			return [gridX*unit, gridY*unit];
+		}
+		return null;
 	},
 	castPlayerHelper: function(array) {
 		var i;
