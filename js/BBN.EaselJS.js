@@ -168,19 +168,27 @@ var BBN = BBN || (function () {
 				if (isSquareEmpty) {
 
 					//move player
-					
+					//this.movePlayer(grids);
+
 				} else {
 
-					//block
-					//select player
-					//move and pickup ball
+					//if (object instanceof BBN.Player)
+						//if (player.team === activeteam)
+							//select player
+						//else
+							//block
+					//else if (object instance of BBN.Ball)
+						//move and pickup ball
 				}
 
 			} else {
 
 				if (!isSquareEmpty) {
 
-					//select player				}				
+					//if (object instanceof BBN.Player)
+						//if (player.team === activeteam)
+							//select player
+				}				
 			}
 
 			if (isPlayerSelected && isSquareEmpty) {
