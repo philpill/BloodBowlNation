@@ -278,6 +278,9 @@ if (typeof BBN == "undefined" || !BBN)
 
 			shape.graphics.clear();
 			while (gridsArrayLength--) {
+				if (gridsArray[gridsArrayLength] === null) {
+					continue;
+				}
 				pixels = Helpers.convertGridsToPixels(gridsArray[gridsArrayLength][0], gridsArray[gridsArrayLength][1], gridUnit);
 
 				x = pixels[0]+0.5;

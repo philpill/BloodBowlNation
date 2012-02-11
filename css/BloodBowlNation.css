@@ -31,7 +31,7 @@ aside article time { display: block; color: #999; }
 #DebugConsole code { font-family: Courier, sans-serif; font-size: 1.2em; display: block; margin: 0 0 5px 5px; }
 #DevNotes { max-height: 200px; overflow: auto; }
 
-#GeneralInfo {}
+#TestContainer { padding: 10px; border: solid 1px #efefef; }
 
 
 
