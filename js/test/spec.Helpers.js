@@ -1,10 +1,47 @@
 console.log('-- test.Helpers --');
 describe("Helpers", function() {
+
+	var x, y, unit, grids, testFunction;
+
+	var entity1, entity2, isAdjacent;
+
+	var gridx, gridy, unit, pixels;
+
+	beforeEach(function () {
+		entity1 = {};
+		entity2 = {};
+		isAdjacent = false;
+		x = 0;
+		y = 0;
+		unit = 0;
+		grids = [];
+		gridx = 0;
+		gridy = 0;
+		unit = 0;
+		pixels = [];
+	});
+
 	it("should exist", function() {
 		expect(Helpers).not.toBeNull();
 	});
-	it("should return grids for pixels", function() {
-		var x, y, unit, grids, testFunction;
+	it("should return true for adjacent grid entities", function() {
+		testFunction = Helpers.isAdjacent;
+		entity1.location = [0, 1];
+		entity2.location = [0, 0];
+		isAdjacent = testFunction(entity1, entity2);
+		expect(isAdjacent).toBeTruthy();
+
+		entity1.location = [5, 5];
+		entity2.location = [0, 0];
+		isAdjacent = testFunction(entity1, entity2);
+		expect(isAdjacent).toBeFalsy();
+
+		entity1.location = [0, 0];
+		entity2.location = [0, 0];
+		isAdjacent = testFunction(entity1, entity2);
+		expect(isAdjacent).toBeFalsy();
+	});
+	it("should return grids for pixels", function() {		
 		testFunction = Helpers.convertPixelsToGrids;
 		x = 100;
 		y = 100;
@@ -37,8 +74,7 @@ describe("Helpers", function() {
 		grids = testFunction(x, y, unit);
 		expect(grids).toBeNull();
 	});
-	it("should return pixels for grids", function() {
-		var gridx, gridy, unit, pixels, testFunction;
+	it("should return pixels for grids", function() {		
 		testFunction = Helpers.convertGridsToPixels;
 		gridx = 5;
 		gridy = 10;

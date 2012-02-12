@@ -62,5 +62,24 @@ var Helpers = {
 			}
 		}
 		return entityArray;		
+	},
+	isAdjacent: function(e1, e2) {
+
+		isAdjacent = false;
+
+		var loc1 = e1.location;
+		var loc2 = e2.location;
+
+		var x = Math.abs(loc1[0] - loc2[0]);
+		var y = Math.abs(loc1[1] - loc2[1]);
+
+		console.log(x);
+		console.log(y);
+
+		if ((x === 1)||(y === 1)) {
+			isAdjacent = true;
+		}
+
+		return isAdjacent;
 	}
 }

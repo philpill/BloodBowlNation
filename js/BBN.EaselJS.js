@@ -96,56 +96,58 @@ var BBN = BBN || (function () {
 		},
 		gameCanvasClick: function (e) {
 			var that, isPlayerSelected, grids, gridEntities, entity, space, isSquareEmpty, entitiesLength, isActive;
+			
 			that = this;
+			
 			grids = Helpers.convertPixelsToGrids(e.stageX, e.stageY, that.variables.gridUnit);
+			
 			if (grids[0] > that.variables.gridWidth || grids[1] > that.variables.gridLength) {
 				console.log('gameCanvasClick(): out of bounds');
 				return false;
 			}
+			
 			if (typeof that.game.grid.space[grids[0]] === 'undefined' || typeof that.game.grid.space[grids[0]][grids[1]] === 'undefined') {
 				console.log('gameCanvasClick(): out of bounds');
 				return false;
 			}
+			
 			space = that.game.grid.getSpace(grids[0], grids[1]);
+			
 			gridEntities = Helpers.castGridEntityHelper(space);
+			
 			entitiesLength = gridEntities.length;
+			
 			isPlayerSelected = (that.game.selectedPlayer instanceof BBN.Player);
-			isSquareEmpty = (entitiesLength === 0);
-			if (isPlayerSelected) {
-				if (isSquareEmpty) {
-					//move player
-					//this.movePlayer(grids);
-				} else {
-					//if (object instanceof BBN.Player)
-						//if (player.team === activeteam)
-							//select player
-						//else
-							//block
-					//else if (object instance of BBN.Ball)
-						//move and pickup ball
-				}
-			} else {
-				if (!isSquareEmpty) {
-					//if (object instanceof BBN.Player)
-						//if (player.team === activeteam)
-						//select player
-				}
-			}
+			
+			isSquareEmpty = (entitiesLength === 0);			
+			
 			if (isPlayerSelected && isSquareEmpty) {
+			
 				this.movePlayer(grids);
+			
 			} else if (!isSquareEmpty) {
+
 				while (entitiesLength--) {
+				
 					entity = gridEntities[entitiesLength];
+				
 					if (entity instanceof BBN.Player) {
+				
 						isActive = (that.game.activeTeam.name === entity.team);
+				
 						if (isPlayerSelected) {
+				
 							//block or switch selected player
 							that.resolvePlayerAction(entity);
+				
 						} else if (isActive) {
-							//select player
+				
+							//select player				
 							that.game.setSelectedPlayer(entity);
 						}
+				
 					} else if (entity instanceof BBN.Ball) {
+				
 						//pickup ball
 					}
 				}
@@ -156,7 +158,9 @@ var BBN = BBN || (function () {
 				this.game.setSelectedPlayer(player);
 			} else {
 				//block!
-				console.log('blocker: ' + this.game.selectedPlayer.name + ' defender: ' + player.name);
+				if (Helpers.isAdjacent(this.game.selectedPlayer, player)) {
+					console.log('blocker: ' + this.game.selectedPlayer.name + ' defender: ' + player.name);
+				}
 			}
 		}
 	};
