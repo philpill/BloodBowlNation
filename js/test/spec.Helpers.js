@@ -31,6 +31,11 @@ describe("Helpers", function() {
 		isAdjacent = testFunction(entity1, entity2);
 		expect(isAdjacent).toBeTruthy();
 
+		entity1.location = [5, 1];
+		entity2.location = [0, 0];
+		isAdjacent = testFunction(entity1, entity2);
+		expect(isAdjacent).toBeFalsy();
+
 		entity1.location = [5, 5];
 		entity2.location = [0, 0];
 		isAdjacent = testFunction(entity1, entity2);
@@ -40,6 +45,16 @@ describe("Helpers", function() {
 		entity2.location = [0, 0];
 		isAdjacent = testFunction(entity1, entity2);
 		expect(isAdjacent).toBeFalsy();
+
+		entity1.location = [13, 27];
+		entity2.location = [43, 16];
+		isAdjacent = testFunction(entity1, entity2);
+		expect(isAdjacent).toBeFalsy();
+
+		entity1.location = [16, 9];
+		entity2.location = [15, 9];
+		isAdjacent = testFunction(entity1, entity2);
+		expect(isAdjacent).toBeTruthy();		
 	});
 	it("should return grids for pixels", function() {		
 		testFunction = Helpers.convertPixelsToGrids;
