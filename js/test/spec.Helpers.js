@@ -7,6 +7,8 @@ describe("Helpers", function() {
 
 	var gridx, gridy, unit, pixels;
 
+	var array, isEmpty, player;
+
 	beforeEach(function () {
 		entity1 = {};
 		entity2 = {};
@@ -109,5 +111,30 @@ describe("Helpers", function() {
 		pixels = [];
 		pixels = testFunction(gridx, gridy, unit);
 		expect(pixels).toBeNull();
+	});
+	it("should know empty spaces", function() {	
+
+		spyOn(BBN, 'Player').andCallThrough();
+    	player = new BBN.Player(null, null, { name: '', colours:[]});
+
+
+		testFunction = Helpers.isSpaceEmpty;
+		array = [], isEmpty = null;
+		array[0] = player;
+		array[1] = [4, 5, 6];
+		array[2] = 3;
+		array[3] = 'TEST';
+		array[4] = { name: 'test' };
+		isEmpty = testFunction(array);
+		expect(isEmpty).toBeFalsy();
+		
+		array = [], isEmpty = null;
+		array[0] = new Object();
+		array[1] = [4, 5, 6];
+		array[2] = 3;
+		array[3] = 'TEST';
+		array[4] = { name: 'test' };
+		isEmpty = testFunction(array);
+		expect(isEmpty).toBeTruthy();
 	});
 });

@@ -27,6 +27,12 @@ if (typeof BBN == "undefined" || !BBN)
 				this._selectedPlayer = value; 
 			}
 		},
+		defender: {
+			get: function() { return this._defender; },
+			set: function(value) { 
+				this._defender = value; 
+			}			
+		},
 		stage: {
 			get: function() { return this._stage; },
 			set: function(value) { 
@@ -206,7 +212,7 @@ if (typeof BBN == "undefined" || !BBN)
 					allPlayers[playerCount].tick();				
 				}			
 			}
-			this.grid.tick(this.activeTeam);
+			this.grid.tick(this.activeTeam, this.selectedPlayer, this.defender);
 		}
 	}
 

@@ -179,10 +179,43 @@ var BBN = BBN || (function () {
 				}
 			}
 		},
-		blockPlayer: function(player) {
+		blockPlayer: function (player) {
 			if (Helpers.isAdjacent(this.game.selectedPlayer, player)) {
+
 				console.log('blocker: ' + this.game.selectedPlayer.name + ' defender: ' + player.name);
+
+				this.game.defender = player;
+
+				this.resolveBlock(this.game.selectedPlayer, this.game.defender);
 			}			
+		},
+		resolveBlock: function (attacker, defender) {
+			
+			//implement block mediator
+
+			var that = this;
+
+			this.mainStage.onPress = function (e) {
+				that.pushBackClick(e);
+			};
+		},
+		pushBackClick: function (e) {
+			
+			var grids, player, entity, space, that;
+			
+			grids = Helpers.convertPixelsToGrids(e.stageX, e.stageY, this.variables.gridUnit);
+
+			space = this.game.grid.getSpace(grids[0], grids[1]);
+			
+			if (Helpers.isAdjacent(this.game.defender, { location: grids })) {
+
+				if (Helpers.isSpaceEmpty(space)) {
+				
+					this.game.grid.moveEntity(grids[0], grids[1], this.game.defender);
+				}
+			}
+
+			this.rebindMouseClick();
 		}
 	};
 }());

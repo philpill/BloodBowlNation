@@ -32,7 +32,10 @@ if (typeof BBN == "undefined" || !BBN)
 		this.stage.addChild(this.cursorPathSquare);	
 
 		this.oppositionPlayerSquares = new Shape();
-		this.stage.addChild(this.oppositionPlayerSquares);	
+		this.stage.addChild(this.oppositionPlayerSquares);
+		
+		this.pushBackSquares = new Shape();
+		this.stage.addChild(this.pushBackSquares);
 	}
 
 	BBN.Grid.prototype.initialise = function() {
@@ -77,10 +80,17 @@ if (typeof BBN == "undefined" || !BBN)
 			}
 		}, 
 		selectedPlayerSquare: {
-			get: function() { return this._selectedPlayer; },
+			get: function() { return this._selectedPlayerSquare; },
 			set: function(value) { 
 				//test instanceof EaselJS Shape
-				this._selectedPlayer = value;
+				this._selectedPlayerSquare = value;
+			}
+		},
+		pushBackSquares: {
+			get: function() { return this._pushBackSquares; },
+			set: function(value) { 
+				//test instanceof EaselJS Shape
+				this._pushBackSquares = value;
 			}
 		},
 		playerSquares: {
@@ -97,21 +107,12 @@ if (typeof BBN == "undefined" || !BBN)
 				//test instanceof EaselJS Shape
 				this._cursorPathSquare = value;
 			}
-		},	
-		selectedPlayer: {
-			get: function() { return this._selectedPlayer; },
-			set: function(value) { 
-				if (typeof value instanceof BBN.Player) {
-					this._selectedPlayer = value;
-				}
-			}
-		},		
+		},
 		cursor: {
 			get: function() { return this._cursor; },
 			set: function(value) { 
 				//test instanceof EaselJS Shape
 				this._cursor = value;
-
 			}
 		},
 		space: {
@@ -241,16 +242,35 @@ if (typeof BBN == "undefined" || !BBN)
 				this.space[gridX][gridY].push(object);
 			}
 		},
-		tick: function(activeTeam) {
+		tick: function(activeTeam, selectedPlayer, defender) {
 			if (this.activeTeamCache !== activeTeam) {
 				this.activeTeamCache = activeTeam;
 				this.renderActiveTeamPlayerSquares()
 			}
 			this.renderCursor(this.stage.mouseX, this.stage.mouseY);
-			if (this.selectedPlayer instanceof BBN.Player) {
-				this.renderSelectedPlayerSquare();
+			if (selectedPlayer instanceof BBN.Player) {
+
+				this.renderSelectedPlayerSquare(selectedPlayer);
 				this.cursorPathSquare.graphics.clear();
-				this.renderSelectedPlayerSquareToCursor([this.stage.mouseX, this.stage.mouseY]);
+				this.pushBackSquares.graphics.clear();
+
+				if (defender instanceof BBN.Player) {
+
+					//render pushback squares
+
+					var pushBackSquares = Helpers.getPushBackSquares(selectedPlayer.location, defender.location);
+
+					console.log(pushBackSquares);
+
+					this.renderPushBackSquares(pushBackSquares);
+
+
+				
+				} else {
+					
+					this.renderSelectedPlayerSquareToCursor(selectedPlayer, [this.stage.mouseX, this.stage.mouseY]);
+				}
+				
 			} else {
 				this.clearSelectedPlayerSquare();
 				this.renderActiveTeamPlayerSquares();
@@ -259,20 +279,25 @@ if (typeof BBN == "undefined" || !BBN)
 		clearSelectedPlayerSquare: function() {
 			this.selectedPlayerSquare.graphics.clear();
 		},
+		renderPushBackSquares: function(grids) {
+			var squareColour = 'rgba(200, 0, 0, 0.5)';
+
+			this.renderSquares(this.pushBackSquares, grids, this.unit, squareColour);
+		},
 		renderCursor: function(x, y) {
 			var cursorColour = 'rgba(200, 200, 200, 1)';
 			var grids = Helpers.convertPixelsToGrids(x, y, this.unit);
 			this.renderBox(this.cursor, [grids], this.unit, cursorColour);
 		},	
-		renderSelectedPlayerSquare: function() {
-			var grids = this.selectedPlayer.location;
+		renderSelectedPlayerSquare: function(selectedPlayer) {
+			var grids = selectedPlayer.location;
 			if (typeof grids === 'undefined') {
-				this.selectedPlayerSquare.graphics.clear();
+				selectedPlayerSquare.graphics.clear();
 			} else {
 				var playerSquareColour = 'rgba(0, 0, 0, 0.5)';
 				this.renderSquares(this.selectedPlayerSquare, [grids], this.unit, playerSquareColour);
 			}
-			this.renderAdjacentOppositionSquares(grids);
+			this.renderAdjacentOppositionSquares(selectedPlayer, grids);
 		},
 		renderBox: function(shape, gridsArray, gridUnit, colour) {
 
@@ -305,7 +330,7 @@ if (typeof BBN == "undefined" || !BBN)
 				shape.graphics.endFill();
 			}
 		},
-		renderAdjacentOppositionSquares: function(grids) {
+		renderAdjacentOppositionSquares: function(selectedPlayer, grids) {
 
 			var adjacentSquares = this.getAdjacentSquares(grids), 
 			adjacentLength = adjacentSquares.length,
@@ -334,7 +359,7 @@ if (typeof BBN == "undefined" || !BBN)
 
 					if (gridEntities[entitiesLength] instanceof BBN.Player) {
 				
-						if (gridEntities[entitiesLength].team !== this.selectedPlayer.team) {
+						if (gridEntities[entitiesLength].team !== selectedPlayer.team) {
 							
 							validSquaresArray.push(adjacentSquares[adjacentLength]);
 						}
@@ -367,15 +392,15 @@ if (typeof BBN == "undefined" || !BBN)
 			
 			return adjacentSquares;			
 		},
-		renderSelectedPlayerSquareToCursor: function(cursor) {
+		renderSelectedPlayerSquareToCursor: function(selectedPlayer, cursor) {
 			var grids, path, i, board;
-			if (this.selectedPlayer instanceof BBN.Player && this.selectedPlayer.hasMoved === false) {
+			if (selectedPlayer instanceof BBN.Player && selectedPlayer.hasMoved === false) {
 				grids = Helpers.convertPixelsToGrids(cursor[0], cursor[1], this.unit);
 				
 				board = this.getBoard();
 
-				path = a_star(this.selectedPlayer.location, grids, board, this.width, this.height);
-				for (i = 0, pathLength = path.length; i < pathLength && i < this.selectedPlayer.movementAllowance; i++) {
+				path = a_star(selectedPlayer.location, grids, board, this.width, this.height);
+				for (i = 0, pathLength = path.length; i < pathLength && i < selectedPlayer.movementAllowance; i++) {
 					this.renderCursorPath(path[i].x, path[i].y);            		
             	}				
 			}
@@ -384,7 +409,6 @@ if (typeof BBN == "undefined" || !BBN)
 			var team = this.activeTeamCache;
 			if (this.selectedPlayer === null) {
 				//render squares for all players
-				
 			}
 		},
 		getBoard: function() {

@@ -67,6 +67,18 @@ var Helpers = {
 		}
 		return entityArray;		
 	},
+	isSpaceEmpty: function(array) {
+
+		var entityArray = [];
+		
+		entityArray = Helpers.castGridEntityHelper(array);
+
+		if (entityArray.length === 0) {
+			return true;
+		}
+
+		return false;
+	},
 	isAdjacent: function(e1, e2) {
 
 		var loc1 = e1.location;
@@ -82,5 +94,59 @@ var Helpers = {
 		}
 
 		return false;
-	}
+	},
+	getPushBackSquares: function(aLocation, dLocation) {
+		
+		var aX, aY, dX, dY, iX, iY, jX, jY, kX, kY, pushBackLocation;
+		
+		aX = aLocation[0];
+		aY = aLocation[1];
+		
+		dX = dLocation[0];
+		dY = dLocation[1];
+		
+		jX = aX - 2*(aX - dX); //direct tackles
+		jY = aY - 2*(aY - dY);
+		
+		if (dX === jX) { 
+		//horizontal tackle
+			iX = dX - 1;
+			iY = jY;
+			kX = dX + 1;
+			kY = jY;
+			
+		} else if (dY === jY) { 
+		//vertical tackle
+			iX = jX;
+			iY = dY - 1;
+			kX = jX;
+			kY = dY + 1;
+		
+		} else {
+		//diagonal tackle
+			iX = dX;
+			iY = aY - 2*(aY - dY);
+			jX = -1*(aX) + 2*(dX);
+			jY = -1*(aY) + 2*(dY);
+			kX = aX - 2*(aX - dX);
+			kY = dY;
+		}
+		
+		pushBackLocation = new Array();
+		
+		pushBackLocation[0] = [iX, iY];
+		pushBackLocation[1] = [jX, jY];
+		pushBackLocation[2] = [kX, kY];
+							
+		return pushBackLocation;
+		
+		//formula to determine diagonal tackle
+		//a = (1/(a+b)) - b
+		
+		//formula to work out three straight gridsquares
+		//a = 2(a - b) + c
+		//a - 2(a - b) = c
+		//16 - 2(16 - 17) = 18 = 16 - 2(-1) == a < c
+		//9 - 2(9 - 8) = 7 = 9 - 2(1) == a > c
+	},
 }
