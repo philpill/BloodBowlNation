@@ -170,6 +170,9 @@ if (typeof BBN == "undefined" || !BBN)
 			return gridY*this.unit;
 		},
 		getSpace: function(x, y) {
+			if (typeof this.space[x] === 'undefined') {
+				return null;
+			}
 			return this.space[x][y];
 		},
 		moveEntity: function(destinationGridX, destinationGridY, object) {
@@ -257,7 +260,7 @@ if (typeof BBN == "undefined" || !BBN)
 			this.selectedPlayerSquare.graphics.clear();
 		},
 		renderCursor: function(x, y) {
-			var cursorColour = 'rgba(255, 255, 255, 1)';
+			var cursorColour = 'rgba(200, 200, 200, 1)';
 			var grids = Helpers.convertPixelsToGrids(x, y, this.unit);
 			this.renderBox(this.cursor, [grids], this.unit, cursorColour);
 		},	

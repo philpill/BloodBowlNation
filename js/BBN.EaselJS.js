@@ -30,9 +30,7 @@ var BBN = BBN || (function () {
 			this.game = new BBN.Game(this.mainStage, this.grid);
 			this.Pitch.init(this.backgroundStage, this.game);
 			that = this;
-			this.mainStage.onPress = function (e) {
-				that.gameCanvasClick(e);
-			};
+			this.rebindMouseClick();
 			$('#ClearCacheLink').click({
 				that: this
 			}, this.clearCacheLinkClick);
@@ -54,6 +52,12 @@ var BBN = BBN || (function () {
 			console.log('clear cache - not in use');
 			e.preventDefault();
 		},
+		rebindMouseClick: function() {
+			var that = this;
+			this.mainStage.onPress = function (e) {
+				that.gameCanvasClick(e);
+			};
+		},
 		turnoverLinkClick: function (e) {
 			var that, activeTeam, teams, teamIndex, players, playerCount;
 			that = e.data.that;
@@ -71,6 +75,7 @@ var BBN = BBN || (function () {
 				players[playerCount].hasActioned = false;
 			}
 			that.game.selectedPlayer = that.game.grid.selectedPlayer = null;
+			that.rebindMouseClick();
 			e.preventDefault();
 		},
 		togglePauseGameLoopLinkClick: function (e) {
@@ -94,74 +99,90 @@ var BBN = BBN || (function () {
 				game.selectedPlayer.hasMoved = true;
 			}
 		},
-		gameCanvasClick: function (e) {
-			var that, isPlayerSelected, grids, gridEntities, entity, space, isSquareEmpty, entitiesLength, isActive;
-			
+		playerActionClick: function (e) {
+			var that, grids, selectedPlayer, player, playerLength, space;
+
 			that = this;
 			
+			selectedPlayer = that.game.selectedPlayer;
+
+			if (selectedPlayer === null) {
+				
+				console.log('playerActionClick() error: no player selected');
+
+				this.rebindMouseClick();
+
+				return false;				
+			}
+
 			grids = Helpers.convertPixelsToGrids(e.stageX, e.stageY, that.variables.gridUnit);
-			
+
 			if (grids[0] > that.variables.gridWidth || grids[1] > that.variables.gridLength) {
-				console.log('gameCanvasClick(): out of bounds');
+
+				console.log('playerActionClick() error: click out of bounds');
+
+				this.game.setSelectedPlayer(null);
+
+				this.rebindMouseClick();
+
 				return false;
-			}
-			
-			if (typeof that.game.grid.space[grids[0]] === 'undefined' || typeof that.game.grid.space[grids[0]][grids[1]] === 'undefined') {
-				console.log('gameCanvasClick(): out of bounds');
-				return false;
-			}
-			
-			space = that.game.grid.getSpace(grids[0], grids[1]);
-			
-			gridEntities = Helpers.castGridEntityHelper(space);
-			
-			entitiesLength = gridEntities.length;
-			
-			isPlayerSelected = (that.game.selectedPlayer instanceof BBN.Player);
-			
-			isSquareEmpty = (entitiesLength === 0);			
-			
-			if (isPlayerSelected && isSquareEmpty) {
-			
+			} 
+				
+			space = this.game.grid.getSpace(grids[0], grids[1]);
+
+			player = Helpers.castPlayerHelper(space);
+
+			if (player === null) {
+				
 				this.movePlayer(grids);
 			
-			} else if (!isSquareEmpty) {
+			} else {
+		
+				if (this.game.activeTeam.name === player.team) {
 
-				while (entitiesLength--) {
-				
-					entity = gridEntities[entitiesLength];
-				
-					if (entity instanceof BBN.Player) {
-				
-						isActive = (that.game.activeTeam.name === entity.team);
-				
-						if (isPlayerSelected) {
-				
-							//block or switch selected player
-							that.resolvePlayerAction(entity);
-				
-						} else if (isActive) {
-				
-							//select player				
-							that.game.setSelectedPlayer(entity);
-						}
-				
-					} else if (entity instanceof BBN.Ball) {
-				
-						//pickup ball
-					}
+					this.game.setSelectedPlayer(player);
+		
+				} else {
+
+					this.blockPlayer(player);	
 				}
 			}
 		},
-		resolvePlayerAction: function (player) {
-			if (player.team === this.game.selectedPlayer.team) {
-				this.game.setSelectedPlayer(player);
-			} else {
-				//block!
-				if (Helpers.isAdjacent(this.game.selectedPlayer, player)) {
-					console.log('blocker: ' + this.game.selectedPlayer.name + ' defender: ' + player.name);
+		gameCanvasClick: function (e) {
+			var grids, player, entity, space, that;
+
+			that = this;
+			
+			grids = Helpers.convertPixelsToGrids(e.stageX, e.stageY, this.variables.gridUnit);
+
+			if (grids[0] > this.variables.gridWidth || grids[1] > this.variables.gridHeight) {
+				console.log('gameCanvasClick(): out of bounds');
+				return false;
+			}
+			
+			if (typeof this.game.grid.space[grids[0]] === 'undefined' || typeof this.game.grid.space[grids[0]][grids[1]] === 'undefined') {
+				console.log('gameCanvasClick(): out of bounds');
+				return false;
+			}
+			
+			space = this.game.grid.getSpace(grids[0], grids[1]);
+			
+			player = Helpers.castPlayerHelper(space);
+			
+			if (player !== null) {
+				
+				if (this.game.activeTeam.name === player.team) {
+			
+					this.game.setSelectedPlayer(player);
+
+					this.mainStage.onPress = function (e) { that.playerActionClick(e); };
 				}
 			}
+		},
+		blockPlayer: function(player) {
+			if (Helpers.isAdjacent(this.game.selectedPlayer, player)) {
+				console.log('blocker: ' + this.game.selectedPlayer.name + ' defender: ' + player.name);
+			}			
 		}
 	};
 }());

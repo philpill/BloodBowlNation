@@ -38,9 +38,11 @@ var Helpers = {
 	},
 	castPlayerHelper: function(array) {
 		var i;
-		for (i = 0; i < array.length; i++) {
-			if (array[i] instanceof BBN.Player) {
-				return array[i];
+		if (array instanceof Array) {
+			for (i = 0; i < array.length; i++) {
+				if (array[i] instanceof BBN.Player) {
+					return array[i];
+				}
 			}
 		}
 		return null;		
@@ -56,9 +58,11 @@ var Helpers = {
 	},
 	castGridEntityHelper: function(array) {
 		var i, entityArray = [];
-		for (i = 0, arrayLength = array.length; i < arrayLength; i++) {
-			if (array[i] instanceof BBN.Player || array[i] instanceof BBN.Ball) {
-				entityArray.push(array[i]);
+		if (array instanceof Array) {
+			for (i = 0, arrayLength = array.length; i < arrayLength; i++) {
+				if (array[i] instanceof BBN.Player || array[i] instanceof BBN.Ball) {
+					entityArray.push(array[i]);
+				}
 			}
 		}
 		return entityArray;		
