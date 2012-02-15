@@ -28,6 +28,9 @@ if (typeof BBN == "undefined" || !BBN)
 		this.selectedPlayerSquare = new Shape();
 		this.stage.addChild(this.selectedPlayerSquare);
 
+		this.defenderSquare = new Shape();
+		this.stage.addChild(this.defenderSquare);		
+
 		this.cursorPathSquare = new Shape();
 		this.stage.addChild(this.cursorPathSquare);	
 
@@ -85,6 +88,13 @@ if (typeof BBN == "undefined" || !BBN)
 				//test instanceof EaselJS Shape
 				this._selectedPlayerSquare = value;
 			}
+		},
+		defenderSquare: {
+			get: function() { return this._defenderSquare; },
+			set: function(value) { 
+				//test instanceof EaselJS Shape
+				this._defenderSquare = value;
+			}			
 		},
 		pushBackSquares: {
 			get: function() { return this._pushBackSquares; },
@@ -256,22 +266,42 @@ if (typeof BBN == "undefined" || !BBN)
 
 				if (defender instanceof BBN.Player) {
 
-					//render pushback squares
+					this.clearAdjacentOppositionSquares();
+
+					this.renderDefenderSquare(defender);
 
 					var pushBackSquares = Helpers.getPushBackSquares(selectedPlayer.location, defender.location);
 
-					this.renderPushBackSquares(pushBackSquares);
+					var unoccupiedPushBackSquares = [];
+
+					for (var i = 0; i < pushBackSquares.length; i++) {
+						
+						var entities = this.space[pushBackSquares[i][0]][pushBackSquares[i][1]]
+
+						if (entities.length === 0) {
+							
+							unoccupiedPushBackSquares.push([pushBackSquares[i][0], pushBackSquares[i][1]]);
+						}
+					}
+
+					this.renderPushBackSquares(unoccupiedPushBackSquares);
 				
 				} else {
+
+					this.clearDefenderSquare();
 					
 					this.renderSelectedPlayerSquareToCursor(selectedPlayer, [this.stage.mouseX, this.stage.mouseY]);
 				}
 				
 			} else {
+				this.clearDefenderSquare();
 				this.clearSelectedPlayerSquare();
 				this.renderActiveTeamPlayerSquares();
 			}
 		},
+		clearDefenderSquare: function() {
+			this.defenderSquare.graphics.clear();
+		},		
 		clearSelectedPlayerSquare: function() {
 			this.selectedPlayerSquare.graphics.clear();
 		},
@@ -287,7 +317,16 @@ if (typeof BBN == "undefined" || !BBN)
 			var cursorColour = 'rgba(200, 200, 200, 1)';
 			var grids = Helpers.convertPixelsToGrids(x, y, this.unit);
 			this.renderBox(this.cursor, [grids], this.unit, cursorColour);
-		},	
+		},
+		renderDefenderSquare: function(defender) {
+			var grids = defender.location;
+			if (typeof grids === 'undefined') {
+				defenderSquare.graphics.clear();
+			} else {
+				var playerSquareColour = 'rgba(200, 0, 0, 0.5)';
+				this.renderSquares(this.defenderSquare, [grids], this.unit, playerSquareColour);
+			}
+		},		
 		renderSelectedPlayerSquare: function(selectedPlayer) {
 			var grids = selectedPlayer.location;
 			if (typeof grids === 'undefined') {
@@ -296,7 +335,9 @@ if (typeof BBN == "undefined" || !BBN)
 				var playerSquareColour = 'rgba(0, 0, 0, 0.5)';
 				this.renderSquares(this.selectedPlayerSquare, [grids], this.unit, playerSquareColour);
 			}
-			this.renderAdjacentOppositionSquares(selectedPlayer, grids);
+			if (!selectedPlayer.hasActioned) {
+				this.renderAdjacentOppositionSquares(selectedPlayer, grids);
+			}
 		},
 		renderBox: function(shape, gridsArray, gridUnit, colour) {
 
@@ -328,6 +369,10 @@ if (typeof BBN == "undefined" || !BBN)
 				shape.graphics.drawRect(pixels[0]+0.5, pixels[1]+0.5, gridUnit, gridUnit);
 				shape.graphics.endFill();
 			}
+		},
+		clearAdjacentOppositionSquares: function() {
+			
+			this.oppositionPlayerSquares.graphics.clear();
 		},
 		renderAdjacentOppositionSquares: function(selectedPlayer, grids) {
 
