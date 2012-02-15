@@ -144,7 +144,14 @@ var BBN = BBN || (function () {
 		
 				} else {
 
-					this.blockPlayer(player);	
+					if (selectedPlayer.hasActioned) {
+						
+						console.log('player has already actioned');
+
+					} else {
+						
+						this.blockPlayer(player);	
+					}
 				}
 			}
 		},
@@ -182,7 +189,7 @@ var BBN = BBN || (function () {
 		blockPlayer: function (player) {
 			if (Helpers.isAdjacent(this.game.selectedPlayer, player)) {
 
-				console.log('blocker: ' + this.game.selectedPlayer.name + ' defender: ' + player.name);
+				console.log('a: ' + this.game.selectedPlayer.name + ' - d: ' + player.name);
 
 				this.game.defender = player;
 
@@ -202,20 +209,30 @@ var BBN = BBN || (function () {
 		pushBackClick: function (e) {
 			
 			var grids, player, entity, space, that;
+
+			that = this;
 			
 			grids = Helpers.convertPixelsToGrids(e.stageX, e.stageY, this.variables.gridUnit);
 
-			space = this.game.grid.getSpace(grids[0], grids[1]);
+			space = this.grid.getSpace(grids[0], grids[1]);
 			
 			if (Helpers.isAdjacent(this.game.defender, { location: grids })) {
 
 				if (Helpers.isSpaceEmpty(space)) {
 				
 					this.game.grid.moveEntity(grids[0], grids[1], this.game.defender);
+
+					this.game.selectedPlayer.hasActioned = true;
+
+					this.game.forceRenderRefresh = true;
+
+					this.game.defender = null;
+
+					this.grid.clearPushBackSquares();
+
+					this.mainStage.onPress = function (e) { that.playerActionClick(e); };
 				}
 			}
-
-			this.rebindMouseClick();
 		}
 	};
 }());

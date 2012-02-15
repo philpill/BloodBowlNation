@@ -260,11 +260,7 @@ if (typeof BBN == "undefined" || !BBN)
 
 					var pushBackSquares = Helpers.getPushBackSquares(selectedPlayer.location, defender.location);
 
-					console.log(pushBackSquares);
-
 					this.renderPushBackSquares(pushBackSquares);
-
-
 				
 				} else {
 					
@@ -278,6 +274,9 @@ if (typeof BBN == "undefined" || !BBN)
 		},
 		clearSelectedPlayerSquare: function() {
 			this.selectedPlayerSquare.graphics.clear();
+		},
+		clearPushBackSquares: function() {
+			this.pushBackSquares.graphics.clear();
 		},
 		renderPushBackSquares: function(grids) {
 			var squareColour = 'rgba(200, 0, 0, 0.5)';
