@@ -13,6 +13,7 @@ var requires = [
 	'js/lib/AStar',
 	'js/lib/jquery-1.7.1.min',
 	'js/lib/modernizr',
+	'js/lib/underscore-min',
 	'js/lib/jasmine-1.1.0/jasmine',
 	'js/lib/jasmine-1.1.0/jasmine-html',
 	'js/test/test',
