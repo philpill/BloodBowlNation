@@ -21,14 +21,16 @@ var BBN = BBN || (function () {
 			this.backgroundStage.name = 'background';
 			this.mainStage.name = 'main';
 			this.mainStage.mouseEventsEnabled = true;
-			this.RenderEngine.init();
 			this.loadVariables();
 			gridWidth = this.variables.gridWidth;
 			gridHeight = this.variables.gridHeight;
 			gridUnit = this.variables.gridUnit;
 			this.grid = new BBN.Grid(this.mainStage, gridWidth, gridHeight, gridUnit);
 			this.game = new BBN.Game(this.mainStage, this.grid);
+
+			//rewrite
 			this.Pitch.init(this.backgroundStage, this.game);
+			
 			that = this;
 			this.rebindMouseClick();
 			$('#ClearCacheLink').click({ that: this }, BBN.UserEvents.clearCacheLinkClick);
