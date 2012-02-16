@@ -8,6 +8,7 @@ var requires = [
 	'js/BBN.Player',
 	'js/BBN.RenderEngine',
 	'js/BBN.Team',
+	'js/BBN.UserEvents',
 	'js/BBN.Variables',
 	'js/lib/EaselJS/lib/easel',
 	'js/lib/AStar',
