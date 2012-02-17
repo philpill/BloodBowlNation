@@ -59,111 +59,20 @@ if (typeof BBN == "undefined" || !BBN)
 	}
 
 	BBN.Grid.prototype = {
-		selectedPlayerLocationCache: {
-			get: function() { return this._selectedPlayerLocationCache; },
-			set: function(value) { 
-				if (typeof value instanceof Array) {
-					this._selectedPlayerLocationCache = value;
-				}
-			}			
-		},
-		activeTeamCache: {
-			get: function() { return this._activeTeamCache; },
-			set: function(value) { 
-				if (typeof value instanceof BBN.Team) {
-					this._activeTeamCache = value;
-				}
-			}
-		},
-		oppositionPlayerSquares: {
-			get: function() { return this._oppositionPlayerSquares; },
-			set: function(value) { 
-				//test instanceof EaselJS Shape
-				this._oppositionPlayerSquares = value;
-			}
-		}, 
-		selectedPlayerSquare: {
-			get: function() { return this._selectedPlayerSquare; },
-			set: function(value) { 
-				//test instanceof EaselJS Shape
-				this._selectedPlayerSquare = value;
-			}
-		},
-		defenderSquare: {
-			get: function() { return this._defenderSquare; },
-			set: function(value) { 
-				//test instanceof EaselJS Shape
-				this._defenderSquare = value;
-			}			
-		},
-		pushBackSquares: {
-			get: function() { return this._pushBackSquares; },
-			set: function(value) { 
-				//test instanceof EaselJS Shape
-				this._pushBackSquares = value;
-			}
-		},
-		playerSquares: {
-			get: function() { return this._playerSquares; },
-			set: function(value) { 
-				if (typeof value instanceof Array) {
-					this._playerSquares = value;
-				}
-			}			
-		},
-		cursorPathSquare: {
-			get: function() { return this._cursorPathSquare; },
-			set: function(value) { 
-				//test instanceof EaselJS Shape
-				this._cursorPathSquare = value;
-			}
-		},
-		cursor: {
-			get: function() { return this._cursor; },
-			set: function(value) { 
-				//test instanceof EaselJS Shape
-				this._cursor = value;
-			}
-		},
-		space: {
-			get: function() { return this._space; },
-			set: function(value) { 
-				if (typeof value instanceof Array) {
-					this._space = value;
-				}
-			}
-		},
-		unit: {
-			get: function() { return this._unit; },
-			set: function(value) { 
-				if (typeof value === "number") {
-					this._unit = value;
-				}
-			}
-		},
-		height: {
-			get: function() { return this._height; },
-			set: function(value) { 
-				if (typeof value === "number") {
-					this._height = value;
-				}
-			}
-		},
-		width: {
-			get: function() { return this._width; },
-			set: function(value) { 
-				if (typeof value === "number") {
-					this._width = value;
-				}
-			}
-		},
-		stage: {
-			get: function() { return this._stage; },
-			set: function(value) { 
-				//test as instanceof easelJS stage
-				this._stage = value;
-			}
-		},
+		selectedPlayerLocationCache: null,
+		activeTeamCache: null,
+		oppositionPlayerSquares: null,
+		selectedPlayerSquare: null,
+		defenderSquare: null,
+		pushBackSquares: null,
+		playerSquares: null,
+		cursorPathSquare: null,
+		cursor: null,
+		space: null,
+		unit: null,
+		height: null,
+		width: null,
+		stage: null,
 		getGridX: function(x) {
 			if (x < 1) { x = 1; }
 			return Math.floor(x/this.unit);

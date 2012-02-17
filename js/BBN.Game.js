@@ -13,65 +13,14 @@ if (typeof BBN == "undefined" || !BBN)
 	}
 
 	BBN.Game.prototype = {
-		activeTeam: {
-			get: function() { return this._activeTeam; },
-			set: function(value) { 
-				if (value instanceof BBN.Team) {
-					this._activeTeam = value; 
-				}
-			}
-		}, 
-		selectedPlayer: {
-			get: function() { return this._selectedPlayer; },
-			set: function(value) { 
-				this._selectedPlayer = value; 
-			}
-		},
-		defender: {
-			get: function() { return this._defender; },
-			set: function(value) { 
-				this._defender = value; 
-			}			
-		},
-		stage: {
-			get: function() { return this._stage; },
-			set: function(value) { 
-				//test easelJS stage
-				this._stage = value; 
-			}
-		},
-		grid: {
-			get: function() { return this._grid; },
-			set: function(value) { 
-				if (value instanceof BBN.Grid) {
-					this._grid = value; 
-				}
-			}
-		},
-		teams: {
-			get: function() { return this._teams; },
-			set: function(value) { 
-				if (value instanceof Array) {
-					this._teams = value; 
-				}
-			}
-		},
-		allPlayersCache: {
-			get: function() { return this._allPlayersCache; },
-			set: function(value) { 
-				if (value instanceof Array) {
-					this._allPlayersCache = value; 
-				}
-			}
-		},
-		forceRenderRefresh: {
-			get: function() { return this._forceRenderRefresh; },
-			set: function(value) { 
-				if (value instanceof Boolean) {
-					this._forceRenderRefresh = value; 
-				}
-			}
-		},
+		activeTeam: null,
+		selectedPlayer: null,
+		defender: null,
+		stage: null,
+		grid: null,
+		teams: null,
+		allPlayersCache: null,
+		forceRenderRefresh: null,
 		setSelectedPlayer: function(player) {
 			if (player instanceof BBN.Player) {
 			
@@ -176,7 +125,7 @@ if (typeof BBN == "undefined" || !BBN)
 			var teams, players, teamCount, playerCount;
 			var allPlayers = [];
 
-			if (this.allPlayersCache.length > 0) {
+			if ((this.allPlayersCache !== null) && (this.allPlayersCache.length > 0)) {
 
 				allPlayers = this.allPlayersCache;
 

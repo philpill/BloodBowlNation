@@ -31,208 +31,116 @@ if (typeof BBN == "undefined" || !BBN) {
 	}
 
 
-	BBN.Player.prototype = {
-		stage: {
-			get: function() { return this._stage; },
-			set: function(value) { 
-				if (typeof value === "string") {
-					this._stage = value;
+	BBN.Player.prototype = (function(){
+
+		return {
+			stage: null,
+			name: null,
+			colours: null,
+			location: null,
+			number: null,
+			team: null,
+			race: null,
+			movementAllowance: null,
+			strength: null,
+			agility: null,
+			armourValue: null,
+			isProne: null,
+			isStunned: null,
+			isKnockedOut: null,
+			hasMoved: null,
+			hasActioned: null,
+			renderedPlayerCache: null,
+			refreshRender: function() {
+				this.renderedPlayerCache = [];
+			},
+			pickUpBall: function(ball) {	
+				//attempt to pickup
+				ball.inPossessionOf = this;
+				console.log("ball picked up");
+			},
+			move: function (grids) {
+				
+				//in dev
+
+				var game = this.game;
+				if (game.selectedPlayer.hasMoved === true) {
+					console.log('player has already moved');
+				} else {
+					game.grid.moveEntity(grids[0], grids[1], game.selectedPlayer);
+					game.forceRenderRefresh = true;
+					game.selectedPlayer.hasMoved = true;
 				}
-			}
-		},
-		name: {
-			get: function() { return this._name; },
-			set: function(value) { 
-				if (typeof value === "string") {
-					this._name = value;
+			},
+			block: function (defender) {
+
+				//in dev
+
+				if (Helpers.isAdjacent(this, defender)) {
+
+					console.log('a: ' + this.name + ' - d: ' + defender.name);
+
+					//call mediator
 				}
-			}
-		},
-		colours: {
-			get: function() { return this._colours; },
-			set: function(value) { 
-				if (value instanceof Array) {
-					this._colours = value;
+			},
+			render: function() {
+				
+				var teamColours, gridUnit = Variables.gridUnit, x, y, circle, graphics = new Graphics(), playerNumber, i;
+
+				x = (this.location[0]*gridUnit)+gridUnit/2;
+				y = (this.location[1]*gridUnit)+gridUnit/2;
+
+				teamColours = this.colours;
+				
+				if (teamColours.length > 1) {
+					graphics.beginLinearGradientFill([teamColours[0],teamColours[1]], [0, 0.5], x, y, x+3, y);
+				} else {
+					graphics.beginFill(teamColours[0]);
 				}
-			}
-		},
-		location: {
-			get: function() { return this._location; },
-			set: function(value) { 
-				if (value instanceof Array) {
-					this._location = value; 
+
+				graphics.setStrokeStyle(1).beginStroke("#fff");
+				graphics.drawCircle(x,y,7);
+
+				graphics.setStrokeStyle(1).beginStroke("#000");
+				graphics.drawCircle(x,y,6);
+
+				graphics.endStroke();
+
+				circle = new Shape(graphics);
+				
+				playerNumber = new Text();
+				playerNumber.text = this.number;
+				playerNumber.color = '#000';
+				playerNumber.font = 'bold 7px Arial';
+				playerNumber.textAlign = 'center';
+				playerNumber.textBaseline  = 'middle';
+				playerNumber.x = x;
+				playerNumber.y = y;	
+				
+				if (this.isProne) {
+					playerNumber.rotation = 90;
+				} else if (this.isStunned) {
+					playerNumber.rotation = 180;	
 				}
-			}
-		}, 		
-		number: {
-			get: function() { return this._number; },
-			set: function(value) { 
-				if (typeof value === "number") {
-					this._number = value; 
-				}
-			}
-		},
-		team: {
-			get: function() { return this._team; },
-			set: function(value) { 
-				if (value instanceof BBN.Team) {
-					this._team = value; 
-				}
-			}
-		},
-		race: {
-			get: function() { return this._race; },
-			set: function(value) {
-				if (typeof value === "string") {
-					this._race = value; 
-				}
-			}
-		},
-		movementAllowance: {
-			get: function() { return this._movementAllowance; },
-			set: function(value) { 
-				if (typeof value === "number") {
-					this._movementAllowance = value; 
-				}
-			}
-		},
-		strength: {
-			get: function() { return this._strength; },
-			set: function(value) { 
-				if (typeof value === "number") {
-					this._strength = value; 
-				}
-			}	
-		},
-		agility: {
-			get: function() { return this._agility; },
-			set: function(value) { 
-				if (typeof value === "number") {
-					this._agility = value; 
-				}
-			}
-		},
-		armourValue: {
-			get: function() { return this._armourValue; },
-			set: function(value) { 
-				if (typeof value === "number") {
-					this._armourValue = value; 
-				}
-			}
-		},
-		isProne: {
-			get: function() { return this._isProne; },
-			set: function(value) { 
-				if (value instanceof Boolean) {
-					this._isProne = value; 
-				}
-			}
-		},
-		isStunned: {
-			get: function() { return this._isStunned; },
-			set: function(value) { 
-				if (value instanceof Boolean) {
-					this._isStunned = value; 
-				}
-			}
-		},
-		isKnockedOut: {
-			get: function() { return this._isKnockedOut; },
-			set: function(value) { 
-				if (value instanceof Boolean) {
-					this._isKnockedOut = value; 
-				}
-			}
-		}, 
-		hasMoved: {
-			get: function() { return this._hasMoved; },
-			set: function(value) { 
-				if (value instanceof Boolean) {
-					this._hasMoved = value; 
-				}
-			}
-		}, 
-		hasActioned: {
-			get: function() { return this._hasActioned; },
-			set: function(value) { 
-				if (value instanceof Boolean) {
-					this._hasActioned = value; 
-				}
-			}
-		}, 
-		renderedPlayerCache: {
-			get: function() { return this._renderedPlayerCache; },
-			set: function(value) { 
-				if (value instanceof Array) {
-					this._renderedPlayerCache = value; 
-				}
-			}
-		},
-		refreshRender: function() {
-			this.renderedPlayerCache = [];
-		},
-		pickUpBall: function(ball) {	
-			//attempt to pickup
-			ball.inPossessionOf = this;
-			console.log("ball picked up");
-		},
-		render: function() {
+
+				circle.name = 'playerCircle';
+				playerNumber.name = 'playerNumber';
 			
-			var teamColours, gridUnit = Variables.gridUnit, x, y, circle, graphics = new Graphics(), playerNumber, i;
+				this.renderedPlayerCache.push(circle);
+				this.renderedPlayerCache.push(playerNumber);
 
-			x = (this.location[0]*gridUnit)+gridUnit/2;
-			y = (this.location[1]*gridUnit)+gridUnit/2;
+				for (i = 0, renderedPlayerCacheLength = this.renderedPlayerCache.length; i < renderedPlayerCacheLength;i++) {
+					this.stage.addChild(this.renderedPlayerCache[i]);
+				}
+				
+			},
+			tick: function() {
+				
+				if (this.renderedPlayerCache.length === 0) {
 
-			teamColours = this.colours;
-			
-			if (teamColours.length > 1) {
-				graphics.beginLinearGradientFill([teamColours[0],teamColours[1]], [0, 0.5], x, y, x+3, y);
-			} else {
-				graphics.beginFill(teamColours[0]);
-			}
-
-			graphics.setStrokeStyle(1).beginStroke("#fff");
-			graphics.drawCircle(x,y,7);
-
-			graphics.setStrokeStyle(1).beginStroke("#000");
-			graphics.drawCircle(x,y,6);
-
-			graphics.endStroke();
-
-			circle = new Shape(graphics);
-			
-			playerNumber = new Text();
-			playerNumber.text = this.number;
-			playerNumber.color = '#000';
-			playerNumber.font = 'bold 7px Arial';
-			playerNumber.textAlign = 'center';
-			playerNumber.textBaseline  = 'middle';
-			playerNumber.x = x;
-			playerNumber.y = y;	
-			
-			if (this.isProne) {
-				playerNumber.rotation = 90;
-			} else if (this.isStunned) {
-				playerNumber.rotation = 180;	
-			}
-
-			circle.name = 'playerCircle';
-			playerNumber.name = 'playerNumber';
-		
-			this.renderedPlayerCache.push(circle);
-			this.renderedPlayerCache.push(playerNumber);
-
-			for (i = 0, renderedPlayerCacheLength = this.renderedPlayerCache.length; i < renderedPlayerCacheLength;i++) {
-				this.stage.addChild(this.renderedPlayerCache[i]);
-			}
-			
-		},
-		tick: function() {
-			
-			if (this.renderedPlayerCache.length === 0) {
-
-				this.render();
+					this.render();
+				}
 			}
 		}
-	}
+	})();
 })();
