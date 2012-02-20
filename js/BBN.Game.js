@@ -153,12 +153,18 @@ if (typeof BBN == "undefined" || !BBN)
 				this.removeAllRenderedPlayers();				
 				while(playerCount--) {
 					allPlayers[playerCount].refreshRender();
-					allPlayers[playerCount].tick();				
+					allPlayers[playerCount].tick();
+					if (allPlayers[playerCount].renderedPlayerCache.length === 0) {
+						BBN.RenderEngine.renderPlayer(allPlayers[playerCount]);
+					}
 				}				
 				this.forceRenderRefresh = false;	
 			} else {				
 				while(playerCount--) {				
-					allPlayers[playerCount].tick();				
+					allPlayers[playerCount].tick();
+					if (allPlayers[playerCount].renderedPlayerCache.length === 0) {
+						BBN.RenderEngine.renderPlayer(allPlayers[playerCount]);
+					}
 				}			
 			}
 			this.grid.tick(this.activeTeam, this.selectedPlayer, this.defender);
