@@ -9,6 +9,8 @@ describe("Helpers", function() {
 
 	var array, isEmpty, player;
 
+	var minValue, maxValue, testValue;
+
 	beforeEach(function () {
 		entity1 = {};
 		entity2 = {};
@@ -21,6 +23,9 @@ describe("Helpers", function() {
 		gridy = 0;
 		unit = 0;
 		pixels = [];
+		minValue = 0;
+		maxValue = 0;
+		testValue = 0;
 	});
 
 	it("should exist", function() {
@@ -136,5 +141,19 @@ describe("Helpers", function() {
 		array[4] = { name: 'test' };
 		isEmpty = testFunction(array);
 		expect(isEmpty).toBeTruthy();
+	});
+	it("should return a random value within the specified range", function() {
+
+		minValue = 1;
+		maxValue = 6;
+		testValue;
+
+		testFunction = Helpers.getRandom;
+
+		testValue = testFunction(minValue, maxValue);
+
+		expect(testValue).not.toBeLessThan(minValue);
+
+		expect(testValue).not.toBeGreaterThan(maxValue);
 	});
 });
