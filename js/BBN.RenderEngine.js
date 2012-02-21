@@ -110,12 +110,12 @@ if (typeof BBN == "undefined" || !BBN)
 				}
 			}
 		},
-		renderObject: function(object, gridX, gridY) {	
+		renderObject: function(entity) {	
 					
-			if (object instanceof BBN.Player) {
-				this.renderPlayer(gridX, gridY);					
-			} else if (object instanceof BBN.Ball) {
-				this.renderBall(gridX, gridY);					
+			if (entity instanceof BBN.Player) {
+				this.renderPlayer(entity);					
+			} else if (entity instanceof BBN.Ball) {
+				this.renderBall(entity);					
 			}
 		},
 		renderBall: function(gridX, gridY) {
@@ -180,7 +180,7 @@ if (typeof BBN == "undefined" || !BBN)
 			playerNumber.x = x;
 			playerNumber.y = y;	
 			
-			if (player.isProne) {
+			if (player.isDown) {
 				playerNumber.rotation = 90;
 			} else if (player.isStunned) {
 				playerNumber.rotation = 180;	
@@ -189,11 +189,11 @@ if (typeof BBN == "undefined" || !BBN)
 			circle.name = 'playerCircle';
 			playerNumber.name = 'playerNumber';
 		
-			player.renderedPlayerCache.push(circle);
-			player.renderedPlayerCache.push(playerNumber);
+			player.renderCache.push(circle);
+			player.renderCache.push(playerNumber);
 
-			for (i = 0, renderedPlayerCacheLength = player.renderedPlayerCache.length; i < renderedPlayerCacheLength;i++) {
-				this.mainStage.addChild(player.renderedPlayerCache[i]);
+			for (i = 0, renderCacheLength = player.renderCache.length; i < renderCacheLength;i++) {
+				this.mainStage.addChild(player.renderCache[i]);
 			}			
 		}
 	}

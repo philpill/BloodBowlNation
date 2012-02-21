@@ -68,14 +68,13 @@ var BBN = BBN || (function () {
 			this.game.tick();
 			this.mainStage.update();
 		},
-		movePlayer: function (grids) {
-			var game = this.game;
-			if (game.selectedPlayer.hasMoved === true) {
+		movePlayer: function (player, grids, isPushBack) {
+
+			if (player.hasMoved && !isPushBack) {
 				console.log('player has already moved');
 			} else {
-				game.grid.moveEntity(grids[0], grids[1], game.selectedPlayer);
-				game.forceRenderRefresh = true;
-				game.selectedPlayer.hasMoved = true;
+				player.move(grids);
+				this.game.grid.moveEntity(grids[0], grids[1], player);
 			}
 		},
 		blockPlayer: function (player) {
@@ -85,18 +84,26 @@ var BBN = BBN || (function () {
 
 				this.game.defender = player;
 
+				this.game.selectedPlayer.block(this.game.defender);
+
 				this.resolveBlock(this.game.selectedPlayer, this.game.defender);
 			}			
 		},
 		resolveBlock: function (attacker, defender) {
 			
 			//implement block mediator
-
 			var that = this;
 
+			//attacker down
+
+			//defender pushback
 			that.mainStage.onPress = function (e) {
 				BBN.UserEvents.pushBackClick.call(that, e);
 			};
+
+			//defender pushback and down
+
+			//both down
 		}
 	};
 }());

@@ -14,7 +14,7 @@ if (typeof BBN == "undefined" || !BBN) {
 		this.team = playerTeam.name;
 		this.race = playerRace;
 		
-		this.renderedPlayerCache = [];
+		this.renderCache = [];
 		
 		//these values should come from a player type class (e.g. Human Blocker)
 		this.movementAllowance = playerMovement;
@@ -22,7 +22,7 @@ if (typeof BBN == "undefined" || !BBN) {
 		this.agility = playerAgility;
 		this.armourValue = playerArmourValue;
 		
-		this.isProne = false;
+		this.isDown = false;
 		this.isStunned = false;
 		this.isKnockedOut = false;
 		
@@ -45,14 +45,14 @@ if (typeof BBN == "undefined" || !BBN) {
 			strength: null,
 			agility: null,
 			armourValue: null,
-			isProne: null,
+			isDown: null,
 			isStunned: null,
 			isKnockedOut: null,
 			hasMoved: null,
 			hasActioned: null,
-			renderedPlayerCache: null,
-			refreshRender: function() {
-				this.renderedPlayerCache = [];
+			renderCache: null,
+			clearRenderCache: function() {
+				this.renderCache = [];
 			},
 			pickUpBall: function(ball) {	
 				//attempt to pickup
@@ -60,28 +60,28 @@ if (typeof BBN == "undefined" || !BBN) {
 				console.log("ball picked up");
 			},
 			move: function (grids) {
-				
-				//in dev
-
-				var game = this.game;
-				if (game.selectedPlayer.hasMoved === true) {
-					console.log('player has already moved');
-				} else {
-					game.grid.moveEntity(grids[0], grids[1], game.selectedPlayer);
-					game.forceRenderRefresh = true;
-					game.selectedPlayer.hasMoved = true;
-				}
+				this.renderCache = [];
+				this.location = grids;
+				this.hasMoved = true;
 			},
 			block: function (defender) {
 
 				//in dev
 
-				if (Helpers.isAdjacent(this, defender)) {
-
-					console.log('a: ' + this.name + ' - d: ' + defender.name);
-
-					//call mediator
-				}
+				this.hasActioned = true;
+			},
+			stun: function () {
+				
+				this.isDown = true;
+				this.isStunned = true;
+			},
+			knockout: function () {
+				
+				this.isKnockedOut = true;
+			},
+			knockdown: function() {
+				
+				this.isDown = true;
 			},
 			tick: function() {
 				

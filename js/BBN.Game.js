@@ -147,25 +147,28 @@ if (typeof BBN == "undefined" || !BBN)
 			return allPlayers;
 		},
 		tick: function() {
-			var allPlayers = this.getAllPlayers();				
-			var playerCount = allPlayers.length;
+
+			var allPlayers, playerCount, player;
+
+			allPlayers = this.getAllPlayers();				
+			playerCount = allPlayers.length;
+
 			if (this.forceRenderRefresh) {				
 				this.removeAllRenderedPlayers();				
 				while(playerCount--) {
-					allPlayers[playerCount].refreshRender();
-					allPlayers[playerCount].tick();
-					if (allPlayers[playerCount].renderedPlayerCache.length === 0) {
-						BBN.RenderEngine.renderPlayer(allPlayers[playerCount]);
-					}
-				}				
-				this.forceRenderRefresh = false;	
-			} else {				
-				while(playerCount--) {				
-					allPlayers[playerCount].tick();
-					if (allPlayers[playerCount].renderedPlayerCache.length === 0) {
-						BBN.RenderEngine.renderPlayer(allPlayers[playerCount]);
-					}
-				}			
+					allPlayers[playerCount].clearRenderCache();
+				}
+			}
+
+			//refactor
+			playerCount = allPlayers.length;
+			
+			while(playerCount--) {
+				player = allPlayers[playerCount];
+				player.tick();
+				if (player.renderCache.length === 0) {
+					BBN.RenderEngine.renderPlayer(player);
+				}
 			}
 			this.grid.tick(this.activeTeam, this.selectedPlayer, this.defender);
 		}

@@ -69,15 +69,7 @@ var Helpers = {
 	},
 	isSpaceEmpty: function(array) {
 
-		var entityArray = [];
-		
-		entityArray = this.castGridEntityHelper(array);
-
-		if (entityArray.length === 0) {
-			return true;
-		}
-
-		return false;
+		return (this.castGridEntityHelper(array).length === 0);
 	},
 	isAdjacent: function(e1, e2) {
 
@@ -148,21 +140,5 @@ var Helpers = {
 		//a - 2(a - b) = c
 		//16 - 2(16 - 17) = 18 = 16 - 2(-1) == a < c
 		//9 - 2(9 - 8) = 7 = 9 - 2(1) == a > c
-	},
-	filterOccupiedSquares: function(grids) {
-
-		var unoccupiedGrids = [];
-
-		var gridLength = grids.length;
-		
-		while(gridLength--){
-			if (this.isSpaceEmpty(grids[gridLength])) {
-				unoccupiedGrids.push(grids[gridLength]);
-			}
-		}
-
-		console.log(unoccupiedGrids);
-
-		return unoccupiedGrids;
 	}
 }

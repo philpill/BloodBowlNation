@@ -71,7 +71,7 @@ if (typeof BBN == "undefined" || !BBN)
 
 			if (player === null) {
 				
-				that.movePlayer(grids);
+				that.movePlayer(selectedPlayer, grids, false);
 			
 			} else {
 		
@@ -137,9 +137,9 @@ if (typeof BBN == "undefined" || !BBN)
 
 				if (Helpers.isSpaceEmpty(space)) {
 				
-					that.game.grid.moveEntity(grids[0], grids[1], that.game.defender);
+					//that.game.grid.moveEntity(grids[0], grids[1], that.game.defender);
 
-					that.game.selectedPlayer.hasActioned = true;
+					that.movePlayer(that.game.defender, grids, true);
 
 					that.game.forceRenderRefresh = true;
 

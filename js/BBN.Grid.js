@@ -107,8 +107,7 @@ if (typeof BBN == "undefined" || !BBN)
 				//if (ball.inPossessionOf === player) {
 					//this.moveEntity(destinationGridX, destinationGridY, ball);
 					//check win condition
-				//}
-				player.location = [destinationGridX, destinationGridY];
+				//}				
 			}
 			this.removeEntity(object);
 			this.insertEntity(destinationGridX, destinationGridY, object);
