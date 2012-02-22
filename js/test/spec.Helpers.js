@@ -144,8 +144,8 @@ describe("Helpers", function() {
 	});
 	it("should return a random value within the specified range", function() {
 
-		minValue = 1;
-		maxValue = 6;
+		minValue = 3;
+		maxValue = 9;
 		testValue;
 
 		testFunction = Helpers.getRandom;
@@ -155,5 +155,19 @@ describe("Helpers", function() {
 		expect(testValue).not.toBeLessThan(minValue);
 
 		expect(testValue).not.toBeGreaterThan(maxValue);
+	});
+	it("should return a random value between 1 and 6 by default", function() {
+
+		minValue = undefined;
+		maxValue = undefined;
+		testValue;
+
+		testFunction = Helpers.getRandom;
+
+		testValue = testFunction(minValue, maxValue);
+
+		expect(testValue).not.toBeLessThan(1);
+
+		expect(testValue).not.toBeGreaterThan(6);
 	});
 });

@@ -75,24 +75,49 @@ var BBN = BBN || (function () {
 			} else {
 				player.move(grids);
 				this.game.grid.moveEntity(grids[0], grids[1], player);
+				this.game.forceRenderRefresh = true;
 			}
 		},
-		blockPlayer: function (player) {
-			if (Helpers.isAdjacent(this.game.selectedPlayer, player)) {
+		blockPlayer: function (defender) {
 
-				console.log('a: ' + this.game.selectedPlayer.name + ' - d: ' + player.name);
+			var player = this.game.selectedPlayer;
 
-				this.game.defender = player;
+			if (Helpers.isAdjacent(player, defender)) {
 
-				this.game.selectedPlayer.block(this.game.defender);
+				console.log('a: ' + player.name + ' - d: ' + defender.name);
 
-				this.resolveBlock(this.game.selectedPlayer, this.game.defender);
+				this.game.defender = defender;
+
+				player.block(defender);
+
+				this.resolveBlock(player, defender);
 			}			
 		},
 		resolveBlock: function (attacker, defender) {
 			
 			//implement block mediator
 			var that = this;
+
+			var roll = Helpers.getRandom();
+
+			switch(roll){
+				case 1:
+				case 2:
+					console.log('push back');
+					break;
+				case 3:
+					console.log('attacker down');
+					break;
+				case 4:
+					console.log('both down');
+					break;
+				case 5:
+					console.log('defender down');
+					break;
+				case 6:
+					console.log('defender stumble');
+					break;
+			}
 
 			//attacker down
 

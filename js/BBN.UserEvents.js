@@ -136,12 +136,8 @@ if (typeof BBN == "undefined" || !BBN)
 			if (Helpers.isAdjacent(that.game.defender, { location: grids })) {
 
 				if (Helpers.isSpaceEmpty(space)) {
-				
-					//that.game.grid.moveEntity(grids[0], grids[1], that.game.defender);
 
 					that.movePlayer(that.game.defender, grids, true);
-
-					that.game.forceRenderRefresh = true;
 
 					that.game.defender = null;
 

@@ -1,4 +1,6 @@
-if (typeof BBN == "undefined" || !BBN) {
+
+if (typeof BBN == "undefined" || !BBN)
+{
    var BBN = {};
 }
 

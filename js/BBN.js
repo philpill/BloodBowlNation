@@ -1,5 +1,6 @@
 var requires = [
 	'js/BBN.EaselJS',
+	'js/BBN.BlockEngine',
 	'js/BBN.Entities',
 	'js/BBN.Game',
 	'js/BBN.Grid',

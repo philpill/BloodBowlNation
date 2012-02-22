@@ -141,12 +141,11 @@ var Helpers = {
 		//16 - 2(16 - 17) = 18 = 16 - 2(-1) == a < c
 		//9 - 2(9 - 8) = 7 = 9 - 2(1) == a > c
 	},
-	getRandom: function(min, max) {
+	getRandom: function(max, min) {
+	
+		min = min ? min : 1;
+		max = max ? max : 6;
 
-		var value;
-		
-		value = Math.floor(Math.random() * (max - min + 1)) + min; 
-
-		return value;
+		return Math.floor(Math.random() * (max - min + 1)) + min; 
 	}
 }
