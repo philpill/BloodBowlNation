@@ -21,7 +21,8 @@ var requires = [
 	'js/test/test',
 	'js/test/spec',
 	'js/test/spec.EaselJS',
-	'js/test/spec.Helpers'
+	'js/test/spec.Helpers',
+	'js/test/spec.BlockEngine'
 ];
 
 require(requires, function() {});

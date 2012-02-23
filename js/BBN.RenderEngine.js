@@ -4,7 +4,7 @@ if (typeof BBN == "undefined" || !BBN)
    var BBN = {};
 }
 
-(function() {
+(function(BBN) {
 
 	BBN.RenderEngine = {
 		grid: null,
@@ -197,4 +197,4 @@ if (typeof BBN == "undefined" || !BBN)
 			}			
 		}
 	}
-})();
+})(BBN);

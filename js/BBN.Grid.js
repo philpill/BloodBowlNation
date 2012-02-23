@@ -169,8 +169,8 @@ if (typeof BBN == "undefined" || !BBN)
 			if (selectedPlayer instanceof BBN.Player) {
 
 				this.renderSelectedPlayerSquare(selectedPlayer);
-				this.cursorPathSquare.graphics.clear();
-				this.pushBackSquares.graphics.clear();
+				this.clearCursorPathSquares();
+				this.clearPushBackSquares();
 
 				if (defender instanceof BBN.Player) {
 
@@ -216,6 +216,19 @@ if (typeof BBN == "undefined" || !BBN)
 		clearPushBackSquares: function() {
 			this.pushBackSquares.graphics.clear();
 		},
+		clearAdjacentOppositionSquares: function() {
+			this.oppositionPlayerSquares.graphics.clear();
+		},
+		clearCursorPathSquares: function() {
+			this.cursorPathSquare.graphics.clear();
+		},
+		clearAllSquares: function() {
+			this.clearAdjacentOppositionSquares();
+			this.clearPushBackSquares();
+			this.clearSelectedPlayerSquare();
+			this.clearDefenderSquare();
+			this.clearCursorPathSquares();
+		},
 		renderPushBackSquares: function(grids) {
 			var squareColour = 'rgba(200, 0, 0, 0.5)';
 
@@ -238,7 +251,7 @@ if (typeof BBN == "undefined" || !BBN)
 		renderSelectedPlayerSquare: function(selectedPlayer) {
 			var grids = selectedPlayer.location;
 			if (typeof grids === 'undefined') {
-				selectedPlayerSquare.graphics.clear();
+				this.clearSelectedPlayerSquare();
 			} else {
 				var playerSquareColour = 'rgba(0, 0, 0, 0.5)';
 				this.renderSquares(this.selectedPlayerSquare, [grids], this.unit, playerSquareColour);
@@ -277,10 +290,6 @@ if (typeof BBN == "undefined" || !BBN)
 				shape.graphics.drawRect(pixels[0]+0.5, pixels[1]+0.5, gridUnit, gridUnit);
 				shape.graphics.endFill();
 			}
-		},
-		clearAdjacentOppositionSquares: function() {
-			
-			this.oppositionPlayerSquares.graphics.clear();
 		},
 		renderAdjacentOppositionSquares: function(selectedPlayer, grids) {
 

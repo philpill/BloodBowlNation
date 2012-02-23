@@ -95,40 +95,55 @@ var BBN = BBN || (function () {
 		},
 		resolveBlock: function (attacker, defender) {
 			
-			//implement block mediator
-			var that = this;
+			var that, blockResults;
 
-			var roll = Helpers.getRandom();
+			that = this;
 
-			switch(roll){
-				case 1:
-				case 2:
-					console.log('push back');
-					break;
-				case 3:
-					console.log('attacker down');
-					break;
-				case 4:
-					console.log('both down');
-					break;
-				case 5:
-					console.log('defender down');
-					break;
-				case 6:
-					console.log('defender stumble');
-					break;
+			blockResults = BBN.BlockEngine.mediateBlock(attacker, defender);
+
+			console.log(blockResults);
+
+			//greater strength selects blockResult
+
+			if (blockResults.length === 1) {
+
+				switch(blockResults[0]) {
+
+					case 1: //attacker down
+						//attacker knockdown
+						$('#TurnoverLink').click();						
+						break;
+					case 2: //both down
+						//test for block
+						//attacker knockdown
+						//test for block
+						//defender knockdown
+						$('#TurnoverLink').click();	
+						break;
+					case 3: //pushback
+						that.mainStage.onPress = function (e) {
+							BBN.UserEvents.pushBackClick.call(that, e);
+						};
+						break;
+					case 4: //defender stumble
+						that.mainStage.onPress = function (e) {
+							BBN.UserEvents.pushBackClick.call(that, e);
+						};
+						//test for dodge
+						//defender knockdown
+						break;
+					case 5: //defender down
+						that.mainStage.onPress = function (e) {
+							BBN.UserEvents.pushBackClick.call(that, e);
+						};
+						//defender knockdown
+						break;	
+					default:
+						console.log('resolveBlock() error: BBN.BlockEngine.mediateBlock() cannot return ^[1-5]');
+						break;											
+				}
+
 			}
-
-			//attacker down
-
-			//defender pushback
-			that.mainStage.onPress = function (e) {
-				BBN.UserEvents.pushBackClick.call(that, e);
-			};
-
-			//defender pushback and down
-
-			//both down
 		}
 	};
 }());

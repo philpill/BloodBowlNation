@@ -25,6 +25,7 @@ if (typeof BBN == "undefined" || !BBN)
 			teamIndex = teams.indexOf(activeTeam);
 			teams.splice(teamIndex, 1);
 			that.game.activeTeam = teams[Math.floor(Math.random() * teams.length)];
+			activeTeam = that.game.activeTeam;
 			console.log('turnover: ' + activeTeam.name);
 			players = activeTeam.players;
 			playerCount = players.length;
@@ -32,7 +33,9 @@ if (typeof BBN == "undefined" || !BBN)
 				players[playerCount].hasMoved = false;
 				players[playerCount].hasActioned = false;
 			}
-			that.game.selectedPlayer = that.game.grid.selectedPlayer = null;
+			that.game.selectedPlayer = null;
+			that.game.defender = null;
+			that.game.grid.clearAllSquares();
 			that.rebindMouseClick();
 			e.preventDefault();
 		},
@@ -143,6 +146,7 @@ if (typeof BBN == "undefined" || !BBN)
 
 					that.grid.clearPushBackSquares();
 
+					//TODO: should follow up before moving again
 					that.mainStage.onPress = function (e) { BBN.UserEvents.playerActionClick.call(that, e); };
 				}
 			}
