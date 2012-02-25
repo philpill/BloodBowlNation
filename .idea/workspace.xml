@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0e5a5955-9f70-4011-bf58-04f98f33d11e" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/BBN.UserEvents.js" afterPath="$PROJECT_DIR$/js/BBN.UserEvents.js" />
+      <change type="DELETED" beforePath="C:\Users\pill\Desktop\work\BloodBowlNation\js\.gitignore" afterPath="" />
     </list>
     <ignored path="BloodBowlNation.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -33,10 +33,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="web.js" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="web.js" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/js/heroku/web.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="11" column="3" selection-start="280" selection-end="280" vertical-scroll-proportion="0.0">
+            <state line="11" column="3" selection-start="280" selection-end="280" vertical-scroll-proportion="0.32864675">
               <folding />
             </state>
           </provider>
@@ -51,10 +51,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name=".gitignore" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name=".gitignore" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/.gitignore">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="14" column="5" selection-start="221" selection-end="221" vertical-scroll-proportion="0.41827768">
+            <state line="14" column="5" selection-start="221" selection-end="221" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -307,13 +307,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/js/heroku/web.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="11" column="3" selection-start="280" selection-end="280" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/js/heroku/package.json">
       <provider selected="true" editor-type-id="text-editor">
         <state line="6" column="1" selection-start="110" selection-end="110" vertical-scroll-proportion="0.0">
@@ -323,7 +316,14 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="14" column="5" selection-start="221" selection-end="221" vertical-scroll-proportion="0.41827768">
+        <state line="14" column="5" selection-start="221" selection-end="221" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/heroku/web.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="11" column="3" selection-start="280" selection-end="280" vertical-scroll-proportion="0.32864675">
           <folding />
         </state>
       </provider>
