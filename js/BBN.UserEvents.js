@@ -27,16 +27,20 @@ if (typeof BBN == "undefined" || !BBN)
 			that.game.activeTeam = teams[Math.floor(Math.random() * teams.length)];
 			activeTeam = that.game.activeTeam;
 			console.log('turnover: ' + activeTeam.name);
+
+			//need reinitialise function
 			players = activeTeam.players;
 			playerCount = players.length;
 			while (playerCount--) {
 				players[playerCount].hasMoved = false;
 				players[playerCount].hasActioned = false;
 			}
+			
 			that.game.selectedPlayer = null;
 			that.game.defender = null;
 			that.game.grid.clearAllSquares();
 			that.rebindMouseClick();
+
 			e.preventDefault();
 		},
 		playerActionClick: function (e) {
