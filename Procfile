@@ -1,1 +1,0 @@
-web: node js/heroku/web.js

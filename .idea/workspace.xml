@@ -2,7 +2,17 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0e5a5955-9f70-4011-bf58-04f98f33d11e" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Procfile" afterPath="$PROJECT_DIR$/Procfile" />
+      <change type="DELETED" beforePath="C:\Users\pill\Desktop\work\BloodBowlNation\.idea\.name" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\pill\Desktop\work\BloodBowlNation\.idea\BloodBowlNation.iml" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\pill\Desktop\work\BloodBowlNation\.idea\encodings.xml" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\pill\Desktop\work\BloodBowlNation\.idea\misc.xml" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\pill\Desktop\work\BloodBowlNation\.idea\modules.xml" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\pill\Desktop\work\BloodBowlNation\.idea\scopes\scope_settings.xml" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\pill\Desktop\work\BloodBowlNation\.idea\vcs.xml" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\pill\Desktop\work\BloodBowlNation\.idea\workspace.xml" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\pill\Desktop\work\BloodBowlNation\Procfile" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\pill\Desktop\work\BloodBowlNation\js\heroku\package.json" afterPath="" />
+      <change type="DELETED" beforePath="C:\Users\pill\Desktop\work\BloodBowlNation\js\heroku\web.js" afterPath="" />
     </list>
     <ignored path="BloodBowlNation.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -33,24 +43,6 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="web.js" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/js/heroku/web.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="11" column="3" selection-start="280" selection-end="280" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="package.json" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/js/heroku/package.json">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="6" column="1" selection-start="110" selection-end="110" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name=".gitignore" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/.gitignore">
           <provider selected="true" editor-type-id="text-editor">
@@ -60,10 +52,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Procfile" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/Procfile">
+      <file leaf-file-name="test.html" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/test.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="0" column="20" selection-start="20" selection-end="20" vertical-scroll-proportion="0.0">
+            <state line="16" column="16" selection-start="604" selection-end="604" vertical-scroll-proportion="0.26226416">
               <folding />
             </state>
           </provider>
@@ -144,24 +136,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="js" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="BloodBowlNation" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="BloodBowlNation" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="js" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="heroku" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -336,23 +310,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/js/heroku/web.js">
+    <entry file="file://$PROJECT_DIR$/test.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="11" column="3" selection-start="280" selection-end="280" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/js/heroku/package.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="6" column="1" selection-start="110" selection-end="110" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Procfile">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="20" selection-start="20" selection-end="20" vertical-scroll-proportion="0.0">
+        <state line="16" column="16" selection-start="604" selection-end="604" vertical-scroll-proportion="0.26226416">
           <folding />
         </state>
       </provider>
