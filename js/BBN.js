@@ -11,9 +11,9 @@ var requires = [
 	'js/BBN.Team',
 	'js/BBN.UserEvents',
 	'js/BBN.Variables',
-	'js/lib/EaselJS/lib/easel',
+	'js/lib/EaselJS/lib/easeljs-0.4.2.min',
 	'js/lib/AStar',
-	'js/lib/jquery-1.7.1.min',
+	'js/lib/jquery.min',
 	'js/lib/modernizr'
 ];
 
