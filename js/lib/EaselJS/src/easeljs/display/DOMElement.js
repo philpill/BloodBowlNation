@@ -1,10 +1,9 @@
 /*
-* DOMElement by Grant Skinner. Jul 8, 2011
-* Visit http://easeljs.com/ for documentation, updates and examples.
+* DOMElement
+* Visit http://createjs.com/ for documentation, updates and examples.
 *
-*
-* Copyright (c) 2010 Grant Skinner
-*
+* Copyright (c) 2010 gskinner.com, inc.
+* 
 * Permission is hereby granted, free of charge, to any person
 * obtaining a copy of this software and associated documentation
 * files (the "Software"), to deal in the Software without
@@ -13,10 +12,10 @@
 * copies of the Software, and to permit persons to whom the
 * Software is furnished to do so, subject to the following
 * conditions:
-*
+* 
 * The above copyright notice and this permission notice shall be
 * included in all copies or substantial portions of the Software.
-*
+* 
 * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
 * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -27,12 +26,6 @@
 * OTHER DEALINGS IN THE SOFTWARE.
 */
 
-/**
-* The Easel Javascript library provides a retained graphics mode for canvas
-* including a full, hierarchical display list, a core interaction model, and
-* helper classes to make working with Canvas much easier.
-* @module EaselJS
-**/
 (function(window) {
 // TODO: fix problems with rotation.
 // TODO: exclude from getObjectsUnderPoint
@@ -97,7 +90,7 @@ var p = DOMElement.prototype = new DisplayObject();
 		if (htmlElement) {
 			this._style = htmlElement.style;
 			this._style.position = "absolute";
-			this._style.transformOrigin = this._style.webkitTransformOrigin = this._style.MozTransformOrigin = "0% 0%";
+			this._style.transformOrigin = this._style.webkitTransformOrigin = this._style.msTransformOrigin = this._style.MozTransformOrigin = "0% 0%";
 		}
 	}
 
@@ -132,7 +125,7 @@ var p = DOMElement.prototype = new DisplayObject();
 		o.style.opacity = ""+mtx.alpha;
 		// this relies on the _tick method because draw isn't called if a parent is not visible.
 		o.style.visibility = this.visible ? "visible" : "hidden";
-		o.style.transform = o.style.webkitTransform = o.style.oTransform = ["matrix("+mtx.a,mtx.b,mtx.c,mtx.d,mtx.tx,mtx.ty+")"].join(",");
+		o.style.transform = o.style.webkitTransform = o.style.oTransform =  o.style.msTransform = ["matrix("+mtx.a,mtx.b,mtx.c,mtx.d,mtx.tx,mtx.ty+")"].join(",");
 		o.style.MozTransform = ["matrix("+mtx.a,mtx.b,mtx.c,mtx.d,mtx.tx+"px",mtx.ty+"px)"].join(",");
 		return true;
 	}
@@ -200,9 +193,10 @@ var p = DOMElement.prototype = new DisplayObject();
 	}
 
 // private methods:
-	p._tick = function() {
+	p._tick = function(data) {
 		if (this.htmlElement == null) { return; }
 		this.htmlElement.style.visibility = "hidden";
+		if (this.onTick) { this.onTick(data); }
 	}
 
 	/* Not needed with current setup:

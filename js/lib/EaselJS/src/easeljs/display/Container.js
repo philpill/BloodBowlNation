@@ -1,10 +1,9 @@
 /*
-* Container by Grant Skinner. Dec 5, 2010
-* Visit http://easeljs.com/ for documentation, updates and examples.
+* Container
+* Visit http://createjs.com/ for documentation, updates and examples.
 *
-*
-* Copyright (c) 2010 Grant Skinner
-*
+* Copyright (c) 2010 gskinner.com, inc.
+* 
 * Permission is hereby granted, free of charge, to any person
 * obtaining a copy of this software and associated documentation
 * files (the "Software"), to deal in the Software without
@@ -13,10 +12,10 @@
 * copies of the Software, and to permit persons to whom the
 * Software is furnished to do so, subject to the following
 * conditions:
-*
+* 
 * The above copyright notice and this permission notice shall be
 * included in all copies or substantial portions of the Software.
-*
+* 
 * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
 * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -26,13 +25,6 @@
 * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 * OTHER DEALINGS IN THE SOFTWARE.
 */
-
-/**
-* The Easel Javascript library provides a retained graphics mode for canvas
-* including a full, hierarchical display list, a core interaction model, and
-* helper classes to make working with Canvas much easier.
-* @module EaselJS
-**/
 
 (function(window) {
 
@@ -153,6 +145,7 @@ var p = Container.prototype = new DisplayObject();
 	 * @return {DisplayObject} The child that was added, or the last child if multiple children were added.
 	 **/
 	p.addChild = function(child) {
+		if (child == null) { return child; }
 		var l = arguments.length;
 		if (l > 1) {
 			for (var i=0; i<l; i++) { this.addChild(arguments[i]); }
@@ -235,7 +228,8 @@ var p = Container.prototype = new DisplayObject();
 	 * @method removeAllChildren
 	 **/
 	p.removeAllChildren = function() {
-		while (this.children.length) { this.removeChildAt(0); }
+		var kids = this.children;
+		while (kids.length) { kids.pop().parent = null; }
 	}
 
 	/**
@@ -275,6 +269,57 @@ var p = Container.prototype = new DisplayObject();
 	 **/
 	p.getNumChildren = function() {
 		return this.children.length;
+	}
+	
+	/**
+	 * Swaps the children at the specified indexes. Fails silently if either index is out of range.
+	 * @param index1
+	 * @param index2
+	 * @method swapChildrenAt
+	 **/
+	p.swapChildrenAt = function(index1, index2) {
+		var kids = this.children;
+		var o1 = kids[index1];
+		var o2 = kids[index2];
+		if (!o1 || !o2) { return; } // TODO: throw error?
+		kids[index1] = o2;
+		kids[index2] = o1;
+	}
+	
+	/**
+	 * Swaps the specified children's depth in the display list. Fails silently if either child is not a child of this Container.
+	 * @param child1
+	 * @param child2
+	 * @method swapChildren
+	 **/
+	p.swapChildren = function(child1, child2) {
+		var kids = this.children;
+		var index1,index2;
+		for (var i=0,l=kids.length;i<l;i++) {
+			if (kids[i] == child1) { index1 = i; }
+			if (kids[i] == child2) { index2 = i; }
+			if (index1 != null && index2 != null) { break; }
+		}
+		if (i==l) { return; } // TODO: throw error?
+		kids[index1] = child2;
+		kids[index2] = child1;
+	}
+	
+	/**
+	 * Changes the depth of the specified child. Fails silently if the child is not a child of this container, or the index is out of range.
+	 * @param child
+	 * @param index
+	 * @method setChildIndex
+	 **/
+	p.setChildIndex = function(child, index) {
+		var kids = this.children;
+		for (var i=0,l=kids.length;i<l;i++) {
+			if (kids[i] == child) { break; }
+		}
+		if (i==l || index < 0 || index > l || i == index) { return; }
+		kids.splice(index,1);
+		if (index<i) { i--; }
+		kids.splice(child,i,0); // TODO: test.
 	}
 
 	/**
@@ -373,12 +418,12 @@ var p = Container.prototype = new DisplayObject();
 	 * @method _tick
 	 * @protected
 	 **/
-	p._tick = function() {
+	p._tick = function(data) {
 		for (var i=this.children.length-1; i>=0; i--) {
 			var child = this.children[i];
-			if (child._tick) { child._tick(); }
-			if (child.tick) { child.tick(); }
+			if (child._tick) { child._tick(data); }
 		}
+		if (this.onTick) { this.onTick(data); }
 	}
 
 	/**
