@@ -1,10 +1,6 @@
 
-if (typeof BBN == "undefined" || !BBN)
-{
-   var BBN = {};
-}
+define ({
 
-BBN.BlockEngine = {
 	mediateBlock: function(attacker, defender) {
 
 		var results, blockResultsLength, defenderStrength, attackerStrength, roll;
@@ -83,4 +79,5 @@ BBN.BlockEngine = {
 	knockDown: function(player) {
 		//test AV + injury
 	}
-}
+
+});

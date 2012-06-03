@@ -1,12 +1,7 @@
+define(['BBN.Helpers', 'BBN.Variables'], function(Helpers, variables) {
+	
+	return {
 
-if (typeof BBN == "undefined" || !BBN)
-{
-   var BBN = {};
-}
-
-(function(BBN) {
-
-	BBN.RenderEngine = {
 		grid: null,
 		backgroundStage: null,
 		mainStage: null,
@@ -25,7 +20,7 @@ if (typeof BBN == "undefined" || !BBN)
 		renderPitchImage: function() {
 			this.pitchImage = new Image();
 			Helpers.addEvent(this.pitchImage, "load", this.pitchImageOnload, this);
-			this.pitchImage.src = Variables.pitchImageSrc;
+			this.pitchImage.src = variables.pitchImageSrc;
 		},
 		pitchImageOnload: function() {
 			var pitchBitmap = new Bitmap(this.pitchImage);
@@ -43,12 +38,12 @@ if (typeof BBN == "undefined" || !BBN)
 		renderPitchLines: function() {
 			var x, y,
 				shape = new Shape(),
-				unit = Variables.gridUnit,
-				width = Variables.gridWidth,
-				height = Variables.gridHeight,
-				pitchGridLineColour = Variables.pitchGridLineColour,
-				gameGridLineColour = Variables.gameGridLineColour,
-				boundaryLineColour = Variables.boundaryLineColour;		
+				unit = variables.gridUnit,
+				width = variables.gridWidth,
+				height = variables.gridHeight,
+				pitchGridLineColour = variables.pitchGridLineColour,
+				gameGridLineColour = variables.gameGridLineColour,
+				boundaryLineColour = variables.boundaryLineColour;		
 			
 			var fullWidth = width * unit + 0.5;
 			var fullHeight = height * unit + 0.5;
@@ -146,7 +141,7 @@ if (typeof BBN == "undefined" || !BBN)
 			
 			var teamColours, gridUnit, x, y, circle, graphics, playerNumber, i;
 
-			gridUnit = Variables.gridUnit;
+			gridUnit = variables.gridUnit;
 
 			graphics = new Graphics();
 
@@ -197,4 +192,4 @@ if (typeof BBN == "undefined" || !BBN)
 			}			
 		}
 	}
-})(BBN);
+});

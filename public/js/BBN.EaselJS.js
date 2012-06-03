@@ -1,5 +1,18 @@
-var BBN = BBN || (function () {
+define ([
+
+	'BBN.pitch', 
+	'BBN.RenderEngine', 
+	'BBN.Grid',
+	'BBN.Game',
+	'BBN.UserEvents',
+	'BBN.Variables'
+
+	], function(pitch, renderEngine, Grid, Game, userEvents, variables) {
+
+		console.log(renderEngine);
+
 	return {
+
 		backgroundCanvas: null,
 		backgroundStage: null,
 		mainCanvas: null,
@@ -9,6 +22,7 @@ var BBN = BBN || (function () {
 		grid: null,
 		variables: null,
 		init: function () {
+
 			var that, gridWidth, gridHeight, gridUnit, grid;
 
 			console.log('-- BloodBowlNation --');
@@ -20,11 +34,11 @@ var BBN = BBN || (function () {
 			gridHeight = this.variables.gridHeight;
 			gridUnit = this.variables.gridUnit;
 
-			this.grid = new BBN.Grid(this.mainStage, gridWidth, gridHeight, gridUnit);
-			this.game = new BBN.Game(this.mainStage, this.grid);
+			this.grid = new Grid(this.mainStage, gridWidth, gridHeight, gridUnit);
+			this.game = new Game(this.mainStage, this.grid);
 
-			this.Pitch.init(this.backgroundStage, this.game);
-			this.RenderEngine.init(this.mainStage, this.backgroundStage);
+			pitch.init(this.backgroundStage, this.game);
+			renderEngine.init(this.mainStage, this.backgroundStage);
 			this.game.init();
 
 			this.rebindMouseClick();
@@ -49,21 +63,21 @@ var BBN = BBN || (function () {
 			this.mainStage.mouseEventsEnabled = true;			
 		},
 		bindDomClicks: function () {
-			$('#ClearCacheLink').click({ that: this }, BBN.UserEvents.clearCacheLinkClick);
-			$('#StopGameLoopLink').click({ that: this}, BBN.UserEvents.togglePauseGameLoopLinkClick);
-			$('#TurnoverLink').click({ that: this }, BBN.UserEvents.turnoverLinkClick);			
+			$('#ClearCacheLink').click({ that: this }, userEvents.clearCacheLinkClick);
+			$('#StopGameLoopLink').click({ that: this}, userEvents.togglePauseGameLoopLinkClick);
+			$('#TurnoverLink').click({ that: this }, userEvents.turnoverLinkClick);			
 		},
 		loadVariables: function () {
-			this.variables = Variables;
+			this.variables = variables;
 		},
 		rebindMouseClick: function() {
 			var that = this;
 			this.mainStage.onPress = function (e) {
-				BBN.UserEvents.gameCanvasClick.call(that, e);
+				userEvents.gameCanvasClick.call(that, e);
 			};
 		},
 		tick: function () {
-			document.getElementById('Ticks').innerHTML = 'ticks: ' + Ticker.getTicks(Variables.gamePausable);
+			document.getElementById('Ticks').innerHTML = 'ticks: ' + Ticker.getTicks(variables.gamePausable);
 			document.getElementById('MeasuredFps').innerHTML = 'fps: ' + Ticker.getMeasuredFPS();
 			this.game.tick();
 			this.mainStage.update();
@@ -142,8 +156,7 @@ var BBN = BBN || (function () {
 						console.log('resolveBlock() error: BBN.BlockEngine.mediateBlock() cannot return ^[1-5]');
 						break;											
 				}
-
 			}
 		}
-	};
-}());
+	}
+});

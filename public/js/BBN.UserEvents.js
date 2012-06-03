@@ -1,12 +1,8 @@
 
-if (typeof BBN == "undefined" || !BBN)
-{
-   var BBN = {};
-}
+define(['BBN.Helpers'], function(helpers) {
 
-(function() {
+	return {
 
-	BBN.UserEvents = {
 		togglePauseGameLoopLinkClick: function (e) {
 			console.log('pause/unpause game loop');
 			Ticker.setPaused(!Ticker.getPaused());
@@ -59,7 +55,7 @@ if (typeof BBN == "undefined" || !BBN)
 				return false;				
 			}
 
-			grids = Helpers.convertPixelsToGrids(e.stageX, e.stageY, that.variables.gridUnit);
+			grids = helpers.convertPixelsToGrids(e.stageX, e.stageY, that.variables.gridUnit);
 
 			if (grids[0] > that.variables.gridWidth || grids[1] > that.variables.gridLength) {
 
@@ -74,7 +70,7 @@ if (typeof BBN == "undefined" || !BBN)
 				
 			space = that.game.grid.getSpace(grids[0], grids[1]);
 
-			player = Helpers.castPlayerHelper(space);
+			player = helpers.castPlayerHelper(space);
 
 			if (player === null) {
 				
@@ -104,7 +100,7 @@ if (typeof BBN == "undefined" || !BBN)
 
 			that = this;
 			
-			grids = Helpers.convertPixelsToGrids(e.stageX, e.stageY, that.variables.gridUnit);
+			grids = helpers.convertPixelsToGrids(e.stageX, e.stageY, that.variables.gridUnit);
 
 			if (grids[0] > that.variables.gridWidth || grids[1] > that.variables.gridHeight) {
 				console.log('gameCanvasClick(): out of bounds');
@@ -118,7 +114,7 @@ if (typeof BBN == "undefined" || !BBN)
 			
 			space = that.game.grid.getSpace(grids[0], grids[1]);
 			
-			player = Helpers.castPlayerHelper(space);
+			player = helpers.castPlayerHelper(space);
 			
 			if (player !== null) {
 				
@@ -126,7 +122,15 @@ if (typeof BBN == "undefined" || !BBN)
 			
 					that.game.setSelectedPlayer(player);
 
-					that.mainStage.onPress = function (e) { BBN.UserEvents.playerActionClick.call(that, e); };
+					console.log(that.mainStage);
+
+					that.mainStage.onPress = function (e) { 
+
+						console.log(that);
+
+						BBN.UserEvents.playerActionClick.call(that, e); 
+
+					};
 				}
 			}
 		},
@@ -136,13 +140,13 @@ if (typeof BBN == "undefined" || !BBN)
 
 			that = this;
 			
-			grids = Helpers.convertPixelsToGrids(e.stageX, e.stageY, this.variables.gridUnit);
+			grids = helpers.convertPixelsToGrids(e.stageX, e.stageY, this.variables.gridUnit);
 
 			space = that.grid.getSpace(grids[0], grids[1]);
 			
-			if (Helpers.isAdjacent(that.game.defender, { location: grids })) {
+			if (helpers.isAdjacent(that.game.defender, { location: grids })) {
 
-				if (Helpers.isSpaceEmpty(space)) {
+				if (helpers.isSpaceEmpty(space)) {
 
 					that.movePlayer(that.game.defender, grids, true);
 
@@ -156,4 +160,4 @@ if (typeof BBN == "undefined" || !BBN)
 			}
 		}
 	}
-})();
+});

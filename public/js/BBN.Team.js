@@ -1,11 +1,6 @@
-if (typeof BBN == "undefined" || !BBN)
-{
-   var BBN = {};
-}
+define(function() {
 
-(function() {
-
-	BBN.Team = function(teamName) {
+	var Team = function (teamName) {
 
 		this.name = teamName;
 		this.players = [];
@@ -16,7 +11,7 @@ if (typeof BBN == "undefined" || !BBN)
 		this.gridHomeSection = 0;
 	}
 
-	BBN.Team.prototype = {
+	Team.prototype = {
 		name: {
 			get: function() { return this._name; },
 			set: function(value) { 
@@ -78,4 +73,6 @@ if (typeof BBN == "undefined" || !BBN)
 			//console.log('team tick');
 		}
 	}
-})();
+
+	return Team;
+});

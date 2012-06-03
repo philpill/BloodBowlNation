@@ -1,12 +1,6 @@
+define(function() {
 
-if (typeof BBN == "undefined" || !BBN)
-{
-   var BBN = {};
-}
-
-(function() {
-
-	BBN.Player = function(stage, playerName, playerTeam, playerNumber, playerRace, playerMovement, playerStrength, playerAgility, playerArmourValue) {
+	var Player = function (stage, playerName, playerTeam, playerNumber, playerRace, playerMovement, playerStrength, playerAgility, playerArmourValue) {
 
 		this.stage = stage;
 
@@ -33,61 +27,62 @@ if (typeof BBN == "undefined" || !BBN)
 	}
 
 
-	BBN.Player.prototype = (function(){
+	Player.prototype = {
 
-		return {
-			stage: null,
-			name: null,
-			colours: null,
-			location: null,
-			number: null,
-			team: null,
-			race: null,
-			movementAllowance: null,
-			strength: null,
-			agility: null,
-			armourValue: null,
-			isDown: null,
-			isStunned: null,
-			isKnockedOut: null,
-			hasMoved: null,
-			hasActioned: null,
-			renderCache: null,
-			clearRenderCache: function() {
-				this.renderCache = [];
-			},
-			pickUpBall: function(ball) {	
-				//attempt to pickup
-				ball.inPossessionOf = this;
-				console.log("ball picked up");
-			},
-			move: function (grids) {
-				this.renderCache = [];
-				this.location = grids;
-				this.hasMoved = true;
-			},
-			block: function (defender) {
+		stage: null,
+		name: null,
+		colours: null,
+		location: null,
+		number: null,
+		team: null,
+		race: null,
+		movementAllowance: null,
+		strength: null,
+		agility: null,
+		armourValue: null,
+		isDown: null,
+		isStunned: null,
+		isKnockedOut: null,
+		hasMoved: null,
+		hasActioned: null,
+		renderCache: null,
+		clearRenderCache: function() {
+			this.renderCache = [];
+		},
+		pickUpBall: function(ball) {	
+			//attempt to pickup
+			ball.inPossessionOf = this;
+			console.log("ball picked up");
+		},
+		move: function (grids) {
+			this.renderCache = [];
+			this.location = grids;
+			this.hasMoved = true;
+		},
+		block: function (defender) {
 
-				//in dev
+			//in dev
 
-				this.hasActioned = true;
-			},
-			stun: function () {
-				
-				this.isDown = true;
-				this.isStunned = true;
-			},
-			knockout: function () {
-				
-				this.isKnockedOut = true;
-			},
-			knockdown: function() {
-				
-				this.isDown = true;
-			},
-			tick: function() {
-				
-			}
+			this.hasActioned = true;
+		},
+		stun: function () {
+			
+			this.isDown = true;
+			this.isStunned = true;
+		},
+		knockout: function () {
+			
+			this.isKnockedOut = true;
+		},
+		knockdown: function() {
+			
+			this.isDown = true;
+		},
+		tick: function() {
+			
 		}
-	})();
-})();
+	}
+
+	return Player;
+
+});

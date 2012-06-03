@@ -1,12 +1,7 @@
 
-if (typeof BBN == "undefined" || !BBN)
-{
-   var BBN = {};
-}
+define(['BBN.Helpers','BBN.Player', 'BBN.Ball'], function(helpers, Player, Ball) {
 
-(function() {
-
-	BBN.Grid = function(stage, width, height, unit) {
+	var Grid = function (stage, width, height, unit) {
 
 		var i, j;
 		
@@ -41,7 +36,7 @@ if (typeof BBN == "undefined" || !BBN)
 		this.stage.addChild(this.pushBackSquares);
 	}
 
-	BBN.Grid.prototype.initialise = function() {
+	Grid.prototype.initialise = function() {
 
 		//predicates
 		// 0 ~ halfway == home
@@ -58,7 +53,7 @@ if (typeof BBN == "undefined" || !BBN)
 		//define halfway line ... ?
 	}
 
-	BBN.Grid.prototype = {
+	Grid.prototype = {
 		selectedPlayerLocationCache: null,
 		activeTeamCache: null,
 		oppositionPlayerSquares: null,
@@ -97,10 +92,10 @@ if (typeof BBN == "undefined" || !BBN)
 		},
 		moveEntity: function(destinationGridX, destinationGridY, object) {
 			var player, ball;
-			if (!object instanceof BBN.Player && !object instanceof BBN.Ball) {		
+			if (!object instanceof Player && !object instanceof Ball) {		
 				throw("BBN.Grid.prototype.insertObject() error: object not griddable");
 			}
-			if (object instanceof BBN.Player) {
+			if (object instanceof Player) {
 				player = object;	
 				//ball = BBN.game.match.ball;
 				//check ball is in possession of player and move
@@ -145,7 +140,7 @@ if (typeof BBN == "undefined" || !BBN)
 			return null;
 		},
 		insertEntity: function(gridX, gridY, object) {	
-			if (!object instanceof BBN.Player && !object instanceof BBN.Ball) {			
+			if (!object instanceof Player && !object instanceof Ball) {			
 				throw("BBN.Grid.prototype.insertObject() error: object not griddable");
 			}		
 			if (gridX > this.width) {					
@@ -154,9 +149,9 @@ if (typeof BBN == "undefined" || !BBN)
 			if (gridY > this.height) {					
 				throw("BBN.Grid.prototype.insertObject() error: outside boundary");
 			}
-			if (object instanceof BBN.Player) {
+			if (object instanceof Player) {
 				this.space[gridX][gridY].unshift(object);		
-			} else if (object instanceof BBN.Ball) {
+			} else if (object instanceof Ball) {
 				this.space[gridX][gridY].push(object);
 			}
 		},
@@ -166,19 +161,19 @@ if (typeof BBN == "undefined" || !BBN)
 				this.renderActiveTeamPlayerSquares()
 			}
 			this.renderCursor(this.stage.mouseX, this.stage.mouseY);
-			if (selectedPlayer instanceof BBN.Player) {
+			if (selectedPlayer instanceof Player) {
 
 				this.renderSelectedPlayerSquare(selectedPlayer);
 				this.clearCursorPathSquares();
 				this.clearPushBackSquares();
 
-				if (defender instanceof BBN.Player) {
+				if (defender instanceof Player) {
 
 					this.clearAdjacentOppositionSquares();
 
 					this.renderDefenderSquare(defender);
 
-					var pushBackSquares = Helpers.getPushBackSquares(selectedPlayer.location, defender.location);
+					var pushBackSquares = helpers.getPushBackSquares(selectedPlayer.location, defender.location);
 
 					var unoccupiedPushBackSquares = [];
 
@@ -236,7 +231,7 @@ if (typeof BBN == "undefined" || !BBN)
 		},
 		renderCursor: function(x, y) {
 			var cursorColour = 'rgba(200, 200, 200, 1)';
-			var grids = Helpers.convertPixelsToGrids(x, y, this.unit);
+			var grids = helpers.convertPixelsToGrids(x, y, this.unit);
 			this.renderBox(this.cursor, [grids], this.unit, cursorColour);
 		},
 		renderDefenderSquare: function(defender) {
@@ -270,7 +265,7 @@ if (typeof BBN == "undefined" || !BBN)
 				if (gridsArray[gridsArrayLength] === null) {
 					continue;
 				}
-				pixels = Helpers.convertGridsToPixels(gridsArray[gridsArrayLength][0], gridsArray[gridsArrayLength][1], gridUnit);
+				pixels = helpers.convertGridsToPixels(gridsArray[gridsArrayLength][0], gridsArray[gridsArrayLength][1], gridUnit);
 
 				x = pixels[0]+0.5;
 				y = pixels[1]+0.5;
@@ -285,7 +280,7 @@ if (typeof BBN == "undefined" || !BBN)
 
 			shape.graphics.clear();
 			while (gridsArrayLength--) {
-				pixels = Helpers.convertGridsToPixels(gridsArray[gridsArrayLength][0], gridsArray[gridsArrayLength][1], gridUnit);
+				pixels = helpers.convertGridsToPixels(gridsArray[gridsArrayLength][0], gridsArray[gridsArrayLength][1], gridUnit);
 				shape.graphics.beginFill(colour);
 				shape.graphics.drawRect(pixels[0]+0.5, pixels[1]+0.5, gridUnit, gridUnit);
 				shape.graphics.endFill();
@@ -312,13 +307,13 @@ if (typeof BBN == "undefined" || !BBN)
 
 				z = this.space[x][y];
 
-				gridEntities = Helpers.castGridEntityHelper(z);
+				gridEntities = helpers.castGridEntityHelper(z);
 
 				entitiesLength = gridEntities.length;
 
 				while (entitiesLength--) {
 
-					if (gridEntities[entitiesLength] instanceof BBN.Player) {
+					if (gridEntities[entitiesLength] instanceof Player) {
 				
 						if (gridEntities[entitiesLength].team !== selectedPlayer.team) {
 							
@@ -355,8 +350,8 @@ if (typeof BBN == "undefined" || !BBN)
 		},
 		renderSelectedPlayerSquareToCursor: function(selectedPlayer, cursor) {
 			var grids, path, i, board;
-			if (selectedPlayer instanceof BBN.Player && selectedPlayer.hasMoved === false) {
-				grids = Helpers.convertPixelsToGrids(cursor[0], cursor[1], this.unit);
+			if (selectedPlayer instanceof Player && selectedPlayer.hasMoved === false) {
+				grids = helpers.convertPixelsToGrids(cursor[0], cursor[1], this.unit);
 				
 				board = this.getBoard();
 
@@ -401,11 +396,13 @@ if (typeof BBN == "undefined" || !BBN)
 		},
 		renderCursorPath: function(x, y) {
 			var pathSquareColour = 'rgba(0,0,255,0.2)';
-			var pixels = Helpers.convertGridsToPixels(x, y, this.unit);
+			var pixels = helpers.convertGridsToPixels(x, y, this.unit);
 			this.cursorPathSquare.graphics.beginFill(pathSquareColour);
 			this.cursorPathSquare.graphics.drawRect(pixels[0], pixels[1], this.unit, this.unit);
 			this.cursorPathSquare.graphics.endFill();				
 		}
 	}
 
-})();
+	return Grid;
+
+});

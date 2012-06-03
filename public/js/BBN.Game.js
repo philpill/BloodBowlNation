@@ -1,18 +1,13 @@
 
-if (typeof BBN == "undefined" || !BBN)
-{
-   var BBN = {};
-}
+define(['BBN.RenderEngine', 'BBN.Team', 'BBN.Player', 'BBN.Ball'], function(renderEngine, Team, Player, Ball){
 
-(function() {
-
-	BBN.Game = function(stage, grid) {
+	var Game = function (stage, grid) {
 		this.stage = stage;
 		this.grid = grid;
 		this.teams = [];
 	}
 
-	BBN.Game.prototype = {
+	Game.prototype = {
 		activeTeam: null,
 		selectedPlayer: null,
 		defender: null,
@@ -22,17 +17,17 @@ if (typeof BBN == "undefined" || !BBN)
 		allPlayersCache: null,
 		forceRenderRefresh: null,
 		setSelectedPlayer: function(player) {
-			if (player instanceof BBN.Player) {
+			if (player instanceof Player) {
 			
 				this.selectedPlayer = this.grid.selectedPlayer = player;
 			}
 		},
 		generateTeams: function() {
 			var player, i, team1, team2;
-			this.ball = new BBN.Ball();
+			this.ball = new Ball();
 
-			team1 = new BBN.Team("Reikland Reavers");
-			team2 = new BBN.Team("Orcland Raiders");
+			team1 = new Team("Reikland Reavers");
+			team2 = new Team("Orcland Raiders");
 
 			team1.colours = ["rgba(150,150,255,1)","rgba(255,255,255,1)"];
 			team2.colours = ["rgba(200,100,100,1)"];
@@ -42,12 +37,12 @@ if (typeof BBN == "undefined" || !BBN)
 			team2.scoreZone = 25;
 			
 			for (i = 0; i < 11; i++) {
-				player = new BBN.Player(this.stage, "human" + i, team1, i+1, 'human', 8);
+				player = new Player(this.stage, "human" + i, team1, i+1, 'human', 8);
 				team1.players.push(player);
 			}
 
 			for (i = 0; i < 11; i++) {
-				player = new BBN.Player(this.stage, "orc" + i, team2, i+1, 'orc', 8);
+				player = new Player(this.stage, "orc" + i, team2, i+1, 'orc', 8);
 				team2.players.push(player);
 			}
 
@@ -103,7 +98,7 @@ if (typeof BBN == "undefined" || !BBN)
 			
 			var i, j;
 
-			BBN.RenderEngine.renderBackground();
+			renderEngine.renderBackground();
 
 			this.generateTeams();
 			this.activeTeam = this.teams[0];
@@ -167,11 +162,13 @@ if (typeof BBN == "undefined" || !BBN)
 				player = allPlayers[playerCount];
 				player.tick();
 				if (player.renderCache.length === 0) {
-					BBN.RenderEngine.renderPlayer(player);
+					renderEngine.renderPlayer(player);
 				}
 			}
 			this.grid.tick(this.activeTeam, this.selectedPlayer, this.defender);
 		}
 	}
 
-})();
+	return Game;
+
+});

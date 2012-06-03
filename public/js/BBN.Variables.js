@@ -1,6 +1,5 @@
+define({
 
-
-var Variables = {
 	unitFillColour: "rgba(0,255,0,0)",
 	unitBorderColour: "rgba(0,0,0,0.1)",
 	boundaryLineColour: "rgba(0,0,0,1)",
@@ -14,4 +13,5 @@ var Variables = {
 	gameFps: 20,
 	gamePausable: true,
 	pitchImageSrc: "img/Pitch.jpg"
-}
+
+});
