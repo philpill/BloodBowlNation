@@ -122,13 +122,9 @@ define(['BBN.Helpers'], function(helpers) {
 			
 					that.game.setSelectedPlayer(player);
 
-					console.log(that.mainStage);
-
 					that.mainStage.onPress = function (e) { 
 
-						console.log(that);
-
-						BBN.UserEvents.playerActionClick.call(that, e); 
+						BBN.UserEvents.playerActionClick.call(that, e);
 
 					};
 				}
@@ -138,7 +134,11 @@ define(['BBN.Helpers'], function(helpers) {
 			
 			var grids, player, entity, space, that;
 
+			console.log(that);
+
 			that = this;
+
+			console.log(that);
 			
 			grids = helpers.convertPixelsToGrids(e.stageX, e.stageY, this.variables.gridUnit);
 
@@ -155,7 +155,10 @@ define(['BBN.Helpers'], function(helpers) {
 					that.grid.clearPushBackSquares();
 
 					//TODO: should follow up before moving again
-					that.mainStage.onPress = function (e) { BBN.UserEvents.playerActionClick.call(that, e); };
+					that.mainStage.onPress = function (e) { 
+
+						BBN.UserEvents.playerActionClick.call(that, e); 
+					};
 				}
 			}
 		}

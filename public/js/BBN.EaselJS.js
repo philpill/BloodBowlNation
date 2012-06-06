@@ -5,11 +5,10 @@ define ([
 	'BBN.Grid',
 	'BBN.Game',
 	'BBN.UserEvents',
-	'BBN.Variables'
+	'BBN.Variables',
+	'BBN.BlockEngine'
 
-	], function(pitch, renderEngine, Grid, Game, userEvents, variables) {
-
-		console.log(renderEngine);
+	], function(pitch, renderEngine, Grid, Game, userEvents, variables, blockEngine) {
 
 	return {
 
@@ -113,7 +112,7 @@ define ([
 
 			that = this;
 
-			blockResults = BBN.BlockEngine.mediateBlock(attacker, defender);
+			blockResults = blockEngine.mediateBlock(attacker, defender);
 
 			console.log(blockResults);
 
@@ -136,19 +135,19 @@ define ([
 						break;
 					case 3: //pushback
 						that.mainStage.onPress = function (e) {
-							BBN.UserEvents.pushBackClick.call(that, e);
+							userEvents.pushBackClick.call(that, e);
 						};
 						break;
 					case 4: //defender stumble
 						that.mainStage.onPress = function (e) {
-							BBN.UserEvents.pushBackClick.call(that, e);
+							userEvents.pushBackClick.call(that, e);
 						};
 						//test for dodge
 						//defender knockdown
 						break;
 					case 5: //defender down
 						that.mainStage.onPress = function (e) {
-							BBN.UserEvents.pushBackClick.call(that, e);
+							userEvents.pushBackClick.call(that, e);
 						};
 						//defender knockdown
 						break;	

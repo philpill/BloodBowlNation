@@ -2,6 +2,13 @@ define(function() {
 
 	var Player = function (stage, playerName, playerTeam, playerNumber, playerRace, playerMovement, playerStrength, playerAgility, playerArmourValue) {
 
+		this.easelObject = new Container();
+
+		this.easelObject.onClick(function(e){
+
+
+		});
+
 		this.stage = stage;
 
 		this.name = playerName;	
@@ -29,6 +36,7 @@ define(function() {
 
 	Player.prototype = {
 
+		easelObject: null,
 		stage: null,
 		name: null,
 		colours: null,
@@ -80,6 +88,51 @@ define(function() {
 		},
 		tick: function() {
 			
+		},
+		render: function() {
+
+			var graphics = new Graphics();
+
+			graphics.setStrokeStyle(1).beginStroke("#fff");
+
+			graphics.drawCircle(0, 0, 7);
+
+			graphics.setStrokeStyle(1).beginStroke("#000");
+			
+			graphics.drawCircle(0, 0, 6);
+
+			graphics.endStroke();
+
+			var shape = new Shape(graphics);
+
+			this.easelObject.addChild(shape);
+
+			var number = new Text();
+
+			number.text = this.number;
+
+			number.color = '#000';
+
+			number.font = 'bold 7px Arial';
+
+			number.textAlign = 'center';
+
+			number.textBaseline  = 'middle';
+
+			number.x = 0;
+
+			number.y = 0;	
+			
+			if (this.isDown) {
+
+				number.rotation = 90;
+
+			} else if (this.isStunned) {
+
+				number.rotation = 180;
+			}
+
+			this.easelObject.addChild(number);		
 		}
 	}
 
