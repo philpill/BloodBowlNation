@@ -43,7 +43,9 @@ define ([
 			this.rebindMouseClick();
 			this.bindDomClicks();
 
+			Ticker.useRAF = true; 
 			Ticker.setFPS(this.variables.gameFps);
+			//Ticker.setInterval(17);
 			Ticker.addListener(this);
 		},
 		initCanvas: function () {
@@ -72,7 +74,7 @@ define ([
 		rebindMouseClick: function() {
 			var that = this;
 			this.mainStage.onPress = function (e) {
-				userEvents.gameCanvasClick.call(that, e);
+				//userEvents.gameCanvasClick.call(that, e);
 			};
 		},
 		tick: function () {

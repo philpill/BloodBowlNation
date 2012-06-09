@@ -1,15 +1,13 @@
 define(function() {
 
-	var Player = function (stage, playerName, playerTeam, playerNumber, playerRace, playerMovement, playerStrength, playerAgility, playerArmourValue) {
+	var Player = function (playerName, playerTeam, playerNumber, playerRace, playerMovement, playerStrength, playerAgility, playerArmourValue) {
 
 		this.easelObject = new Container();
 
-		this.easelObject.onClick(function(e){
+		this.easelObject.onClick = function(e) {
 
-
-		});
-
-		this.stage = stage;
+			console.log(e);
+		}
 
 		this.name = playerName;	
 		this.colours = playerTeam.colours;
@@ -17,7 +15,7 @@ define(function() {
 		this.team = playerTeam.name;
 		this.race = playerRace;
 		
-		this.renderCache = [];
+		this.renderCache = null;
 		
 		//these values should come from a player type class (e.g. Human Blocker)
 		this.movementAllowance = playerMovement;
@@ -37,7 +35,6 @@ define(function() {
 	Player.prototype = {
 
 		easelObject: null,
-		stage: null,
 		name: null,
 		colours: null,
 		location: null,
@@ -54,8 +51,8 @@ define(function() {
 		hasMoved: null,
 		hasActioned: null,
 		renderCache: null,
-		clearRenderCache: function() {
-			this.renderCache = [];
+		clearRenderCache: function() {			
+			this.renderCache = null;
 		},
 		pickUpBall: function(ball) {	
 			//attempt to pickup
@@ -87,11 +84,34 @@ define(function() {
 			this.isDown = true;
 		},
 		tick: function() {
-			
+
+			if (!this.renderCache) {
+
+				this.render();
+			}
 		},
-		render: function() {
+		setPosition : function() {
+
+
+		},
+		getPosition : function() {
+
+
+		},
+		renderShape : function() {
 
 			var graphics = new Graphics();
+
+			var teamColours = this.colours;
+
+			if (teamColours.length > 1) {
+
+				graphics.beginLinearGradientFill(teamColours, [0, 0.5], 0, 20, 3, 20);
+
+			} else {
+
+				graphics.beginFill(teamColours[0]);
+			}
 
 			graphics.setStrokeStyle(1).beginStroke("#fff");
 
@@ -105,7 +125,9 @@ define(function() {
 
 			var shape = new Shape(graphics);
 
-			this.easelObject.addChild(shape);
+			return shape;
+		},
+		renderNumber : function() {
 
 			var number = new Text();
 
@@ -132,7 +154,19 @@ define(function() {
 				number.rotation = 180;
 			}
 
-			this.easelObject.addChild(number);		
+			return number;
+		},
+		render : function() {
+
+			this.easelObject.addChild(this.renderShape());
+
+			this.easelObject.addChild(this.renderNumber());			
+
+			this.easelObject.x = this.location[0] * 20 + 10;
+
+			this.easelObject.y = this.location[1] * 20 + 10;
+
+			this.renderCache = this.easelObject;		
 		}
 	}
 

@@ -13,7 +13,8 @@ var requires = [
 	'lib/EaselJS/lib/easeljs-0.4.2.min',
 	'lib/AStar',
 	'lib/jquery.min',
-	'lib/modernizr'
+	'lib/modernizr',
+	'lib/underscore-min'
 ];
 
 require.config({

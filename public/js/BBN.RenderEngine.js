@@ -138,58 +138,8 @@ define(['BBN.Helpers', 'BBN.Variables'], function(Helpers, variables) {
 			this.mainStage.addChild(circle);
 		},
 		renderPlayer: function(player) {
-			
-			var teamColours, gridUnit, x, y, circle, graphics, playerNumber, i;
 
-			gridUnit = variables.gridUnit;
-
-			graphics = new Graphics();
-
-			x = (player.location[0]*gridUnit)+gridUnit/2;
-			y = (player.location[1]*gridUnit)+gridUnit/2;
-
-			teamColours = player.colours;
-			
-			if (teamColours.length > 1) {
-				graphics.beginLinearGradientFill([teamColours[0],teamColours[1]], [0, 0.5], x, y, x+3, y);
-			} else {
-				graphics.beginFill(teamColours[0]);
-			}
-
-			graphics.setStrokeStyle(1).beginStroke("#fff");
-			graphics.drawCircle(x,y,7);
-
-			graphics.setStrokeStyle(1).beginStroke("#000");
-			graphics.drawCircle(x,y,6);
-
-			graphics.endStroke();
-
-			circle = new Shape(graphics);
-			
-			playerNumber = new Text();
-			playerNumber.text = player.number;
-			playerNumber.color = '#000';
-			playerNumber.font = 'bold 7px Arial';
-			playerNumber.textAlign = 'center';
-			playerNumber.textBaseline  = 'middle';
-			playerNumber.x = x;
-			playerNumber.y = y;	
-			
-			if (player.isDown) {
-				playerNumber.rotation = 90;
-			} else if (player.isStunned) {
-				playerNumber.rotation = 180;	
-			}
-
-			circle.name = 'playerCircle';
-			playerNumber.name = 'playerNumber';
-		
-			player.renderCache.push(circle);
-			player.renderCache.push(playerNumber);
-
-			for (i = 0, renderCacheLength = player.renderCache.length; i < renderCacheLength;i++) {
-				this.mainStage.addChild(player.renderCache[i]);
-			}			
+			this.mainStage.addChild(player.easelObject);	
 		}
 	}
 });

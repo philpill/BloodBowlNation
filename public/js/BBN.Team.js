@@ -1,4 +1,4 @@
-define(function() {
+define(['BBN.Player'], function(Player) {
 
 	var Team = function (teamName) {
 
@@ -69,8 +69,8 @@ define(function() {
 			}		
 		},
 		tick: function () {
-			
-			//console.log('team tick');
+
+			_.invoke(this.players, 'tick');
 		}
 	}
 

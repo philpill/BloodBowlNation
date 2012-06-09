@@ -37,12 +37,12 @@ define(['BBN.RenderEngine', 'BBN.Team', 'BBN.Player', 'BBN.Ball'], function(rend
 			team2.scoreZone = 25;
 			
 			for (i = 0; i < 11; i++) {
-				player = new Player(this.stage, "human" + i, team1, i+1, 'human', 8);
+				player = new Player("human" + i, team1, i+1, 'human', 8);
 				team1.players.push(player);
 			}
 
 			for (i = 0; i < 11; i++) {
-				player = new Player(this.stage, "orc" + i, team2, i+1, 'orc', 8);
+				player = new Player("orc" + i, team2, i+1, 'orc', 8);
 				team2.players.push(player);
 			}
 
@@ -101,6 +101,7 @@ define(['BBN.RenderEngine', 'BBN.Team', 'BBN.Player', 'BBN.Ball'], function(rend
 			renderEngine.renderBackground();
 
 			this.generateTeams();
+			this.renderAllPlayers();
 			this.activeTeam = this.teams[0];
 			this.dumpPlayersOntoPitchTemp();
 			this.forceRenderRefresh = false;
@@ -141,31 +142,25 @@ define(['BBN.RenderEngine', 'BBN.Team', 'BBN.Player', 'BBN.Ball'], function(rend
 
 			return allPlayers;
 		},
-		tick: function() {
+		renderAllPlayers : function() {
 
 			var allPlayers, playerCount, player;
 
 			allPlayers = this.getAllPlayers();				
 			playerCount = allPlayers.length;
-
-			if (this.forceRenderRefresh) {				
-				this.removeAllRenderedPlayers();				
-				while(playerCount--) {
-					allPlayers[playerCount].clearRenderCache();
-				}
-			}
-
-			//refactor
-			playerCount = allPlayers.length;
 			
 			while(playerCount--) {
 				player = allPlayers[playerCount];
-				player.tick();
-				if (player.renderCache.length === 0) {
-					renderEngine.renderPlayer(player);
-				}
+				renderEngine.renderPlayer(player);
 			}
-			this.grid.tick(this.activeTeam, this.selectedPlayer, this.defender);
+		},
+		tick: function() {
+
+			//console.log('Game.tick()');
+
+			_.invoke(this.teams, 'tick');
+
+			//this.grid.tick(this.activeTeam, this.selectedPlayer, this.defender);
 		}
 	}
 
