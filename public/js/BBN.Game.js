@@ -1,10 +1,20 @@
 
-define(['BBN.RenderEngine', 'BBN.Team', 'BBN.Player', 'BBN.Ball'], function(renderEngine, Team, Player, Ball){
+define([
 
-	var Game = function (stage, grid) {
+	'BBN.RenderEngine', 
+	'BBN.Team', 
+	'BBN.Player', 
+	'BBN.Ball',
+	'BBN.Pitch'
+
+	], function(renderEngine, Team, Player, Ball, Pitch) {
+
+	var Game = function (stage, grid, teams, pitch, ball) {
 		this.stage = stage;
 		this.grid = grid;
-		this.teams = [];
+		this.teams = teams;
+		this.pitch = pitch;
+		this.ball = ball;
 	}
 
 	Game.prototype = {
@@ -12,6 +22,7 @@ define(['BBN.RenderEngine', 'BBN.Team', 'BBN.Player', 'BBN.Ball'], function(rend
 		selectedPlayer: null,
 		defender: null,
 		stage: null,
+		pitch: null,
 		grid: null,
 		teams: null,
 		allPlayersCache: null,
@@ -21,38 +32,6 @@ define(['BBN.RenderEngine', 'BBN.Team', 'BBN.Player', 'BBN.Ball'], function(rend
 			
 				this.selectedPlayer = this.grid.selectedPlayer = player;
 			}
-		},
-		generateTeams: function() {
-			var player, i, team1, team2;
-			this.ball = new Ball();
-
-			team1 = new Team("Reikland Reavers");
-			team2 = new Team("Orcland Raiders");
-
-			team1.colours = ["rgba(150,150,255,1)","rgba(255,255,255,1)"];
-			team2.colours = ["rgba(200,100,100,1)"];
-
-			//needs 'proper' implementation
-			team1.scoreZone = 0;
-			team2.scoreZone = 25;
-			
-			for (i = 0; i < 11; i++) {
-				player = new Player("human" + i, team1, i+1, 'human', 8);
-				team1.players.push(player);
-			}
-
-			for (i = 0; i < 11; i++) {
-				player = new Player("orc" + i, team2, i+1, 'orc', 8);
-				team2.players.push(player);
-			}
-
-			this.teams.push(team1);
-			this.teams.push(team2);
-
-			//console.log(this.teams);
-
-			//localStorage["teams"] = JSON.stringify(this.teams);			
-
 		},
 		dumpPlayersOntoPitchTemp: function() {
 			
@@ -92,15 +71,17 @@ define(['BBN.RenderEngine', 'BBN.Team', 'BBN.Player', 'BBN.Ball'], function(rend
 				player.pickUpBall(this.ball);
 			}
 
-			grid.insertEntity(randomX, randomY, this.ball);
+			this.ball.location = [randomX, randomY];
 		},
 		init: function() {
 			
 			var i, j;
 
-			renderEngine.renderBackground();
+			this.renderPitch();
+			this.renderBall();
 
-			this.generateTeams();
+			this.pitch.init();
+
 			this.renderAllPlayers();
 			this.activeTeam = this.teams[0];
 			this.dumpPlayersOntoPitchTemp();
@@ -154,11 +135,21 @@ define(['BBN.RenderEngine', 'BBN.Team', 'BBN.Player', 'BBN.Ball'], function(rend
 				renderEngine.renderPlayer(player);
 			}
 		},
+		renderPitch : function() {
+
+			renderEngine.renderPitch(this.pitch);
+		},
+		renderBall : function() {
+
+			renderEngine.renderBall(this.ball);
+		},		
 		tick: function() {
 
 			//console.log('Game.tick()');
 
 			_.invoke(this.teams, 'tick');
+
+			this.ball.tick();
 
 			//this.grid.tick(this.activeTeam, this.selectedPlayer, this.defender);
 		}

@@ -71,6 +71,12 @@ define(['BBN.Player'], function(Player) {
 		tick: function () {
 
 			_.invoke(this.players, 'tick');
+
+			this.render();
+		},
+		render: function () {
+
+			_.invoke(this.players, 'render');
 		}
 	}
 

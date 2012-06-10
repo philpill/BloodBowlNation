@@ -10,70 +10,11 @@ define(['BBN.Helpers', 'BBN.Variables'], function(Helpers, variables) {
 			this.mainStage = mainStage;
 			this.backgroundStage = backgroundStage;
 		},
-		renderBackground: function() {
-			this.renderPitchImage();
-		},
-		renderMain: function(grid) {
-			this.grid = grid;
-			this.renderGrid();
-		},
-		renderPitchImage: function() {
-			this.pitchImage = new Image();
-			Helpers.addEvent(this.pitchImage, "load", this.pitchImageOnload, this);
-			this.pitchImage.src = variables.pitchImageSrc;
-		},
-		pitchImageOnload: function() {
-			var pitchBitmap = new Bitmap(this.pitchImage);
+		renderPitch: function(pitch) {
 
-			pitchBitmap.x = 0;
-			pitchBitmap.y = 0;
+			this.mainStage.removeChild(pitch);
 
-			pitchBitmap.scaleX = 0.435;
-			pitchBitmap.scaleY = 0.435;
-
-			this.backgroundStage.addChild(pitchBitmap);
-
-			this.renderPitchLines();
-		},
-		renderPitchLines: function() {
-			var x, y,
-				shape = new Shape(),
-				unit = variables.gridUnit,
-				width = variables.gridWidth,
-				height = variables.gridHeight,
-				pitchGridLineColour = variables.pitchGridLineColour,
-				gameGridLineColour = variables.gameGridLineColour,
-				boundaryLineColour = variables.boundaryLineColour;		
-			
-			var fullWidth = width * unit + 0.5;
-			var fullHeight = height * unit + 0.5;
-
-			//vertical grid lines
-			for (x=0.5; x < (width*unit)+unit; x+=unit) {	
-				shape.graphics.beginStroke(gameGridLineColour).moveTo(x,0).lineTo(x,height*unit).endStroke();
-			}
-			//horizontal grid lines
-			for (y=0.5; y < (height*unit)+unit; y+=unit) {
-				shape.graphics.beginStroke(gameGridLineColour).moveTo(0,y).lineTo(width*unit,y).endStroke();
-			}
-
-			//left
-			shape.graphics.beginStroke(pitchGridLineColour).moveTo(4*unit+0.5,0).lineTo(4*unit+0.5,height*unit+0.5).endStroke();
-			//right
-			shape.graphics.beginStroke(pitchGridLineColour).moveTo(11*unit+0.5,0).lineTo(11*unit+0.5,height*unit+0.5).endStroke();
-			//top
-			shape.graphics.beginStroke(pitchGridLineColour).moveTo(0,unit+0.5).lineTo(width*unit+0.5,unit+0.5).endStroke();
-			//middle
-			shape.graphics.beginStroke(pitchGridLineColour).moveTo(0,13*unit+0.5).lineTo(width*unit+0.5,13*unit+0.5).endStroke();
-			//bottom
-			shape.graphics.beginStroke(pitchGridLineColour).moveTo(0,25*unit+0.5).lineTo(width*unit+0.5,25*unit+0.5).endStroke();
-			
-			//outline
-			shape.graphics.beginStroke(boundaryLineColour).moveTo(0.5,0.5).lineTo(fullWidth, 0.5).lineTo(fullWidth, fullHeight).lineTo(0.5, fullHeight).lineTo(0.5, 0.5).endStroke();
-
-			this.backgroundStage.addChild(shape);
-
-			this.backgroundStage.update();
+			this.mainStage.addChild(pitch);
 		},
 		renderGrid: function() {
 			var grid = this.grid,
@@ -113,33 +54,17 @@ define(['BBN.Helpers', 'BBN.Variables'], function(Helpers, variables) {
 				this.renderBall(entity);					
 			}
 		},
-		renderBall: function(gridX, gridY) {
-		
-			var teamColours,
-				grid = this.grid,
-				gridUnit = grid.unit,
-				x, y,
-				circle,
-				graphics = new Graphics();
+		renderBall: function(ball) {
 
-			x = (gridX*gridUnit)+gridUnit/2;
-			y = (gridY*gridUnit)+gridUnit/2;
-
-			graphics.beginFill('rgba(255,255,0,1)');
-				
-			graphics.setStrokeStyle(1).beginStroke('#000');
+			this.mainStage.removeChild(ball);
 			
-			graphics.drawCircle(x+4,y+4,4);
-
-			graphics.endStroke();
-			
-			circle = new Shape(graphics);
-			
-			this.mainStage.addChild(circle);
+			this.mainStage.addChild(ball);
 		},
 		renderPlayer: function(player) {
 
-			this.mainStage.addChild(player.easelObject);	
+			this.mainStage.removeChild(player);
+
+			this.mainStage.addChild(player);	
 		}
 	}
 });

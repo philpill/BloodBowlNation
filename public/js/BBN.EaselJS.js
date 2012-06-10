@@ -1,14 +1,17 @@
 define ([
 
-	'BBN.pitch', 
 	'BBN.RenderEngine', 
 	'BBN.Grid',
 	'BBN.Game',
 	'BBN.UserEvents',
 	'BBN.Variables',
-	'BBN.BlockEngine'
+	'BBN.BlockEngine',
+	'BBN.Pitch',
+	'BBN.Player',
+	'BBN.Team',
+	'BBN.Ball'
 
-	], function(pitch, renderEngine, Grid, Game, userEvents, variables, blockEngine) {
+	], function(renderEngine, Grid, Game, userEvents, variables, blockEngine, Pitch, Player, Team, Ball) {
 
 	return {
 
@@ -20,6 +23,7 @@ define ([
 		game: null,
 		grid: null,
 		variables: null,
+		pitch: null,
 		init: function () {
 
 			var that, gridWidth, gridHeight, gridUnit, grid;
@@ -34,10 +38,17 @@ define ([
 			gridUnit = this.variables.gridUnit;
 
 			this.grid = new Grid(this.mainStage, gridWidth, gridHeight, gridUnit);
-			this.game = new Game(this.mainStage, this.grid);
 
-			pitch.init(this.backgroundStage, this.game);
+			var teams = this.generateTeams();
+
+			var pitch = new Pitch();
+
+			var ball = new Ball();
+
+			this.game = new Game(this.mainStage, this.grid, teams, pitch, ball);
+
 			renderEngine.init(this.mainStage, this.backgroundStage);
+			
 			this.game.init();
 
 			this.rebindMouseClick();
@@ -61,7 +72,12 @@ define ([
 
 			this.mainStage = new Stage(this.mainCanvas);
 			this.mainStage.name = 'main';
-			this.mainStage.mouseEventsEnabled = true;			
+			this.mainStage.mouseEventsEnabled = true;
+
+			this.mainStage.onPlayerSelect = function(player) {
+
+				console.log(player);
+			}	
 		},
 		bindDomClicks: function () {
 			$('#ClearCacheLink').click({ that: this }, userEvents.clearCacheLinkClick);
@@ -73,15 +89,44 @@ define ([
 		},
 		rebindMouseClick: function() {
 			var that = this;
-			this.mainStage.onPress = function (e) {
-				//userEvents.gameCanvasClick.call(that, e);
-			};
+
+/*			this.mainStage.onPress = function (e) {
+				userEvents.gameCanvasClick.call(that, e);
+			};*/
+
 		},
 		tick: function () {
 			document.getElementById('Ticks').innerHTML = 'ticks: ' + Ticker.getTicks(variables.gamePausable);
 			document.getElementById('MeasuredFps').innerHTML = 'fps: ' + Ticker.getMeasuredFPS();
 			this.game.tick();
 			this.mainStage.update();
+		},
+		generateTeams: function() {
+
+			var player, i, team1, team2;
+
+			team1 = new Team("Reikland Reavers");
+			team2 = new Team("Orcland Raiders");
+
+			team1.colours = ["rgba(150,150,255,1)","rgba(255,255,255,1)"];
+			team2.colours = ["rgba(200,100,100,1)"];
+
+			//needs 'proper' implementation
+			team1.scoreZone = 0;
+			team2.scoreZone = 25;
+			
+			for (i = 0; i < 11; i++) {
+				player = new Player("human" + i, team1, i+1, 'human', 8);
+				team1.players.push(player);
+			}
+
+			for (i = 0; i < 11; i++) {
+				player = new Player("orc" + i, team2, i+1, 'orc', 8);
+				team2.players.push(player);
+			}
+
+			return [team1, team2];		
+
 		},
 		movePlayer: function (player, grids, isPushBack) {
 
