@@ -1,5 +1,5 @@
 
-define (['BBN.Player', 'BBN.Ball'], function(Player, Ball) {
+define (['BBN.Ball'], function(Ball) {
 
 	return {
 
@@ -20,6 +20,12 @@ define (['BBN.Player', 'BBN.Ball'], function(Player, Ball) {
 		        element.addEventListener(eventName, wrapper, false);
 		    else if(element.attachEvent)
 		        element.attachEvent("on" + eventName, wrapper);
+		},
+		inheritPrototype : function(subType, superType) {
+
+			var prototype = Object(superType.prototype);
+			prototype.constructor = subType;
+			subType.prototype = prototype;
 		},
 		wrapFunction: function(fn, context, params) {
 			return function() {

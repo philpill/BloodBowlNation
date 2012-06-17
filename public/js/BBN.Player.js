@@ -1,14 +1,15 @@
 define([
 
-	'BBN.Variables'
+	'BBN.Variables', 
+	'BBN.Helpers'
 
-	], function(variables) {
+	], function(variables, helpers) {
 
-	var Player = function (playerName, playerTeam, playerNumber, playerRace, playerMovement, playerStrength, playerAgility, playerArmourValue) {
+	Player = function (container, playerName, playerTeam, playerNumber, playerRace, playerMovement, playerStrength, playerAgility, playerArmourValue) {
 
-		var container = new Container();
+		Container.call(this);
 
-		_.extend(container, {
+		_.extend(this, {
 
 			name: playerName,
 			colours: playerTeam.colours,
@@ -141,9 +142,9 @@ define([
 				}	
 			}
 		});
-
-		return container;
 	}
+
+	helpers.inheritPrototype(Player, Container);
 
 	return Player;
 

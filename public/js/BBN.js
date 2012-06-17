@@ -6,7 +6,6 @@ var requires = [
 	'BBN.Helpers',
 	'BBN.Pitch',
 	'BBN.Player',
-	'BBN.RenderEngine',
 	'BBN.Team',
 	'BBN.UserEvents',
 	'BBN.Variables',

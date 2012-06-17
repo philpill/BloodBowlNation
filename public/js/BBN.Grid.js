@@ -156,6 +156,9 @@ define(['BBN.Helpers','BBN.Player', 'BBN.Ball'], function(helpers, Player, Ball)
 			}
 		},
 		tick: function(activeTeam, selectedPlayer, defender) {
+
+			console.log(selectedPlayer);
+
 			if (this.activeTeamCache !== activeTeam) {
 				this.activeTeamCache = activeTeam;
 				this.renderActiveTeamPlayerSquares()
@@ -389,8 +392,6 @@ define(['BBN.Helpers','BBN.Player', 'BBN.Ball'], function(helpers, Player, Ball)
 			return board;
 		},
 		populateBoard: function(board) {
-
-			//console.log(this.space);
 			
 			return board;
 		},

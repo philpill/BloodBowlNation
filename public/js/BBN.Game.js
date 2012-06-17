@@ -1,13 +1,12 @@
 
 define([
 
-	'BBN.RenderEngine', 
 	'BBN.Team', 
 	'BBN.Player', 
 	'BBN.Ball',
 	'BBN.Pitch'
 
-	], function(renderEngine, Team, Player, Ball, Pitch) {
+	], function(Team, Player, Ball, Pitch) {
 
 	var Game = function (stage, grid, teams, pitch, ball) {
 		this.stage = stage;
@@ -15,6 +14,7 @@ define([
 		this.teams = teams;
 		this.pitch = pitch;
 		this.ball = ball;
+		this.allPlayersCache = [];
 	}
 
 	Game.prototype = {
@@ -28,8 +28,9 @@ define([
 		allPlayersCache: null,
 		forceRenderRefresh: null,
 		setSelectedPlayer: function(player) {
+
 			if (player instanceof Player) {
-			
+
 				this.selectedPlayer = this.grid.selectedPlayer = player;
 			}
 		},
@@ -74,74 +75,57 @@ define([
 			this.ball.location = [randomX, randomY];
 		},
 		init: function() {
-			
-			var i, j;
 
 			this.renderPitch();
 			this.renderBall();
+			this.renderPlayers();
 
 			this.pitch.init();
-
-			this.renderAllPlayers();
+			
 			this.activeTeam = this.teams[0];
 			this.dumpPlayersOntoPitchTemp();
 			this.forceRenderRefresh = false;
 		},
-		removeAllRenderedPlayers: function() {
-			var stage = this.stage, child, count;
-			count = stage.getNumChildren();
-			while (count--) {
-				child = stage.getChildAt(count);
-				if (child.name === 'playerCircle' || child.name === 'playerNumber') {
-					stage.removeChild(child);
-				}				
-			}
-		},
 		getAllPlayers: function() {
 
-			var teams, players, teamCount, playerCount;
 			var allPlayers = [];
 
-			if ((this.allPlayersCache !== null) && (this.allPlayersCache.length > 0)) {
+			if (this.allPlayersCache.length > 0) {
 
 				allPlayers = this.allPlayersCache;
 
 			} else {
 
-				teams = this.teams;
-				teamCount = teams.length;
-				while (teamCount--) {
-					players = teams[teamCount].players;
-					playerCount = players.length;
-					while (playerCount--) {
-						allPlayers.push(players[playerCount]);
-					}
-				}
+				var teams = this.teams;
+
+				_.each(teams, function(team) {
+
+					allPlayers = _.union(allPlayers, team.players);
+				});
 				
 				this.allPlayersCache = allPlayers;
 			}
 
 			return allPlayers;
 		},
-		renderAllPlayers : function() {
+		renderPlayers : function() {
 
-			var allPlayers, playerCount, player;
+			var that = this;
 
-			allPlayers = this.getAllPlayers();				
-			playerCount = allPlayers.length;
+			var players = this.getAllPlayers();
 			
-			while(playerCount--) {
-				player = allPlayers[playerCount];
-				renderEngine.renderPlayer(player);
-			}
+			_.each(players, function(player) {
+
+				that.stage.addChild(player);
+			});
 		},
 		renderPitch : function() {
 
-			renderEngine.renderPitch(this.pitch);
+			this.stage.addChild(this.pitch);
 		},
 		renderBall : function() {
 
-			renderEngine.renderBall(this.ball);
+			this.stage.addChild(this.ball);
 		},		
 		tick: function() {
 

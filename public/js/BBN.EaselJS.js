@@ -1,6 +1,5 @@
 define ([
-
-	'BBN.RenderEngine', 
+ 
 	'BBN.Grid',
 	'BBN.Game',
 	'BBN.UserEvents',
@@ -11,7 +10,7 @@ define ([
 	'BBN.Team',
 	'BBN.Ball'
 
-	], function(renderEngine, Grid, Game, userEvents, variables, blockEngine, Pitch, Player, Team, Ball) {
+	], function(Grid, Game, userEvents, variables, blockEngine, Pitch, Player, Team, Ball) {
 
 	return {
 
@@ -47,8 +46,6 @@ define ([
 
 			this.game = new Game(this.mainStage, this.grid, teams, pitch, ball);
 
-			renderEngine.init(this.mainStage, this.backgroundStage);
-			
 			this.game.init();
 
 			this.rebindMouseClick();
@@ -60,6 +57,9 @@ define ([
 			Ticker.addListener(this);
 		},
 		initCanvas: function () {
+
+			var that = this;
+
 			this.backgroundCanvas = document.getElementById("BackgroundCanvas");
 			this.mainCanvas = document.getElementById("MainCanvas");
 
@@ -77,6 +77,8 @@ define ([
 			this.mainStage.onPlayerSelect = function(player) {
 
 				console.log(player);
+
+				that.game.setSelectedPlayer(player);
 			}	
 		},
 		bindDomClicks: function () {
@@ -116,12 +118,12 @@ define ([
 			team2.scoreZone = 25;
 			
 			for (i = 0; i < 11; i++) {
-				player = new Player("human" + i, team1, i+1, 'human', 8);
+				player = new Player(new Container(), "human" + i, team1, i+1, 'human', 8);
 				team1.players.push(player);
 			}
 
 			for (i = 0; i < 11; i++) {
-				player = new Player("orc" + i, team2, i+1, 'orc', 8);
+				player = new Player(new Container(), "orc" + i, team2, i+1, 'orc', 8);
 				team2.players.push(player);
 			}
 
