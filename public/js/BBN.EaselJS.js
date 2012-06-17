@@ -1,6 +1,6 @@
 define ([
  
-	'BBN.Grid',
+	'BBN.NewGrid',
 	'BBN.Game',
 	'BBN.UserEvents',
 	'BBN.Variables',
@@ -118,12 +118,12 @@ define ([
 			team2.scoreZone = 25;
 			
 			for (i = 0; i < 11; i++) {
-				player = new Player(new Container(), "human" + i, team1, i+1, 'human', 8);
+				player = new Player("human" + i, team1, i+1, 'human', 8);
 				team1.players.push(player);
 			}
 
 			for (i = 0; i < 11; i++) {
-				player = new Player(new Container(), "orc" + i, team2, i+1, 'orc', 8);
+				player = new Player("orc" + i, team2, i+1, 'orc', 8);
 				team2.players.push(player);
 			}
 

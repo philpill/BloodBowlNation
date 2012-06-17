@@ -157,8 +157,6 @@ define(['BBN.Helpers','BBN.Player', 'BBN.Ball'], function(helpers, Player, Ball)
 		},
 		tick: function(activeTeam, selectedPlayer, defender) {
 
-			console.log(selectedPlayer);
-
 			if (this.activeTeamCache !== activeTeam) {
 				this.activeTeamCache = activeTeam;
 				this.renderActiveTeamPlayerSquares()
@@ -247,7 +245,13 @@ define(['BBN.Helpers','BBN.Player', 'BBN.Ball'], function(helpers, Player, Ball)
 			}
 		},		
 		renderSelectedPlayerSquare: function(selectedPlayer) {
+
+			console.log('renderSelectedPlayerSquare()');
+
 			var grids = selectedPlayer.location;
+
+			console.log(selectedPlayer);
+
 			if (typeof grids === 'undefined') {
 				this.clearSelectedPlayerSquare();
 			} else {
@@ -278,12 +282,27 @@ define(['BBN.Helpers','BBN.Player', 'BBN.Ball'], function(helpers, Player, Ball)
 		},
 		renderSquares: function(shape, gridsArray, gridUnit, colour) {
 
+			console.log('renderSquares()');
+
+			console.log(shape);
+			console.log(gridsArray);
+			console.log(gridUnit);
+			console.log(colour);
+
+
+
 			var gridsArrayLength = gridsArray.length;
 			var pixels;
 
 			shape.graphics.clear();
 			while (gridsArrayLength--) {
+
+				console.log(gridsArrayLength);
+
 				pixels = helpers.convertGridsToPixels(gridsArray[gridsArrayLength][0], gridsArray[gridsArrayLength][1], gridUnit);
+				
+				console.log(pixels);
+
 				shape.graphics.beginFill(colour);
 				shape.graphics.drawRect(pixels[0]+0.5, pixels[1]+0.5, gridUnit, gridUnit);
 				shape.graphics.endFill();
@@ -365,6 +384,9 @@ define(['BBN.Helpers','BBN.Player', 'BBN.Ball'], function(helpers, Player, Ball)
 			}
 		},
 		renderActiveTeamPlayerSquares: function() {
+
+			console.log('renderActiveTeamPlayerSquares()');
+
 			var team = this.activeTeamCache;
 			if (this.selectedPlayer === null) {
 				//render squares for all players

@@ -5,7 +5,7 @@ define([
 
 	], function(variables, helpers) {
 
-	Player = function (container, playerName, playerTeam, playerNumber, playerRace, playerMovement, playerStrength, playerAgility, playerArmourValue) {
+	Player = function (playerName, playerTeam, playerNumber, playerRace, playerMovement, playerStrength, playerAgility, playerArmourValue) {
 
 		Container.call(this);
 

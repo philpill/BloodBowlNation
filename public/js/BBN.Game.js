@@ -135,7 +135,7 @@ define([
 
 			this.ball.tick();
 
-			//this.grid.tick(this.activeTeam, this.selectedPlayer, this.defender);
+			this.grid.tick(this.activeTeam, this.selectedPlayer, this.defender);
 		}
 	}
 
