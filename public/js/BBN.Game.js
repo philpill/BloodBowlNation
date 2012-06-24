@@ -20,6 +20,7 @@ define([
 	Game.prototype = {
 		activeTeam: null,
 		selectedPlayer: null,
+		selectedDefender: null,
 		defender: null,
 		stage: null,
 		pitch: null,
@@ -31,59 +32,45 @@ define([
 
 			if (player instanceof Player) {
 
-				this.selectedPlayer = this.grid.selectedPlayer = player;
+				this.selectedPlayer = player;
 			}
 		},
-		dumpPlayersOntoPitchTemp: function() {
-			
-			var i, j, x, y, grid, gridX, gridY, player, teams, gameContext, halfWayY, OffSetX, OffSetY, unit;
+		deploy : function() {
 
-			teams = this.teams;
-			grid = this.grid;
-			gridUnit = grid.unit;
-			
-			OffSetX = 2;
-			OffSetY = -1;
+			var teams = this.teams;
+			var grid = this.grid;
+			var ball = this.ball;
 
-			halfWayY = Math.floor(grid.height/2);
+			_.each(teams, function(team, i){
 
-			for (i = 0, teamLength = teams.length; i < teamLength; i++) {
-				
-				for (j = 0, teamPlayersLength = teams[i].players.length; j < teamPlayersLength; j++) {
-					x = (j*gridUnit)+gridUnit/2;
-					y = (i*gridUnit)+gridUnit/2;
-					gridX = grid.getGridX(x);
-					gridY = grid.getGridY(y);
-					grid.space[gridX+OffSetX][gridY+halfWayY+OffSetY].push(teams[i].players[j]);
+				_.each(team.players, function(player, j){
 
-					teams[i].players[j].location = [gridX+OffSetX,gridY+halfWayY+OffSetY];
-				}
-			}
+					teams[i].players[j].location = [j + 2, i + Math.floor(grid.height/2) - 1];
+				});
+			});
 
-			var randomX, randomY;
+			var randomX = Math.floor(Math.random()*(grid.width - 1));
+			var randomY = Math.floor(Math.random()*(Math.floor(grid.height/2) - 1));
 
-			randomX = Math.floor(Math.random()*(grid.space.length - 1));
-			randomY = Math.floor(Math.random()*(grid.space[0].length/2 - 1));
-
-			if (grid.space[randomX][randomY].length > 0) {
-				//ball's fallen onto a player
-				console.log("ball's landed on " + grid.space[randomX][randomY][0].name + " - do something");
-				player = _castPlayerHelper(grid.space[randomX][randomY])[0];
-				player.pickUpBall(this.ball);
-			}
-
-			this.ball.location = [randomX, randomY];
+			ball.location = [randomX, randomY];
 		},
 		init: function() {
 
-			this.renderPitch();
-			this.renderBall();
-			this.renderPlayers();
+			var stage = this.stage;
+
+			stage.addChild(this.pitch);
+
+			stage.addChild(this.ball);
+			
+			_.each(this.getAllPlayers(), function(player) {
+
+				stage.addChild(player);
+			});
 
 			this.pitch.init();
 			
 			this.activeTeam = this.teams[0];
-			this.dumpPlayersOntoPitchTemp();
+			this.deploy();
 			this.forceRenderRefresh = false;
 		},
 		getAllPlayers: function() {
@@ -108,26 +95,7 @@ define([
 
 			return allPlayers;
 		},
-		renderPlayers : function() {
-
-			var that = this;
-
-			var players = this.getAllPlayers();
-			
-			_.each(players, function(player) {
-
-				that.stage.addChild(player);
-			});
-		},
-		renderPitch : function() {
-
-			this.stage.addChild(this.pitch);
-		},
-		renderBall : function() {
-
-			this.stage.addChild(this.ball);
-		},		
-		tick: function() {
+		tick: function(cursorLocation) {
 
 			//console.log('Game.tick()');
 
@@ -135,7 +103,15 @@ define([
 
 			this.ball.tick();
 
-			this.grid.tick(this.activeTeam, this.selectedPlayer, this.defender);
+			var activePlayerLocation = this.selectedPlayer ? this.selectedPlayer.location : [];
+
+			var activeDefenderLocation = this.selectedDefender ? this.selectedDefender.location : [];
+
+			var activeTeamLocation = _.pluck(this.teams[0].players, 'location');
+
+			var oppositionTeamLocation = _.pluck(this.teams[1].players, 'location');
+
+			this.grid.tick(cursorLocation, activePlayerLocation, activeDefenderLocation, activeTeamLocation, oppositionTeamLocation);
 		}
 	}
 

@@ -8,9 +8,11 @@ define ([
 	'BBN.Pitch',
 	'BBN.Player',
 	'BBN.Team',
-	'BBN.Ball'
+	'BBN.Ball',
+	'BBN.Helpers',
+	'lib/EaselJS/lib/easeljs-0.4.2.min'
 
-	], function(Grid, Game, userEvents, variables, blockEngine, Pitch, Player, Team, Ball) {
+	], function(Grid, Game, userEvents, variables, blockEngine, Pitch, Player, Team, Ball, helpers) {
 
 	return {
 
@@ -37,6 +39,8 @@ define ([
 			gridUnit = this.variables.gridUnit;
 
 			this.grid = new Grid(this.mainStage, gridWidth, gridHeight, gridUnit);
+
+			this.grid.init();
 
 			var teams = this.generateTeams();
 
@@ -98,9 +102,17 @@ define ([
 
 		},
 		tick: function () {
+			
 			document.getElementById('Ticks').innerHTML = 'ticks: ' + Ticker.getTicks(variables.gamePausable);
+			
 			document.getElementById('MeasuredFps').innerHTML = 'fps: ' + Ticker.getMeasuredFPS();
-			this.game.tick();
+
+			var location = this.mainStage.mouseInBounds ? helpers.convertPixelsToGrids(this.mainStage.mouseX, this.mainStage.mouseY, variables.gridUnit) : [];
+			
+			this.mainStage.sortChildren(function(a, b){ return a.zIndex - b.zIndex });
+
+			this.game.tick(location);
+			
 			this.mainStage.update();
 		},
 		generateTeams: function() {

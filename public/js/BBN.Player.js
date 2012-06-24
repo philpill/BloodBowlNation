@@ -1,16 +1,12 @@
-define([
+define(['BBN.Variables', 'BBN.Helpers', 'lib/EaselJS/lib/easeljs-0.4.2.min'], function(variables, helpers) {
 
-	'BBN.Variables', 
-	'BBN.Helpers'
-
-	], function(variables, helpers) {
-
-	Player = function (playerName, playerTeam, playerNumber, playerRace, playerMovement, playerStrength, playerAgility, playerArmourValue) {
+	var Player = function (playerName, playerTeam, playerNumber, playerRace, playerMovement, playerStrength, playerAgility, playerArmourValue) {
 
 		Container.call(this);
 
 		_.extend(this, {
 
+			zIndex : 3,
 			name: playerName,
 			colours: playerTeam.colours,
 			location: null,

@@ -1,15 +1,12 @@
-define([
-
-	'BBN.Variables'
-
-	], function(variables) {
+define(['BBN.Variables', 'BBN.Helpers', 'lib/EaselJS/lib/easeljs-0.4.2.min'], function(variables, helpers) {
 
 	var Ball = function() {
 
-		var container = new Container();
+		Container.call(this);
 
-		_.extend(container, {
+		_.extend(this, {
 
+			zIndex : 4,
 			colour : "rgba(255,255,0,1)",
 			inPossessionOf : null,
 			location : null,
@@ -39,9 +36,9 @@ define([
 				this.render();
 			}
 		});
-
-		return container;
 	}
+
+	helpers.inheritPrototype(Ball, Container);
 
 	return Ball;
 });

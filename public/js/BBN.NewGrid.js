@@ -1,89 +1,196 @@
 
-define(['BBN.Helpers'], function(helpers) {
+define(['BBN.Helpers', 'BBN.Variables', 'lib/AStar'], function(helpers, variables) {
 
-	var Grid = function (width, height, unit) {
+	var Grid = function (stage, width, height, unit) {
 
 		Container.call(this);
 
 		_.extend(this, {
 
+			zIndex : 2,
+			activeTeamSquares : new Container(),
+			oppositionTeamSquares: new Container(),
+			activePlayerSquare: new Shape(),
+			activeDefenderSquare: new Shape(),
+			interactionSquares : new Container(),
+			cursorSquare: new Shape(),
+			pathSquares:new Container(),
 			width : width,
 			height : height,
-			unit : unit
-		}		
-	}
+			unit : unit,
+			stage : stage,
+			tick : function(cursorLocation, activePlayerLocation, activeDefenderLocation, activeTeamLocations, oppositionLocations) {
 
-	Grid.prototype = {
+				//console.log('Grid.tick()');
 
-		activeTeamSquares : [],
-		oppositionTeamSquares: [],
-		activePlayerSquare: new Shape(),
-		activeDefenderSquare: new Shape(),
-		interactionSquares : [],
-		cursorSquare: new Shape(),
-		unit: null,
-		height: null,
-		width: null,
+				//console.log(cursorLocation);
+				//console.log(activePlayerLocation);
+				//console.log(activeDefenderLocation);
+				//console.log(activeTeamLocations);
+				//console.log(oppositionLocations);
 
-		tick : function(cursorLocation, activePlayerLocation, activeDefenderLocation, activeTeamLocations, oppositionLocations) {
+				this.render(cursorLocation, activePlayerLocation);
+			},
 
-			var that = this;
+			render : function(cursorLocation, activePlayerLocation) {
 
-			this.removeAllChildren();
+				if (cursorLocation.length > 0) {
 
-			this.addChild(this.cursorSquare);
+					this.renderCursor(cursorLocation, activePlayerLocation);
+				}
 
-			this.addChild(this.activePlayerSquare);
+				if (activePlayerLocation.length > 0) {
+				
+					this.renderActivePlayer(activePlayerLocation);
+				}
 
-			this.addChild(this.activeDefenderSquare);		
+				if (cursorLocation.length > 0 && activePlayerLocation.length > 0) {
 
-			this.addChild(this.cursorPathSquare);
+					this.renderPath(cursorLocation, activePlayerLocation);
+				}			
 
-			this.activeTeamSquares = [];
+				this.renderDefender();
+				this.renderActiveTeam();
+				this.renderOppositionTeam();
+			},
+			renderCursor : function(cursorLocation, activePlayerLocation) {
 
-			_.each(activeTeamLocations, function(square){
+				var location = helpers.convertGridsToPixels(cursorLocation[0], cursorLocation[1], variables.gridUnit);
 
-				var square = new Shape();
+				this.renderLocation(this.cursorSquare, location, variables.cursorFillColour, variables.cursorOutlineColour);
+			},
 
-				that.activeTeamSquares.push(square);
-			});
+			renderActivePlayer: function(playerLocation) {
 
-			this.oppositionTeamSquares = [];
+				var location = helpers.convertGridsToPixels(playerLocation[0], playerLocation[1], variables.gridUnit);
 
-			_.each(oppositionLocations, function(square){
+				this.renderLocation(this.activePlayerSquare, location, variables.playerSquareColour);
+			},
 
-				var square = new Shape();
+			renderPath : function(cursorLocation, playerLocation) {
 
-				that.oppositionTeamSquares.push(square);
-			});
+				var that = this;
 
-			_.each(interactionSquares, function(square){
+				var path = a_star(playerLocation, cursorLocation, this.getBoard(), this.width, this.height);
 
-				var square = new Shape();
+				var locationsArray = _.zip(_.pluck(path, 'x'), _.pluck(path, 'y'));
 
-				that.interactionSquares.push(square);
-			});
-		},
+				var locations = [];
 
-		render : function() {
+				that.pathSquares.removeAllChildren();
 
+				_.each(locationsArray, function(location){
 
-		},
-		renderLocations : function(locations, colour) {
+					locations.push(helpers.convertGridsToPixels(location[0], location[1], variables.gridUnit));
 
-			var that = this;
+					that.pathSquares.addChild(new Shape());
+				});
 
-			_.each(locations, function(location){
+				that.renderLocations(that.pathSquares, locations, variables.cursorFillColour);
+			},
 
-				that.renderLocation(location);
-			});
-		},
-		renderLocation : function(location, colour) {
+			getBoard: function() {
 
-			var pixels;
+				var board = this.createBoard();
 
-			this.renderSquare(pixels);
-		}
+				board = this.populateBoard(board);
+
+				return board;
+			},
+
+			createBoard: function() {
+
+				//needs to represent entities on field
+
+				var board = [];
+
+				var boardWidth = this.width;
+
+				var boardHeight = this.height;
+
+				while (boardWidth--) {		
+
+					boardHeight = this.height;
+
+					board[boardWidth] = [];
+
+					while (boardHeight--) {
+
+						board[boardWidth][boardHeight] = 0;
+					}
+				}
+
+				return board;
+			},
+
+			populateBoard: function(board) {
+				
+				return board;
+			},
+
+			renderDefender : function() {
+
+			},
+			renderActiveTeam : function() {
+
+			},
+			renderOppositionTeam : function() {
+
+			},
+			renderLocations : function(container, locations, fillColour, outlineColour) {
+
+				var that = this;
+
+				_.each(container.children, function(child, i){
+
+					child.x = locations[i][0];
+
+					child.y = locations[i][1];
+
+					child.graphics.clear();
+
+					child.graphics.beginStroke(outlineColour);
+
+					child.graphics.beginFill(fillColour);
+
+					child.graphics.rect(0, 0, variables.gridUnit, variables.gridUnit);
+
+				});
+			},
+			renderLocation : function(shape, location, fillColour, outlineColour) {
+
+				shape.graphics.clear();
+
+				shape.graphics.beginStroke(outlineColour);
+
+				shape.graphics.beginFill(fillColour);
+
+				shape.graphics.rect(0, 0, variables.gridUnit, variables.gridUnit);
+
+				shape.x = location[0];
+
+				shape.y = location[1];
+			},
+			init : function() {
+
+				this.stage.addChild(this);
+			}
+							
+		});		
+
+		this.addChild(this.cursorSquare);
+
+		this.addChild(this.activePlayerSquare);
+
+		this.addChild(this.activeDefenderSquare);		
+
+		this.addChild(this.cursorPathSquare);
+
+		this.addChild(this.activeTeamSquares);
+
+		this.addChild(this.oppositionTeamSquares);
+
+		this.addChild(this.pathSquares);
 	}
 
 	helpers.inheritPrototype(Grid, Container);

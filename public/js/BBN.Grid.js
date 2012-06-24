@@ -5,6 +5,7 @@ define(['BBN.Helpers','BBN.Player', 'BBN.Ball'], function(helpers, Player, Ball)
 
 		var i, j;
 		
+		this.zIndex = 2;
 		this.stage = stage;
 		this.width = width;
 		this.height = height;
@@ -34,23 +35,6 @@ define(['BBN.Helpers','BBN.Player', 'BBN.Ball'], function(helpers, Player, Ball)
 		
 		this.pushBackSquares = new Shape();
 		this.stage.addChild(this.pushBackSquares);
-	}
-
-	Grid.prototype.initialise = function() {
-
-		//predicates
-		// 0 ~ halfway == home
-		// halfway ~ end == away
-
-		//allocate areas of grid to teams to define home/away
-		
-			//count number of teams		
-			//divide pitch height by number of teams		
-			//define endzones
-			
-		//define widezone: 4 squares in from each side
-		
-		//define halfway line ... ?
 	}
 
 	Grid.prototype = {

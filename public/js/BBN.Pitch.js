@@ -7,6 +7,7 @@ define (['BBN.Helpers', 'BBN.Variables'], function(helpers, variables) {
 
 		_.extend(container, {
 
+			zIndex : 1,
 			init: function() {
 
 				this.render();
@@ -15,11 +16,8 @@ define (['BBN.Helpers', 'BBN.Variables'], function(helpers, variables) {
 			tick : function() {
 
 				console.log('Pitch.tick()');
-
 			},
 			render : function() {
-
-				console.log('Pitch.render()');
 
 				this.addChild(this.renderPitchImage());
 

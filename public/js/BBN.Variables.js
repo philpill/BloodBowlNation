@@ -12,6 +12,8 @@ define({
 	gridWidth: 15,
 	gameFps: 20,
 	gamePausable: true,
-	pitchImageSrc: "img/Pitch.jpg"
-
+	pitchImageSrc: "img/Pitch.jpg",
+	cursorFillColour: 'rgba(0, 0, 0, 0.3)',
+	playerSquareColour: 'rgba(0, 0, 0, 0.3)',
+	cursorOutlineColour : 'rgba(255, 255, 255, 1)'
 });
