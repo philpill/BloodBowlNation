@@ -1,13 +1,19 @@
 
-define(['Helpers', 'Variables', 'lib/AStar'], function(helpers, variables) {
+define(['Helpers', 'Variables', 'lib/AStar', 'lib/EaselJS/lib/easeljs-0.4.2.min'], function(helpers, variables) {
 
-	var Grid = function (stage, width, height, unit) {
+	var Grid = function (width, height, unit) {
 
-		Container.call(this);
+		var stage = new Stage(document.getElementById("MainCanvas"));
 
-		_.extend(this, {
+		function getMouseLocation() {
 
-			zIndex : 2,
+			return stage.mouseInBounds ? helpers.convertPixelsToGrids(stage.mouseX, stage.mouseY, variables.gridUnit) : [];
+		}
+
+		_.extend(stage, {
+
+			name : 'Grid',
+			mouseEventsEnabled : true,
 			activeTeamSquares : new Container(),
 			oppositionTeamSquares: new Container(),
 			activePlayerSquare: new Shape(),
@@ -19,7 +25,7 @@ define(['Helpers', 'Variables', 'lib/AStar'], function(helpers, variables) {
 			height : height,
 			unit : unit,
 			stage : stage,
-			tick : function(cursorLocation, activePlayerLocation, activeDefenderLocation, activeTeamLocations, oppositionLocations) {
+			tick : function(activePlayer, activeDefender, activeTeam, defendingTeam) {
 
 				//console.log('Grid.tick()');
 
@@ -29,10 +35,16 @@ define(['Helpers', 'Variables', 'lib/AStar'], function(helpers, variables) {
 				//console.log(activeTeamLocations);
 				//console.log(oppositionLocations);
 
-				this.render(cursorLocation, activePlayerLocation);
+				var activePlayerLocation = activePlayer ? activePlayer.location : [];
+
+				var activeDefenderLocation = activeDefender ? activeDefender.location : [];
+
+				this.render(getMouseLocation(), activePlayerLocation, activeDefenderLocation);
+
+				this.update();
 			},
 
-			render : function(cursorLocation, activePlayerLocation) {
+			render : function(cursorLocation, activePlayerLocation, activeDefenderLocation) {
 
 				if (cursorLocation.length > 0) {
 
@@ -40,20 +52,43 @@ define(['Helpers', 'Variables', 'lib/AStar'], function(helpers, variables) {
 				}
 
 				if (activePlayerLocation.length > 0) {
-				
+
+					//console.log(activePlayerLocation);
+
 					this.renderActivePlayer(activePlayerLocation);
+
+					if (activeDefenderLocation.length === 0) {
+
+						this.renderOppositionTeam();
+					}
+				
+				} else {
+
+					this.renderActiveTeam();
 				}
 
-				if (cursorLocation.length > 0 && activePlayerLocation.length > 0) {
+				if (activeDefenderLocation.length > 0) {
+
+					//console.log(activeDefenderLocation);
+				
+					this.renderActiveDefender(activeDefenderLocation);
+				}
+
+				if (cursorLocation.length > 0 && activePlayerLocation.length > 0 && activeDefenderLocation.length === 0) {
 
 					this.renderPath(cursorLocation, activePlayerLocation);
-				}			
+				
+				} else {
 
-				this.renderDefender();
-				this.renderActiveTeam();
-				this.renderOppositionTeam();
+					this.clearPath();
+				}	
+								
 			},
 			renderCursor : function(cursorLocation, activePlayerLocation) {
+
+				//console.log('Grid.renderCursor()');
+
+				//console.log(cursorLocation);
 
 				var location = helpers.convertGridsToPixels(cursorLocation[0], cursorLocation[1], variables.gridUnit);
 
@@ -62,18 +97,34 @@ define(['Helpers', 'Variables', 'lib/AStar'], function(helpers, variables) {
 
 			renderActivePlayer: function(playerLocation) {
 
+				//console.log('Grid.renderActivePlayer()');
+
 				var location = helpers.convertGridsToPixels(playerLocation[0], playerLocation[1], variables.gridUnit);
 
 				this.renderLocation(this.activePlayerSquare, location, variables.playerSquareColour);
 			},
+
+			renderActiveDefender: function(playerLocation) {
+
+				//console.log('Grid.renderActiveDefender()');
+
+				var location = helpers.convertGridsToPixels(playerLocation[0], playerLocation[1], variables.gridUnit);
+
+				this.renderLocation(this.activeDefenderSquare, location, variables.playerSquareColour);
+			},
+
+			clearPath : function() {
+
+				this.pathSquares.removeAllChildren();
+			},	
 
 			renderPath : function(cursorLocation, playerLocation) {
 
 				var that = this;
 
 				var path = a_star(playerLocation, cursorLocation, this.getBoard(), this.width, this.height);
-
-				var locationsArray = _.zip(_.pluck(path, 'x'), _.pluck(path, 'y'));
+				
+				var locationsArray = _.zip(_.pluck(path, 'x'), _.pluck(path, 'y')) || [];
 
 				var locations = [];
 
@@ -127,10 +178,6 @@ define(['Helpers', 'Variables', 'lib/AStar'], function(helpers, variables) {
 				
 				return board;
 			},
-
-			renderDefender : function() {
-
-			},
 			renderActiveTeam : function() {
 
 			},
@@ -159,6 +206,8 @@ define(['Helpers', 'Variables', 'lib/AStar'], function(helpers, variables) {
 			},
 			renderLocation : function(shape, location, fillColour, outlineColour) {
 
+				//console.log('Grid.renderLocation()');
+
 				shape.graphics.clear();
 
 				shape.graphics.beginStroke(outlineColour);
@@ -173,27 +222,28 @@ define(['Helpers', 'Variables', 'lib/AStar'], function(helpers, variables) {
 			},
 			init : function() {
 
-				this.stage.addChild(this);
-			}
+			},
 							
 		});		
 
-		this.addChild(this.cursorSquare);
+		stage.addChild(stage.cursorSquare);
 
-		this.addChild(this.activePlayerSquare);
+		stage.addChild(stage.activePlayerSquare);
 
-		this.addChild(this.activeDefenderSquare);		
+		stage.addChild(stage.activeDefenderSquare);		
 
-		this.addChild(this.cursorPathSquare);
+		stage.addChild(stage.cursorPathSquare);
 
-		this.addChild(this.activeTeamSquares);
+		stage.addChild(stage.activeTeamSquares);
 
-		this.addChild(this.oppositionTeamSquares);
+		stage.addChild(stage.oppositionTeamSquares);
 
-		this.addChild(this.pathSquares);
+		stage.addChild(stage.pathSquares);
+
+		return stage;
 	}
 
-	helpers.inheritPrototype(Grid, Container);
+	helpers.inheritPrototype(Grid, Stage);
 
 	return Grid;
 

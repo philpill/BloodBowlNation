@@ -14,84 +14,66 @@ define ([
 
 	], function(Grid, Game, userEvents, variables, blockEngine, Pitch, Player, Team, Ball, helpers) {
 
+	var grid, game, teams, pitch, ball;
+
+	function generateTeams() {
+
+		var player, i, team1, team2;
+
+		team1 = new Team("Reikland Reavers");
+		team2 = new Team("Orcland Raiders");
+
+		team1.colours = ["rgba(150,150,255,1)","rgba(255,255,255,1)"];
+		team2.colours = ["rgba(200,100,100,1)"];
+
+		//needs 'proper' implementation
+		team1.scoreZone = 0;
+		team2.scoreZone = 25;
+		
+		for (i = 0; i < 11; i++) {
+			player = new Player("human" + i, team1, i+1, 'human', 8);
+			team1.players.push(player);
+		}
+
+		for (i = 0; i < 11; i++) {
+			player = new Player("orc" + i, team2, i+1, 'orc', 8);
+			team2.players.push(player);
+		}
+
+		return [team1, team2];		
+	}
+
 	return {
 
-		backgroundCanvas: null,
-		backgroundStage: null,
-		mainCanvas: null,
-		mainStage: null,
-		canvasBounds: null,
-		game: null,
-		grid: null,
-		variables: null,
-		pitch: null,
 		init: function () {
-
-			var that, gridWidth, gridHeight, gridUnit, grid;
 
 			console.log('-- BloodBowlNation --');
 
-			this.initCanvas();			
-			this.loadVariables();
+			grid = new Grid(variables.gridWidth, variables.gridHeight, variables.gridUnit);
 
-			gridWidth = this.variables.gridWidth;
-			gridHeight = this.variables.gridHeight;
-			gridUnit = this.variables.gridUnit;
+			teams = generateTeams();
 
-			this.grid = new Grid(this.mainStage, gridWidth, gridHeight, gridUnit);
+			pitch = new Pitch();
 
-			this.grid.init();
+			ball = new Ball();
 
-			var teams = this.generateTeams();
+			game = new Game(grid, teams, pitch, ball);
 
-			var pitch = new Pitch();
-
-			var ball = new Ball();
-
-			this.game = new Game(this.mainStage, this.grid, teams, pitch, ball);
-
-			this.game.init();
+			game.init();
 
 			this.rebindMouseClick();
 			this.bindDomClicks();
 
 			Ticker.useRAF = true; 
-			Ticker.setFPS(this.variables.gameFps);
+			Ticker.setFPS(variables.gameFps);
 			//Ticker.setInterval(17);
 			Ticker.addListener(this);
 		},
-		initCanvas: function () {
 
-			var that = this;
-
-			this.backgroundCanvas = document.getElementById("BackgroundCanvas");
-			this.mainCanvas = document.getElementById("MainCanvas");
-
-			this.canvasBounds = new Rectangle();
-			this.canvasBounds.width = this.mainCanvas.width;
-			this.canvasBounds.height = this.mainCanvas.height;
-
-			this.backgroundStage = new Stage(this.backgroundCanvas);
-			this.backgroundStage.name = 'background';
-
-			this.mainStage = new Stage(this.mainCanvas);
-			this.mainStage.name = 'main';
-			this.mainStage.mouseEventsEnabled = true;
-
-			this.mainStage.onPlayerSelect = function(player) {
-
-				console.log(player);
-
-				that.game.setSelectedPlayer(player);
-			}	
-		},
 		bindDomClicks: function () {
 			$('#ClearCacheLink').click({ that: this }, userEvents.clearCacheLinkClick);
 			$('#StopGameLoopLink').click({ that: this}, userEvents.togglePauseGameLoopLinkClick);
 			$('#TurnoverLink').click({ that: this }, userEvents.turnoverLinkClick);			
-		},
-		loadVariables: function () {
-			this.variables = variables;
 		},
 		rebindMouseClick: function() {
 			var that = this;
@@ -107,40 +89,7 @@ define ([
 			
 			document.getElementById('MeasuredFps').innerHTML = 'fps: ' + Ticker.getMeasuredFPS();
 
-			var location = this.mainStage.mouseInBounds ? helpers.convertPixelsToGrids(this.mainStage.mouseX, this.mainStage.mouseY, variables.gridUnit) : [];
-			
-			this.mainStage.sortChildren(function(a, b){ return a.zIndex - b.zIndex });
-
-			this.game.tick(location);
-			
-			this.mainStage.update();
-		},
-		generateTeams: function() {
-
-			var player, i, team1, team2;
-
-			team1 = new Team("Reikland Reavers");
-			team2 = new Team("Orcland Raiders");
-
-			team1.colours = ["rgba(150,150,255,1)","rgba(255,255,255,1)"];
-			team2.colours = ["rgba(200,100,100,1)"];
-
-			//needs 'proper' implementation
-			team1.scoreZone = 0;
-			team2.scoreZone = 25;
-			
-			for (i = 0; i < 11; i++) {
-				player = new Player("human" + i, team1, i+1, 'human', 8);
-				team1.players.push(player);
-			}
-
-			for (i = 0; i < 11; i++) {
-				player = new Player("orc" + i, team2, i+1, 'orc', 8);
-				team2.players.push(player);
-			}
-
-			return [team1, team2];		
-
+			game.tick();			
 		},
 		movePlayer: function (player, grids, isPushBack) {
 

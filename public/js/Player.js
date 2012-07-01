@@ -2,11 +2,10 @@ define(['Variables', 'Helpers', 'lib/EaselJS/lib/easeljs-0.4.2.min'], function(v
 
 	var Player = function (playerName, playerTeam, playerNumber, playerRace, playerMovement, playerStrength, playerAgility, playerArmourValue) {
 
-		Container.call(this);
+		var container = new Container();
 
-		_.extend(this, {
+		_.extend(container, {
 
-			zIndex : 3,
 			name: playerName,
 			colours: playerTeam.colours,
 			location: null,
@@ -25,9 +24,12 @@ define(['Variables', 'Helpers', 'lib/EaselJS/lib/easeljs-0.4.2.min'], function(v
 			renderCache: null,
 			onClick : function(e) {
 
-				var stage = e.target.parent;
+				console.log(this);
 
-				stage.onPlayerSelect(this);
+				//this is bullshit
+				var game = e.target.parent.parent;
+
+				game.onPlayerClick(this);
 			},
 			clearRenderCache: function() {			
 				this.renderCache = null;
@@ -138,6 +140,8 @@ define(['Variables', 'Helpers', 'lib/EaselJS/lib/easeljs-0.4.2.min'], function(v
 				}	
 			}
 		});
+
+		return container;
 	}
 
 	helpers.inheritPrototype(Player, Container);

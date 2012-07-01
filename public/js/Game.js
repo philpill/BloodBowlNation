@@ -1,119 +1,134 @@
 
-define([
+define(['Team', 'Player', 'Ball', 'Pitch', 'Helpers'], function(Team, Player, Ball, Pitch, helpers) {
 
-	'Team', 
-	'Player', 
-	'Ball',
-	'Pitch'
+	var Game = function (grid, teams, pitch, ball) {
 
-	], function(Team, Player, Ball, Pitch) {
+		var container = new Container();
 
-	var Game = function (stage, grid, teams, pitch, ball) {
-		this.stage = stage;
-		this.grid = grid;
-		this.teams = teams;
-		this.pitch = pitch;
-		this.ball = ball;
-		this.allPlayersCache = [];
-	}
+		container.addChild(pitch);
 
-	Game.prototype = {
-		activeTeam: null,
-		selectedPlayer: null,
-		selectedDefender: null,
-		defender: null,
-		stage: null,
-		pitch: null,
-		grid: null,
-		teams: null,
-		allPlayersCache: null,
-		forceRenderRefresh: null,
-		setSelectedPlayer: function(player) {
+		container.addChild(grid);		
 
-			if (player instanceof Player) {
+		_.extend(container, {
+
+			name : 'Game',
+			teams : teams,
+			ball : ball,
+			allPlayersCache : [],
+			activeTeam: null,
+			selectedPlayer: null,
+			selectedDefender: null,
+			defender: null,
+			stage: null,
+			forceRenderRefresh: null,
+
+			onPlayerClick : function(player) {
+
+				console.log('Game.onPlayerClick()');
+
+				if (player.team === this.activeTeam.name) {
+
+					this.attackerClick(player);
+				
+				} else {
+
+					this.defenderClick(player);
+				}
+				
+			},
+
+			attackerClick: function(player) {
+
+				//console.log('Game.attackerClick()');
 
 				this.selectedPlayer = player;
-			}
-		},
-		deploy : function() {
+			},
 
-			var teams = this.teams;
-			var grid = this.grid;
-			var ball = this.ball;
+			defenderClick: function(defender) {
 
-			_.each(teams, function(team, i){
+				//console.log('Game.defenderClick()');
 
-				_.each(team.players, function(player, j){
+				if (helpers.isAdjacent(this.selectedPlayer, defender)) {
 
-					teams[i].players[j].location = [j + 2, i + Math.floor(grid.height/2) - 1];
+					console.log('a: ' + this.selectedPlayer.name + ' - d: ' + defender.name);
+
+					this.selectedDefender = defender;
+				}
+			},
+
+			deploy : function() {
+
+				_.each(teams, function(team, i){
+
+					_.each(team.players, function(player, j){
+
+						teams[i].players[j].location = [j + 2, i + Math.floor(grid.height/2) - 1];
+					});
 				});
-			});
 
-			var randomX = Math.floor(Math.random()*(grid.width - 1));
-			var randomY = Math.floor(Math.random()*(Math.floor(grid.height/2) - 1));
+				var randomX = Math.floor(Math.random()*(grid.width - 1));
+				var randomY = Math.floor(Math.random()*(Math.floor(grid.height/2) - 1));
 
-			ball.location = [randomX, randomY];
-		},
-		init: function() {
+				ball.location = [randomX, randomY];
+			},
 
-			var stage = this.stage;
+			init: function() {
 
-			stage.addChild(this.pitch);
-
-			stage.addChild(this.ball);
-			
-			_.each(this.getAllPlayers(), function(player) {
-
-				stage.addChild(player);
-			});
-
-			this.pitch.init();
-			
-			this.activeTeam = this.teams[0];
-			this.deploy();
-			this.forceRenderRefresh = false;
-		},
-		getAllPlayers: function() {
-
-			var allPlayers = [];
-
-			if (this.allPlayersCache.length > 0) {
-
-				allPlayers = this.allPlayersCache;
-
-			} else {
-
-				var teams = this.teams;
-
-				_.each(teams, function(team) {
-
-					allPlayers = _.union(allPlayers, team.players);
-				});
+				grid.addChild(ball);
 				
-				this.allPlayersCache = allPlayers;
+				_.each(this.getAllPlayers(), function(player) {
+
+					grid.addChild(player);
+				});
+
+				pitch.init();
+
+				pitch.update();
+
+				grid.init();
+				
+				this.activeTeam = teams[0];
+				this.deploy();
+				this.forceRenderRefresh = false;
+			},
+
+			getAllPlayers: function() {
+
+				var allPlayers = [];
+
+				if (this.allPlayersCache.length > 0) {
+
+					allPlayers = this.allPlayersCache;
+
+				} else {
+
+					_.each(teams, function(team) {
+
+						allPlayers = _.union(allPlayers, team.players);
+					});
+					
+					this.allPlayersCache = allPlayers;
+				}
+
+				return allPlayers;
+			},
+
+			tick: function() {
+
+				//console.log('Game.tick()');
+
+				_.invoke(teams, 'tick');
+
+				ball.tick();
+
+				grid.tick(this.selectedPlayer, this.selectedDefender, teams[0], teams[1]);
 			}
+		});
 
-			return allPlayers;
-		},
-		tick: function(cursorLocation) {
-
-			//console.log('Game.tick()');
-
-			_.invoke(this.teams, 'tick');
-
-			this.ball.tick();
-
-			var activePlayerLocation = this.selectedPlayer ? this.selectedPlayer.location : [];
-
-			var activeDefenderLocation = this.selectedDefender ? this.selectedDefender.location : [];
-
-			var activeTeamLocation = _.pluck(this.teams[0].players, 'location');
-
-			var oppositionTeamLocation = _.pluck(this.teams[1].players, 'location');
-
-			this.grid.tick(cursorLocation, activePlayerLocation, activeDefenderLocation, activeTeamLocation, oppositionTeamLocation);
-		}
+		return container;
 	}
+
+	helpers.inheritPrototype(Game, Container);
 
 	return Game;
 

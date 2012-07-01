@@ -79,6 +79,8 @@ define ({
 	},
 	isAdjacent: function(e1, e2) {
 
+		if (!e1 || !e2) { return false; }
+
 		var loc1 = e1.location;
 		var loc2 = e2.location;
 
