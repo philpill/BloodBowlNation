@@ -1,4 +1,4 @@
-define(['BBN.Player'], function(Player) {
+define(['Player'], function(Player) {
 
 	var Team = function (teamName) {
 

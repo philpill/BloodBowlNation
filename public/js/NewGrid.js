@@ -1,5 +1,5 @@
 
-define(['BBN.Helpers', 'BBN.Variables', 'lib/AStar'], function(helpers, variables) {
+define(['Helpers', 'Variables', 'lib/AStar'], function(helpers, variables) {
 
 	var Grid = function (stage, width, height, unit) {
 

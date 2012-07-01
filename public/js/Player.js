@@ -1,4 +1,4 @@
-define(['BBN.Variables', 'BBN.Helpers', 'lib/EaselJS/lib/easeljs-0.4.2.min'], function(variables, helpers) {
+define(['Variables', 'Helpers', 'lib/EaselJS/lib/easeljs-0.4.2.min'], function(variables, helpers) {
 
 	var Player = function (playerName, playerTeam, playerNumber, playerRace, playerMovement, playerStrength, playerAgility, playerArmourValue) {
 

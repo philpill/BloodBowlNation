@@ -1,5 +1,5 @@
 
-define (['BBN.Helpers', 'BBN.Variables'], function(helpers, variables) {
+define (['Helpers', 'Variables'], function(helpers, variables) {
 
 	var Pitch = function() {
 

@@ -1,10 +1,10 @@
 
 define([
 
-	'BBN.Team', 
-	'BBN.Player', 
-	'BBN.Ball',
-	'BBN.Pitch'
+	'Team', 
+	'Player', 
+	'Ball',
+	'Pitch'
 
 	], function(Team, Player, Ball, Pitch) {
 

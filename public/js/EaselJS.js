@@ -1,15 +1,15 @@
 define ([
  
-	'BBN.NewGrid',
-	'BBN.Game',
-	'BBN.UserEvents',
-	'BBN.Variables',
-	'BBN.BlockEngine',
-	'BBN.Pitch',
-	'BBN.Player',
-	'BBN.Team',
-	'BBN.Ball',
-	'BBN.Helpers',
+	'NewGrid',
+	'Game',
+	'UserEvents',
+	'Variables',
+	'BlockEngine',
+	'Pitch',
+	'Player',
+	'Team',
+	'Ball',
+	'Helpers',
 	'lib/EaselJS/lib/easeljs-0.4.2.min'
 
 	], function(Grid, Game, userEvents, variables, blockEngine, Pitch, Player, Team, Ball, helpers) {

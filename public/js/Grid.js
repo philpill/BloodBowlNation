@@ -1,5 +1,5 @@
 
-define(['BBN.Helpers','BBN.Player', 'BBN.Ball'], function(helpers, Player, Ball) {
+define(['Helpers','Player', 'Ball'], function(helpers, Player, Ball) {
 
 	var Grid = function (stage, width, height, unit) {
 

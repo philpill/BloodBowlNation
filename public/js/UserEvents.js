@@ -1,5 +1,5 @@
 
-define(['BBN.Helpers'], function(helpers) {
+define(['Helpers'], function(helpers) {
 
 	return {
 
