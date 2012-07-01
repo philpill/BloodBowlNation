@@ -46,18 +46,23 @@ define(['Helpers', 'Variables', 'lib/AStar', 'lib/EaselJS/lib/easeljs-0.4.2.min'
 
 			render : function(cursorLocation, activePlayerLocation, activeDefenderLocation) {
 
+				var playerSelected = activePlayerLocation.length > 0;
+
+				var defenderSelected = activeDefenderLocation.length > 0;
+
+
 				if (cursorLocation.length > 0) {
 
 					this.renderCursor(cursorLocation, activePlayerLocation);
 				}
 
-				if (activePlayerLocation.length > 0) {
+				if (playerSelected) {
 
 					//console.log(activePlayerLocation);
 
 					this.renderActivePlayer(activePlayerLocation);
 
-					if (activeDefenderLocation.length === 0) {
+					if (!defenderSelected) {
 
 						this.renderOppositionTeam();
 					}
@@ -67,14 +72,14 @@ define(['Helpers', 'Variables', 'lib/AStar', 'lib/EaselJS/lib/easeljs-0.4.2.min'
 					this.renderActiveTeam();
 				}
 
-				if (activeDefenderLocation.length > 0) {
+				if (defenderSelected) {
 
 					//console.log(activeDefenderLocation);
 				
 					this.renderActiveDefender(activeDefenderLocation);
 				}
 
-				if (cursorLocation.length > 0 && activePlayerLocation.length > 0 && activeDefenderLocation.length === 0) {
+				if (cursorLocation.length > 0 && playerSelected && !defenderSelected) {
 
 					this.renderPath(cursorLocation, activePlayerLocation);
 				
@@ -82,7 +87,7 @@ define(['Helpers', 'Variables', 'lib/AStar', 'lib/EaselJS/lib/easeljs-0.4.2.min'
 
 					this.clearPath();
 				}	
-								
+
 			},
 			renderCursor : function(cursorLocation, activePlayerLocation) {
 
