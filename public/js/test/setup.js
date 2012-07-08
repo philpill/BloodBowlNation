@@ -24,5 +24,3 @@ var requires = [
 	'js/test/spec.Helpers',
 	'js/test/spec.BlockEngine'
 ];
-
-require(requires, function() {});
