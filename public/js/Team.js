@@ -22,7 +22,7 @@ define(['Player'], function(Player) {
 
 		tick: function () {
 
-			_.invoke(this.players, 'tick');
+			//_.invoke(this.players, 'tick');
 
 			this.render();
 		},

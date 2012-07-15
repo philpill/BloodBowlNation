@@ -5,6 +5,8 @@ define(['Helpers', 'Variables', 'lib/EaselJS/lib/easeljs-0.4.2.min'], function(h
 
 		var stage = new Stage(document.getElementById("MainCanvas"));
 
+		stage.tickOnUpdate = true;
+
 		_.extend(stage, {
 
 			name : 'Grid',

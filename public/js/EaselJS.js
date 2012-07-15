@@ -71,7 +71,7 @@ define ([
 
 			Ticker.useRAF = true; 
 			Ticker.setFPS(variables.gameFps);
-			//Ticker.setInterval(17);
+			//Ticker.setInterval(50);
 			Ticker.addListener(this);
 		},
 

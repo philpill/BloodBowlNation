@@ -4,6 +4,14 @@ define(['Variables', 'Helpers'], function(variables, helpers){
 
 		var container = new Container();
 
+		var baseZone = new Shape();
+
+		baseZone.alpha = 0.5;
+
+		var pathSquares = new Container();
+
+		pathSquares.alpha = 0.3;		
+
 		function getBoard() {
 
 			return populateBoard(createBoard());
@@ -41,82 +49,73 @@ define(['Variables', 'Helpers'], function(variables, helpers){
 			return board;
 		}
 
+		function renderGraphics(graphicsObject) {
+
+			//console.log('renderGraphics()');
+
+			graphicsObject.clear();
+
+			graphicsObject.beginStroke(outlineColour);
+
+			graphicsObject.beginFill(fillColour);
+
+			graphicsObject.rect(0, 0, variables.gridUnit, variables.gridUnit);	
+		
+		}
 
 		_.extend(container, { 
-
-			baseZone : null,
-			pathSquares : null,
-			renderGraphics : function(graphicsObject) {
-
-				//console.log('renderGraphics()');
-
-				graphicsObject.clear();
-
-				graphicsObject.beginStroke(outlineColour);
-
-				graphicsObject.beginFill(fillColour);
-
-				graphicsObject.rect(0, 0, variables.gridUnit, variables.gridUnit);				
-			},
 
 			clearBase : function() {
 
 				//console.log('Zone.clearBase()');
 
-				this.baseZone.graphics.clear();
+				baseZone.graphics.clear();
 			},
 
 			renderBase : function(location) {
 
 				//console.log('Zone.renderBase()');
 
-				//console.log(location);
-
-				this.renderGraphics(this.baseZone.graphics);
+				renderGraphics(baseZone.graphics);
 
 				var pixelLocation = helpers.convertGridsToPixels(location[0], location[1], variables.gridUnit);
 
-				//console.log(pixelLocation);
+				baseZone.x = pixelLocation[0] - 0.5;
 
-				this.baseZone.x = pixelLocation[0];
-
-				this.baseZone.y = pixelLocation[1];
+				baseZone.y = pixelLocation[1] - 0.5;
 			},
 
 			clearCursorPath : function() {
 
-				this.pathSquares.removeAllChildren();
+				pathSquares.removeAllChildren();
 			},
 
+			//memory leak
 			renderCursorPath : function(entityLocation, cursorLocation, squares) {
 
 				//console.log('renderCursorPath()');
 
-				var that = this;
+				var path, locationsArray, shape, pixelLocation;
 
-				var path = a_star(entityLocation, cursorLocation, getBoard(), variables.gridWidth, variables.gridHeight);
+				path = a_star(entityLocation, cursorLocation, getBoard(), variables.gridWidth, variables.gridHeight);
 				
-				var locationsArray = _.last(_.initial(_.zip(_.pluck(path, 'x'), _.pluck(path, 'y'))), squares) || [];
-
-				var locations = [];
+				locationsArray = _.last(_.initial(_.zip(_.pluck(path, 'x'), _.pluck(path, 'y'))), squares) || [];
 
 				this.clearCursorPath();
 
 				_.each(locationsArray, function(location){
 
-					var shape = new Shape();
+					shape = new Shape();
 
-					that.renderGraphics(shape.graphics);
+					renderGraphics(shape.graphics);
 
-					var pixelLocation = helpers.convertGridsToPixels(location[0], location[1], variables.gridUnit)
+					pixelLocation = helpers.convertGridsToPixels(location[0], location[1], variables.gridUnit);
 
-					//console.log(pixelLocation);
+					shape.x = pixelLocation[0] - 0.5;
 
-					shape.x = pixelLocation[0];
+					shape.y = pixelLocation[1] - 0.5;					
 
-					shape.y = pixelLocation[1];					
-
-					that.pathSquares.addChild(shape);
+					pathSquares.addChild(shape);
 				});							
 			},			
 
@@ -129,17 +128,9 @@ define(['Variables', 'Helpers'], function(variables, helpers){
 
 				//console.log('Zone.init()');
 
-				this.baseZone = new Shape();
+				this.addChild(baseZone);
 
-				this.baseZone.alpha = 0.5;
-
-				this.pathSquares = new Container();
-
-				this.pathSquares.alpha = 0.3;
-
-				this.addChild(this.baseZone);
-
-				this.addChild(this.pathSquares);
+				this.addChild(pathSquares);
 			}
 		});
 

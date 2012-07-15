@@ -66,6 +66,7 @@ define(['Variables', 'Helpers', 'lib/EaselJS/lib/easeljs-0.4.2.min'], function(v
 			},
 			tick: function() {
 
+				console.log('tick()');
 			},
 			renderShape : function() {
 
@@ -150,9 +151,9 @@ define(['Variables', 'Helpers', 'lib/EaselJS/lib/easeljs-0.4.2.min'], function(v
 
 					this.addChild(this.renderNumber());			
 
-					this.x = (this.location[0] * variables.gridUnit) + variables.gridUnit/2;
+					this.x = (this.location[0] * variables.gridUnit) + variables.gridUnit/2 - 0.5;
 
-					this.y = (this.location[1] * variables.gridUnit) + variables.gridUnit/2;
+					this.y = (this.location[1] * variables.gridUnit) + variables.gridUnit/2 - 0.5;
 
 					this.renderCache = this;
 				}	

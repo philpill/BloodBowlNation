@@ -10,26 +10,31 @@ define(['Variables', 'Helpers', 'lib/EaselJS/lib/easeljs-0.4.2.min'], function(v
 			colour : "rgba(255,255,0,1)",
 			inPossessionOf : null,
 			location : null,
+			renderCache : null,
 			render : function() {
 
-				var graphics = new Graphics();
+				if (!this.renderCache) {
 
-				graphics.beginFill(this.colour);
+					var graphics = new Graphics();
+
+					graphics.beginFill(this.colour);
+						
+					graphics.setStrokeStyle(0.3).beginStroke('#000');
 					
-				graphics.setStrokeStyle(0.3).beginStroke('#000');
-				
-				graphics.drawCircle(0, 0, 4);
+					graphics.drawCircle(0, 0, 4);
 
-				graphics.endStroke();
-				
-				var shape = new Shape(graphics);
+					graphics.endStroke();
+					
+					var shape = new Shape(graphics);
 
-				this.addChild(shape);		
+					this.addChild(shape);		
 
-				this.x = (this.location[0] * variables.gridUnit) + variables.gridUnit/4;
+					this.x = (this.location[0] * variables.gridUnit) + variables.gridUnit/4;
 
-				this.y = (this.location[1] * variables.gridUnit) + variables.gridUnit/4;
+					this.y = (this.location[1] * variables.gridUnit) + variables.gridUnit/4;
 
+					this.renderCache = this;
+				}
 			},
 			tick : function() {
 
