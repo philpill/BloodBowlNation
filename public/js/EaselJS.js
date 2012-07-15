@@ -1,5 +1,6 @@
 define ([
  
+ 	'Cursor',
 	'NewGrid',
 	'Game',
 	'UserEvents',
@@ -10,9 +11,11 @@ define ([
 	'Team',
 	'Ball',
 	'Helpers',
+	'GameConfig',
+	'Zone',
 	'lib/EaselJS/lib/easeljs-0.4.2.min'
 
-	], function(Grid, Game, userEvents, variables, blockEngine, Pitch, Player, Team, Ball, helpers) {
+	], function(Cursor, Grid, Game, userEvents, variables, blockEngine, Pitch, Player, Team, Ball, helpers, gameConfig, Zone) {
 
 	var grid, game, teams, pitch, ball;
 
@@ -31,12 +34,12 @@ define ([
 		team2.scoreZone = 25;
 		
 		for (i = 0; i < 11; i++) {
-			player = new Player("human" + i, team1, i+1, 'human', 8);
+			player = new Player(new Zone(team1.colours[0], variables.playerBaseOutlineColour), "human" + i, team1, i+1, 'human', gameConfig.attributes.human.lineman);
 			team1.players.push(player);
 		}
 
 		for (i = 0; i < 11; i++) {
-			player = new Player("orc" + i, team2, i+1, 'orc', 8);
+			player = new Player(new Zone(team2.colours[0], variables.playerBaseOutlineColour), "orc" + i, team2, i+1, 'orc', gameConfig.attributes.orc.lineman);
 			team2.players.push(player);
 		}
 
@@ -57,7 +60,9 @@ define ([
 
 			ball = new Ball();
 
-			game = new Game(grid, teams, pitch, ball);
+			cursor = new Cursor(new Zone(variables.cursorFillColour, variables.cursorOutlineColour));
+
+			game = new Game(grid, teams, pitch, ball, cursor);
 
 			game.init();
 

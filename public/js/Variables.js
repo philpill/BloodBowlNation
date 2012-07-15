@@ -13,7 +13,10 @@ define({
 	gameFps: 20,
 	gamePausable: true,
 	pitchImageSrc: "img/Pitch.jpg",
-	cursorFillColour: 'rgba(0, 100, 0, 0.3)',
-	playerSquareColour: 'rgba(0, 0, 0, 0.3)',
-	cursorOutlineColour : 'rgba(255, 255, 255, 1)'
+	cursorFillColour: 'rgb(0, 0, 0)',
+	playerSquareColour: 'rgb(0, 0, 0)',
+	cursorOutlineColour : 'rgba(0, 0, 0, 0)',
+	playerBaseOutlineColour : 'rgb(255, 255, 255)',
+	cursorPathFillColour: 'rgba(0, 0, 0, 0)',
+	cursorPathOutlineColour: 'rgb(255, 255, 255)'
 });

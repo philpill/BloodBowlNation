@@ -38,7 +38,7 @@ define ({
 	},
 	convertGridsToPixels: function(gridX, gridY, unit) {
 		if ((typeof(gridX) === 'number')&&(typeof(gridY) === 'number')&&(typeof(unit) === 'number')) {
-			return [gridX*unit, gridY*unit];
+			return [gridX*unit+0.5, gridY*unit+0.5];
 		}
 		return null;
 	},

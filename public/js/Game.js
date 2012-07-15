@@ -1,7 +1,7 @@
 
-define(['Team', 'Player', 'Ball', 'Pitch', 'Helpers'], function(Team, Player, Ball, Pitch, helpers) {
+define(['Cursor', 'Team', 'Player', 'Ball', 'Pitch', 'Helpers', 'Variables'], function(Cursor, Team, Player, Ball, Pitch, helpers, variables) {
 
-	var Game = function (grid, teams, pitch, ball) {
+	var Game = function (grid, teams, pitch, ball, cursor) {
 
 		var container = new Container();
 
@@ -28,20 +28,33 @@ define(['Team', 'Player', 'Ball', 'Pitch', 'Helpers'], function(Team, Player, Ba
 
 				if (player.team === this.activeTeam.name) {
 
-					this.attackerClick(player);
+					this.attackerClick(player);		
 				
 				} else {
 
 					this.defenderClick(player);
-				}
-				
+				}				
+			},
+
+			clearAllPlayerBases : function() {
+
+				_.each(this.getAllPlayers(), function(player) {
+
+					player.clearBase();
+				});		
 			},
 
 			attackerClick: function(player) {
 
 				//console.log('Game.attackerClick()');
 
+				this.clearAllPlayerBases();
+
+				player.setSelected();
+
 				this.selectedPlayer = player;
+
+				this.selectedDefender = null;
 			},
 
 			defenderClick: function(defender) {
@@ -51,6 +64,8 @@ define(['Team', 'Player', 'Ball', 'Pitch', 'Helpers'], function(Team, Player, Ba
 				if (helpers.isAdjacent(this.selectedPlayer, defender)) {
 
 					console.log('a: ' + this.selectedPlayer.name + ' - d: ' + defender.name);
+
+					defender.setSelected();
 
 					this.selectedDefender = defender;
 				}
@@ -74,6 +89,8 @@ define(['Team', 'Player', 'Ball', 'Pitch', 'Helpers'], function(Team, Player, Ba
 
 			init: function() {
 
+				grid.addChild(cursor);
+
 				grid.addChild(ball);
 				
 				_.each(this.getAllPlayers(), function(player) {
@@ -81,11 +98,15 @@ define(['Team', 'Player', 'Ball', 'Pitch', 'Helpers'], function(Team, Player, Ba
 					grid.addChild(player);
 				});
 
+				_.invoke(teams, 'init');
+
 				pitch.init();
 
 				pitch.update();
 
 				grid.init();
+
+				cursor.init();
 				
 				this.activeTeam = teams[0];
 				this.deploy();
@@ -120,6 +141,11 @@ define(['Team', 'Player', 'Ball', 'Pitch', 'Helpers'], function(Team, Player, Ba
 				_.invoke(teams, 'tick');
 
 				ball.tick();
+
+				if (pitch.mouseInBounds) {
+				
+					cursor.tick(this.selectedPlayer, this.selectedDefender, helpers.convertPixelsToGrids(pitch.mouseX, pitch.mouseY, variables.gridUnit));
+				}
 
 				grid.tick(this.selectedPlayer, this.selectedDefender, teams[0], teams[1]);
 			}

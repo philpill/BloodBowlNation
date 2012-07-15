@@ -30,6 +30,11 @@ define(['Player'], function(Player) {
 		render: function () {
 
 			_.invoke(this.players, 'render');
+		},
+
+		init : function() {
+
+			_.invoke(this.players, 'init');
 		}
 	}
 

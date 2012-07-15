@@ -1,21 +1,22 @@
 define(['Variables', 'Helpers', 'lib/EaselJS/lib/easeljs-0.4.2.min'], function(variables, helpers) {
 
-	var Player = function (playerName, playerTeam, playerNumber, playerRace, playerMovement, playerStrength, playerAgility, playerArmourValue) {
+	var Player = function (playerZone, playerName, playerTeam, playerNumber, playerRace, playerAttributes) {
 
 		var container = new Container();
 
 		_.extend(container, {
 
+			zone : playerZone,
 			name: playerName,
 			colours: playerTeam.colours,
 			location: null,
 			number: playerNumber,
 			team: playerTeam.name,
 			race: playerRace,
-			movementAllowance: playerMovement,
-			strength: playerStrength,
-			agility: playerAgility,
-			armourValue: playerArmourValue,
+			movementAllowance: playerAttributes.movement,
+			strength: playerAttributes.strength,
+			agility: playerAttributes.agility,
+			armourValue: playerAttributes.armour,
 			isDown: false,
 			isStunned: false,
 			isKnockedOut: false,
@@ -124,6 +125,23 @@ define(['Variables', 'Helpers', 'lib/EaselJS/lib/easeljs-0.4.2.min'], function(v
 
 				return number;
 			},
+			setSelected : function() {
+
+				this.renderBase();
+			},
+			renderBase : function () {
+
+				//console.log('Player.renderBase()');
+
+				//shim to render top left corner of grid square
+				this.zone.renderBase([-0.5, -0.5]);
+			},
+			clearBase : function () {
+
+				//console.log('Player.clearBase()');
+
+				playerZone.clearBase();
+			},
 			render : function() {
 				
 				if (!this.renderCache) {
@@ -138,6 +156,16 @@ define(['Variables', 'Helpers', 'lib/EaselJS/lib/easeljs-0.4.2.min'], function(v
 
 					this.renderCache = this;
 				}	
+			},
+			init : function() {
+
+				//console.log('Player.init()');
+
+				this.zone = playerZone;
+
+				this.zone.init();
+
+				this.addChild(this.zone);
 			}
 		});
 

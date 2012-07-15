@@ -5,11 +5,6 @@ define(['Helpers', 'Variables', 'lib/AStar', 'lib/EaselJS/lib/easeljs-0.4.2.min'
 
 		var stage = new Stage(document.getElementById("MainCanvas"));
 
-		function getMouseLocation() {
-
-			return stage.mouseInBounds ? helpers.convertPixelsToGrids(stage.mouseX, stage.mouseY, variables.gridUnit) : [];
-		}
-
 		_.extend(stage, {
 
 			name : 'Grid',
@@ -39,7 +34,7 @@ define(['Helpers', 'Variables', 'lib/AStar', 'lib/EaselJS/lib/easeljs-0.4.2.min'
 
 				var activeDefenderLocation = activeDefender ? activeDefender.location : [];
 
-				this.render(getMouseLocation(), activePlayerLocation, activeDefenderLocation);
+				//this.render(getMouseLocation(), activePlayerLocation, activeDefenderLocation);
 
 				this.update();
 			},
@@ -95,10 +90,10 @@ define(['Helpers', 'Variables', 'lib/AStar', 'lib/EaselJS/lib/easeljs-0.4.2.min'
 
 				//console.log(cursorLocation);
 
-				var location = helpers.convertGridsToPixels(cursorLocation[0], cursorLocation[1], variables.gridUnit);
+/*				var location = helpers.convertGridsToPixels(cursorLocation[0], cursorLocation[1], variables.gridUnit);
 
 				this.renderLocation(this.cursorSquare, location, variables.cursorFillColour, variables.cursorOutlineColour);
-			},
+*/			},
 
 			renderActivePlayer: function(playerLocation) {
 
@@ -125,7 +120,7 @@ define(['Helpers', 'Variables', 'lib/AStar', 'lib/EaselJS/lib/easeljs-0.4.2.min'
 
 			renderPath : function(cursorLocation, playerLocation) {
 
-				var that = this;
+/*				var that = this;
 
 				var path = a_star(playerLocation, cursorLocation, this.getBoard(), this.width, this.height);
 				
@@ -142,21 +137,21 @@ define(['Helpers', 'Variables', 'lib/AStar', 'lib/EaselJS/lib/easeljs-0.4.2.min'
 					that.pathSquares.addChild(new Shape());
 				});
 
-				that.renderLocations(that.pathSquares, locations, variables.cursorFillColour);
+				that.renderLocations(that.pathSquares, locations, variables.cursorFillColour);*/
 			},
 
 			getBoard: function() {
-
+/*
 				var board = this.createBoard();
 
 				board = this.populateBoard(board);
 
-				return board;
+				return board;*/
 			},
 
 			createBoard: function() {
 
-				//needs to represent entities on field
+/*				//needs to represent entities on field
 
 				var board = [];
 
@@ -176,12 +171,12 @@ define(['Helpers', 'Variables', 'lib/AStar', 'lib/EaselJS/lib/easeljs-0.4.2.min'
 					}
 				}
 
-				return board;
+				return board;*/
 			},
 
 			populateBoard: function(board) {
 				
-				return board;
+				// return board;
 			},
 			renderActiveTeam : function() {
 
