@@ -147,7 +147,7 @@ define(['Cursor', 'Team', 'Player', 'Ball', 'Pitch', 'Helpers', 'Variables'], fu
 					cursor.tick(this.selectedPlayer, this.selectedDefender, helpers.convertPixelsToGrids(grid.mouseX, grid.mouseY, variables.gridUnit));
 				}
 
-				grid.tick(this.selectedPlayer, this.selectedDefender, teams[0], teams[1]);
+				grid.tick();
 			}
 		});
 
