@@ -30,9 +30,9 @@ define(['Helpers', 'Variables', 'lib/AStar', 'lib/EaselJS/lib/easeljs-0.4.2.min'
 				//console.log(activeTeamLocations);
 				//console.log(oppositionLocations);
 
-				var activePlayerLocation = activePlayer ? activePlayer.location : [];
+				//var activePlayerLocation = activePlayer ? activePlayer.location : [];
 
-				var activeDefenderLocation = activeDefender ? activeDefender.location : [];
+				//var activeDefenderLocation = activeDefender ? activeDefender.location : [];
 
 				//this.render(getMouseLocation(), activePlayerLocation, activeDefenderLocation);
 
@@ -41,47 +41,47 @@ define(['Helpers', 'Variables', 'lib/AStar', 'lib/EaselJS/lib/easeljs-0.4.2.min'
 
 			render : function(cursorLocation, activePlayerLocation, activeDefenderLocation) {
 
-				var playerSelected = activePlayerLocation.length > 0;
+				// var playerSelected = activePlayerLocation.length > 0;
 
-				var defenderSelected = activeDefenderLocation.length > 0;
+				// var defenderSelected = activeDefenderLocation.length > 0;
 
 
-				if (cursorLocation.length > 0) {
+				// if (cursorLocation.length > 0) {
 
-					this.renderCursor(cursorLocation, activePlayerLocation);
-				}
+				// 	this.renderCursor(cursorLocation, activePlayerLocation);
+				// }
 
-				if (playerSelected) {
+				// if (playerSelected) {
 
-					//console.log(activePlayerLocation);
+				// 	//console.log(activePlayerLocation);
 
-					this.renderActivePlayer(activePlayerLocation);
+				// 	this.renderActivePlayer(activePlayerLocation);
 
-					if (!defenderSelected) {
+				// 	if (!defenderSelected) {
 
-						this.renderOppositionTeam();
-					}
+				// 		this.renderOppositionTeam();
+				// 	}
 				
-				} else {
+				// } else {
 
-					this.renderActiveTeam();
-				}
+				// 	this.renderActiveTeam();
+				// }
 
-				if (defenderSelected) {
+				// if (defenderSelected) {
 
-					//console.log(activeDefenderLocation);
+				// 	//console.log(activeDefenderLocation);
 				
-					this.renderActiveDefender(activeDefenderLocation);
-				}
+				// 	this.renderActiveDefender(activeDefenderLocation);
+				// }
 
-				if (cursorLocation.length > 0 && playerSelected && !defenderSelected) {
+				// if (cursorLocation.length > 0 && playerSelected && !defenderSelected) {
 
-					this.renderPath(cursorLocation, activePlayerLocation);
+				// 	this.renderPath(cursorLocation, activePlayerLocation);
 				
-				} else {
+				// } else {
 
-					this.clearPath();
-				}	
+				// 	this.clearPath();
+				// }
 
 			},
 			renderCursor : function(cursorLocation, activePlayerLocation) {
@@ -99,23 +99,23 @@ define(['Helpers', 'Variables', 'lib/AStar', 'lib/EaselJS/lib/easeljs-0.4.2.min'
 
 				//console.log('Grid.renderActivePlayer()');
 
-				var location = helpers.convertGridsToPixels(playerLocation[0], playerLocation[1], variables.gridUnit);
+				// var location = helpers.convertGridsToPixels(playerLocation[0], playerLocation[1], variables.gridUnit);
 
-				this.renderLocation(this.activePlayerSquare, location, variables.playerSquareColour);
+				// this.renderLocation(this.activePlayerSquare, location, variables.playerSquareColour);
 			},
 
 			renderActiveDefender: function(playerLocation) {
 
 				//console.log('Grid.renderActiveDefender()');
 
-				var location = helpers.convertGridsToPixels(playerLocation[0], playerLocation[1], variables.gridUnit);
+				// var location = helpers.convertGridsToPixels(playerLocation[0], playerLocation[1], variables.gridUnit);
 
-				this.renderLocation(this.activeDefenderSquare, location, variables.playerSquareColour);
+				// this.renderLocation(this.activeDefenderSquare, location, variables.playerSquareColour);
 			},
 
 			clearPath : function() {
 
-				this.pathSquares.removeAllChildren();
+				// this.pathSquares.removeAllChildren();
 			},	
 
 			renderPath : function(cursorLocation, playerLocation) {
@@ -226,19 +226,19 @@ define(['Helpers', 'Variables', 'lib/AStar', 'lib/EaselJS/lib/easeljs-0.4.2.min'
 							
 		});		
 
-		stage.addChild(stage.cursorSquare);
+		// stage.addChild(stage.cursorSquare);
 
-		stage.addChild(stage.activePlayerSquare);
+		// stage.addChild(stage.activePlayerSquare);
 
-		stage.addChild(stage.activeDefenderSquare);		
+		// stage.addChild(stage.activeDefenderSquare);		
 
-		stage.addChild(stage.cursorPathSquare);
+		// stage.addChild(stage.cursorPathSquare);
 
-		stage.addChild(stage.activeTeamSquares);
+		// stage.addChild(stage.activeTeamSquares);
 
-		stage.addChild(stage.oppositionTeamSquares);
+		// stage.addChild(stage.oppositionTeamSquares);
 
-		stage.addChild(stage.pathSquares);
+		// stage.addChild(stage.pathSquares);
 
 		return stage;
 	}
