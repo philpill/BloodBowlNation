@@ -1,7 +1,7 @@
 define ([
  
  	'Cursor',
-	'NewGrid',
+	'Grid',
 	'Game',
 	'UserEvents',
 	'Variables',

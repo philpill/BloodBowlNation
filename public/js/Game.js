@@ -142,9 +142,9 @@ define(['Cursor', 'Team', 'Player', 'Ball', 'Pitch', 'Helpers', 'Variables'], fu
 
 				ball.tick();
 
-				if (pitch.mouseInBounds) {
+				if (grid.mouseInBounds) {
 				
-					cursor.tick(this.selectedPlayer, this.selectedDefender, helpers.convertPixelsToGrids(pitch.mouseX, pitch.mouseY, variables.gridUnit));
+					cursor.tick(this.selectedPlayer, this.selectedDefender, helpers.convertPixelsToGrids(grid.mouseX, grid.mouseY, variables.gridUnit));
 				}
 
 				grid.tick(this.selectedPlayer, this.selectedDefender, teams[0], teams[1]);
