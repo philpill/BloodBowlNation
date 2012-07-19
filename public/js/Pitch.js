@@ -76,6 +76,17 @@ define (['Helpers', 'Variables', 'lib/EaselJS/lib/easeljs-0.4.2.min'], function(
 
 		_.extend(stage, {
 
+			onClick : function(e) {
+
+				console.log('Pitch.onClick()');
+
+				console.log(e);
+
+				console.log(this);
+
+				console.log(this.parent);
+			},
+
 			init: function() {
 
 				console.log('Pitch.init()');

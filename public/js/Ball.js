@@ -13,28 +13,25 @@ define(['Variables', 'Helpers', 'lib/EaselJS/lib/easeljs-0.4.2.min'], function(v
 			renderCache : null,
 			render : function() {
 
-				if (!this.renderCache) {
+				var graphics = new Graphics();
 
-					var graphics = new Graphics();
-
-					graphics.beginFill(this.colour);
-						
-					graphics.setStrokeStyle(0.3).beginStroke('#000');
+				graphics.beginFill(this.colour);
 					
-					graphics.drawCircle(0, 0, 4);
+				graphics.setStrokeStyle(0.3).beginStroke('#000');
+				
+				graphics.drawCircle(0, 0, 4);
 
-					graphics.endStroke();
-					
-					var shape = new Shape(graphics);
+				graphics.endStroke();
+				
+				var shape = new Shape(graphics);
 
-					this.addChild(shape);		
+				this.removeAllChildren();
 
-					this.x = (this.location[0] * variables.gridUnit) + variables.gridUnit/4;
+				this.addChild(shape);		
 
-					this.y = (this.location[1] * variables.gridUnit) + variables.gridUnit/4;
+				this.x = (this.location[0] * variables.gridUnit) + variables.gridUnit/4;
 
-					this.renderCache = this;
-				}
+				this.y = (this.location[1] * variables.gridUnit) + variables.gridUnit/4;
 			},
 			tick : function() {
 

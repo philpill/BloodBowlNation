@@ -11,10 +11,9 @@ define(['Helpers', 'Variables', 'lib/EaselJS/lib/easeljs-0.4.2.min'], function(h
 
 			name : 'Grid',
 			mouseEventsEnabled : true,
-			
 			width : width,
 			height : height,
-			unit : unit,
+			unit : unit,		
 			tick : function() {
 
 				this.update();

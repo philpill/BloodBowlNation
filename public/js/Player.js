@@ -111,9 +111,9 @@ define(['Variables', 'Helpers', 'lib/EaselJS/lib/easeljs-0.4.2.min'], function(v
 
 				number.textBaseline  = 'middle';
 
-				number.x = 0;
+				number.x = 0.5;
 
-				number.y = 0;	
+				number.y = 0.5;	
 				
 				if (this.isDown) {
 
@@ -144,29 +144,26 @@ define(['Variables', 'Helpers', 'lib/EaselJS/lib/easeljs-0.4.2.min'], function(v
 				playerZone.clearBase();
 			},
 			render : function() {
-				
-				if (!this.renderCache) {
 
-					this.addChild(this.renderShape());
+				this.x = (this.location[0] * variables.gridUnit) + variables.gridUnit/2 - 0.5;
 
-					this.addChild(this.renderNumber());			
-
-					this.x = (this.location[0] * variables.gridUnit) + variables.gridUnit/2 - 0.5;
-
-					this.y = (this.location[1] * variables.gridUnit) + variables.gridUnit/2 - 0.5;
-
-					this.renderCache = this;
-				}	
+				this.y = (this.location[1] * variables.gridUnit) + variables.gridUnit/2 - 0.5;
 			},
 			init : function() {
 
 				//console.log('Player.init()');
+
+				this.removeAllChildren();
 
 				this.zone = playerZone;
 
 				this.zone.init();
 
 				this.addChild(this.zone);
+
+				this.addChild(this.renderShape());
+
+				this.addChild(this.renderNumber());					
 			}
 		});
 
