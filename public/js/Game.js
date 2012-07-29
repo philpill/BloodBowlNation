@@ -7,14 +7,66 @@ define(['Cursor', 'Team', 'Player', 'Ball', 'Pitch', 'Helpers', 'Variables'], fu
 
 		container.addChild(pitch);
 
-		container.addChild(grid);		
+		container.addChild(grid);
+
+		grid.onClick = function(e){
+
+			//console.log('Game.onClick()');
+
+			//console.log(e);
+
+			if (isPlayerClicked(e)) {
+
+				var player = grid.getObjectUnderPoint(e.stageX, e.stageY).parent;
+
+				player.onClick(e);
+			}
+		};
+
+		var allPlayersCache = [];
+
+		function getAllPlayers() {
+
+			var allPlayers = [];
+
+			if (allPlayersCache.length > 0) {
+
+				allPlayers = allPlayersCache;
+
+			} else {
+
+				_.each(teams, function(team) {
+
+					allPlayers = _.union(allPlayers, team.players);
+				});
+				
+				allPlayersCache = allPlayers;
+			}
+
+			return allPlayers;
+		}
+
+		function isPlayerClicked(e) {
+
+			//console.log('isPlayerClicked()');
+
+			var isPlayerClicked = false;
+
+			var grid = e.target;
+
+			var object = grid.getObjectUnderPoint(e.stageX, e.stageY).parent;
+
+			//abitrary test of attribute to determine player
+			isPlayerClicked = !!object.movementAllowance;
+
+			return isPlayerClicked;
+		}
 
 		_.extend(container, {
 
 			name : 'Game',
 			teams : teams,
 			ball : ball,
-			allPlayersCache : [],
 			activeTeam: null,
 			selectedPlayer: null,
 			selectedDefender: null,
@@ -35,6 +87,13 @@ define(['Cursor', 'Team', 'Player', 'Ball', 'Pitch', 'Helpers', 'Variables'], fu
 					this.defenderClick(player);
 				}				
 			},
+
+			onGridClick : function(e) {
+
+
+			},
+
+			getAllPlayers : getAllPlayers,
 
 			clearAllPlayerBases : function() {
 
@@ -111,27 +170,6 @@ define(['Cursor', 'Team', 'Player', 'Ball', 'Pitch', 'Helpers', 'Variables'], fu
 				this.activeTeam = teams[0];
 				this.deploy();
 				this.forceRenderRefresh = false;
-			},
-
-			getAllPlayers: function() {
-
-				var allPlayers = [];
-
-				if (this.allPlayersCache.length > 0) {
-
-					allPlayers = this.allPlayersCache;
-
-				} else {
-
-					_.each(teams, function(team) {
-
-						allPlayers = _.union(allPlayers, team.players);
-					});
-					
-					this.allPlayersCache = allPlayers;
-				}
-
-				return allPlayers;
 			},
 
 			tick: function() {

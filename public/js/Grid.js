@@ -13,7 +13,13 @@ define(['Helpers', 'Variables', 'lib/EaselJS/lib/easeljs-0.4.2.min'], function(h
 			mouseEventsEnabled : true,
 			width : width,
 			height : height,
-			unit : unit,		
+			unit : unit,
+			onClick : function(e) {
+
+				console.log('Grid.onClick()');
+
+				console.log(this);
+			},				
 			tick : function() {
 
 				this.update();

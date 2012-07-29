@@ -28,7 +28,7 @@ define(['Variables', 'Helpers', 'lib/EaselJS/lib/easeljs-0.4.2.min'], function(v
 				console.log(this);
 
 				//this is bullshit
-				var game = e.target.parent.parent;
+				var game = e.target.parent;
 
 				game.onPlayerClick(this);
 			},
