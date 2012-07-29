@@ -9,20 +9,6 @@ define(['Cursor', 'Team', 'Player', 'Ball', 'Pitch', 'Helpers', 'Variables'], fu
 
 		container.addChild(grid);
 
-		grid.onClick = function(e){
-
-			//console.log('Game.onClick()');
-
-			//console.log(e);
-
-			if (isPlayerClicked(e)) {
-
-				var player = grid.getObjectUnderPoint(e.stageX, e.stageY).parent;
-
-				player.onClick(e);
-			}
-		};
-
 		var allPlayersCache = [];
 
 		function getAllPlayers() {
@@ -44,22 +30,6 @@ define(['Cursor', 'Team', 'Player', 'Ball', 'Pitch', 'Helpers', 'Variables'], fu
 			}
 
 			return allPlayers;
-		}
-
-		function isPlayerClicked(e) {
-
-			//console.log('isPlayerClicked()');
-
-			var isPlayerClicked = false;
-
-			var grid = e.target;
-
-			var object = grid.getObjectUnderPoint(e.stageX, e.stageY).parent;
-
-			//abitrary test of attribute to determine player
-			isPlayerClicked = !!object.movementAllowance;
-
-			return isPlayerClicked;
 		}
 
 		_.extend(container, {
@@ -88,9 +58,16 @@ define(['Cursor', 'Team', 'Player', 'Ball', 'Pitch', 'Helpers', 'Variables'], fu
 				}				
 			},
 
-			onGridClick : function(e) {
+			onGridClick : function(grid) {
 
+				console.log('Game.onGridClick()');
 
+				console.log(grid);
+
+				if (this.selectedPlayer && !!this.selectedDefender) {
+
+					//move selectedPlayer
+				}
 			},
 
 			getAllPlayers : getAllPlayers,

@@ -7,6 +7,22 @@ define(['Helpers', 'Variables', 'lib/EaselJS/lib/easeljs-0.4.2.min'], function(h
 
 		stage.tickOnUpdate = true;
 
+		function isPlayerClicked(e) {
+
+			//console.log('isPlayerClicked()');
+
+			var isPlayerClicked = false;
+
+			var grid = e.target;
+
+			var object = grid.getObjectUnderPoint(e.stageX, e.stageY).parent;
+
+			//abitrary test of attribute to determine player
+			isPlayerClicked = !!object.movementAllowance;
+
+			return isPlayerClicked;
+		}
+
 		_.extend(stage, {
 
 			name : 'Grid',
@@ -16,9 +32,18 @@ define(['Helpers', 'Variables', 'lib/EaselJS/lib/easeljs-0.4.2.min'], function(h
 			unit : unit,
 			onClick : function(e) {
 
-				console.log('Grid.onClick()');
+				if (isPlayerClicked(e)) {
 
-				console.log(this);
+					var player = this.getObjectUnderPoint(e.stageX, e.stageY).parent;
+
+					player.onClick(e);
+				
+				} else {
+
+					var game = e.target.parent;
+
+					game.onGridClick(this);
+				}
 			},				
 			tick : function() {
 
