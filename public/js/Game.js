@@ -1,5 +1,14 @@
 
-define(['Cursor', 'Team', 'Player', 'Ball', 'Pitch', 'Helpers', 'Variables'], function(Cursor, Team, Player, Ball, Pitch, helpers, variables) {
+define(function(require) {
+
+	var Cursor = require('Cursor'),
+		Team = require('Team'),
+		Player = require('Player'),
+		Ball = require('Ball'),
+		Pitch = require('Pitch'),
+		helpers = require('Helpers'),
+		variables = require('Variables');
+
 
 	var Game = function (grid, teams, pitch, ball, cursor) {
 
@@ -58,15 +67,15 @@ define(['Cursor', 'Team', 'Player', 'Ball', 'Pitch', 'Helpers', 'Variables'], fu
 				}				
 			},
 
-			onGridClick : function(grid) {
+			onGridClick : function(grid, e) {
 
 				console.log('Game.onGridClick()');
 
-				console.log(grid);
+				if (this.selectedPlayer && !this.selectedDefender) {
 
-				if (this.selectedPlayer && !!this.selectedDefender) {
+					var grids = helpers.convertPixelsToGrids(e.stageX, e.stageY, variables.gridUnit);
 
-					//move selectedPlayer
+					this.selectedPlayer.move(grids);
 				}
 			},
 

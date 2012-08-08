@@ -41,15 +41,21 @@ define(['Variables', 'Helpers', 'lib/EaselJS/lib/easeljs-0.4.2.min'], function(v
 				console.log("ball picked up");
 			},
 			move: function (grids) {
-				this.renderCache = [];
-				this.location = grids;
-				this.hasMoved = true;
+				if (!this.hasMoved) {
+					this.renderCache = [];
+					this.location = grids;
+					this.hasMoved = true;
+				} else {
+					console.log('hasMoved: true');					
+				}
 			},
-			block: function (defender) {
-
-				//in dev
-
-				this.hasActioned = true;
+			block: function (defender) {				
+				if (!this.hasActioned) {
+					//in dev
+					this.hasActioned = true;
+				} else {
+					console.log('hasActioned: true');
+				}
 			},
 			stun: function () {
 				
@@ -145,9 +151,13 @@ define(['Variables', 'Helpers', 'lib/EaselJS/lib/easeljs-0.4.2.min'], function(v
 			},
 			render : function() {
 
-				this.x = (this.location[0] * variables.gridUnit) + variables.gridUnit/2 - 0.5;
+				var gridUnit = variables.gridUnit;
 
-				this.y = (this.location[1] * variables.gridUnit) + variables.gridUnit/2 - 0.5;
+				var location = this.location;
+
+				this.x = (location[0] * gridUnit) + gridUnit/2 - 0.5;
+
+				this.y = (location[1] * gridUnit) + gridUnit/2 - 0.5;
 			},
 			init : function() {
 
