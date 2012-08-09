@@ -1,4 +1,9 @@
-define(['Variables', 'Helpers'], function(variables, helpers){
+define(function(require){
+
+	var variables = require('Variables'),
+		helpers = require('Helpers');
+
+	require('lib/EaselJS/lib/easeljs-0.4.2.min');
 
 	var Zone = function (fillColour, outlineColour) {
 

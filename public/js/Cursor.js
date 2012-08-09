@@ -1,4 +1,7 @@
-define(['Variables', 'Helpers'], function(variables, helpers){
+define(function(require) {
+
+	var variables = require('Variables'),
+		helpers = require('Helpers');
 
 	var Cursor = function (cursorZone) {
 

@@ -20,8 +20,8 @@ define (['Helpers', 'Variables', 'lib/EaselJS/lib/easeljs-0.4.2.min'], function(
 			pitchBitmap.x = -0.5;
 			pitchBitmap.y = -0.5;
 
-			pitchBitmap.scaleX = 0.435;
-			pitchBitmap.scaleY = 0.435;
+			pitchBitmap.scaleX = 0.87;
+			pitchBitmap.scaleY = 0.87;
 
 			return pitchBitmap;			
 		}
