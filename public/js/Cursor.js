@@ -3,6 +3,8 @@ define(function(require) {
 	var variables = require('Variables'),
 		helpers = require('Helpers');
 
+	require('lib/EaselJS/lib/easeljs-0.4.2.min');
+
 	var Cursor = function (cursorZone) {
 
 		var container = new Container();	
