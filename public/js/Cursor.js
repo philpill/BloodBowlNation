@@ -31,7 +31,7 @@ define(function(require) {
 
 				cursorZone.renderBase(mouseLocation);
 
-				if (activePlayer && !defendingPlayer) {
+				if (activePlayer && !activePlayer.hasMoved && !defendingPlayer) {
 
 					cursorZone.renderCursorPath(mouseLocation, activePlayer.location, activePlayer.movementAllowance);
 				}				

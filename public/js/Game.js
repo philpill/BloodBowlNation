@@ -6,8 +6,11 @@ define(function(require) {
 		Player = require('Player'),
 		Ball = require('Ball'),
 		Pitch = require('Pitch'),
+		blockEngine = require('BlockEngine'),
 		helpers = require('Helpers'),
 		variables = require('Variables');
+
+	require('lib/jquery.min');
 
 
 	var Game = function (grid, teams, pitch, ball, cursor) {
@@ -56,6 +59,8 @@ define(function(require) {
 			onPlayerClick : function(player) {
 
 				console.log('Game.onPlayerClick()');
+
+				$(document).trigger('playerSelected');
 
 				if (player.team === this.activeTeam.name) {
 
@@ -113,6 +118,8 @@ define(function(require) {
 					defender.setSelected();
 
 					this.selectedDefender = defender;
+
+					var results = blockEngine.mediateBlock(this.selectedPlayer, this.selectedDefender);
 				}
 			},
 
