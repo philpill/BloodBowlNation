@@ -11,9 +11,13 @@ Questions/comments: bbn@philpill.net
 ----
 
 npm 1.1.106
+
 node 0.8.9
+
 express 3.0.0rc4
+
 jade 0.27.2
+
 socket.io 0.9.10
 
 ----
