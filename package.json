@@ -1,9 +1,13 @@
 {
-    "name": "BloodBowlNation"
-  , "version": "12.08.08"
-  , "private": true
-  , "dependencies": {
-      "express": "2.5.8"
-    , "jade": ">= 0.26.1"
-  }
+	"name": "BloodBowlNation",
+	"version": "12.08.08",
+ 	"private": true,
+ 	"dependencies": {
+		"express": ">= 3.0",
+		"jade": ">= 0.27.2"
+	},
+	"license": "MIT",
+	"engines": {
+		"node": ">= 0.8.9"
+	}
 }
