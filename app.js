@@ -35,12 +35,6 @@
 
 	app.get('/test', routes.test);
 
-
-	io.sockets.on('connection', function (socket) {
-		socket.emit('news', { hello: 'world' });
-		socket.on('my other event', function (data) {
-		console.log(data);
-		});
-	});
+	var sockets = req('./sockets').bindEvents(io.sockets);
 
 })(require);
