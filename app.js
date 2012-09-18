@@ -35,6 +35,6 @@
 
 	app.get('/test', routes.test);
 
-	var sockets = req('./sockets').bindEvents(io.sockets);
+	var sockets = req('./sockets').connect(io.sockets);
 
 })(require);

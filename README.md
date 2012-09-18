@@ -20,6 +20,8 @@ jade 0.27.2
 
 socket.io 0.9.10
 
+runs on: http://localhost:3000
+
 ----
 
 ### License ###

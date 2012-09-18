@@ -1,13 +1,22 @@
 
-var player = require('./player');
+(function(req) {
 
-module.exports.bindEvents = function(sockets){
+	var game = req('./game');
+	var team = req('./team');
+	var player = req('./player');
 
-	sockets.on('connection', function (socket) {
-		socket.emit('news', { hello: 'bloodbowlnation' });
-		socket.on('my other event', function (data) {
-			console.log(data);
-			player.move();
-		});
-	});
-}
+	function connect(sockets) {
+		sockets.on('connection', init);
+	}
+
+	function init(socket) {
+		socket.emit('init', 'Hello Blood Bowl fans!');
+
+		game.init(socket);
+		team.init(socket);
+		player.init(socket);
+	}
+
+	module.exports.connect = connect;
+
+})(require);
