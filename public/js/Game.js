@@ -37,7 +37,7 @@ define(function(require) {
 
 					allPlayers = _.union(allPlayers, team.players);
 				});
-				
+
 				allPlayersCache = allPlayers;
 			}
 
@@ -64,12 +64,12 @@ define(function(require) {
 
 				if (player.team === this.activeTeam.name) {
 
-					this.attackerClick(player);		
-				
+					this.attackerClick(player);
+
 				} else {
 
 					this.defenderClick(player);
-				}				
+				}
 			},
 
 			onGridClick : function(grid, e) {
@@ -91,7 +91,7 @@ define(function(require) {
 				_.each(this.getAllPlayers(), function(player) {
 
 					player.clearBase();
-				});		
+				});
 			},
 
 			attackerClick: function(player) {
@@ -144,7 +144,7 @@ define(function(require) {
 				grid.addChild(cursor);
 
 				grid.addChild(ball);
-				
+
 				_.each(this.getAllPlayers(), function(player) {
 
 					grid.addChild(player);
@@ -159,7 +159,7 @@ define(function(require) {
 				grid.init();
 
 				cursor.init();
-				
+
 				this.activeTeam = teams[0];
 				this.deploy();
 				this.forceRenderRefresh = false;
@@ -174,7 +174,7 @@ define(function(require) {
 				ball.tick();
 
 				if (grid.mouseInBounds) {
-				
+
 					cursor.tick(this.selectedPlayer, this.selectedDefender, helpers.convertPixelsToGrids(grid.mouseX, grid.mouseY, variables.gridUnit));
 				}
 

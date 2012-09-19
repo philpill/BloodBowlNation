@@ -29,5 +29,10 @@ requirejs(requires, function(BBN) {
 		//socket.emit('my other event', { my: 'data' });
 	});
 
+	socket.on('log', function (data) {
+
+		console.log(data);
+	});
+
 	BBN.init();
 });
