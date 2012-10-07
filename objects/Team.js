@@ -3,15 +3,10 @@
 
 	var Player = req('./Player');
 
-	var Team = function (teamName) {
+	var Team = function (name) {
 
-		this.name = teamName;
-		this.players = [];
+		this.name = name;
 		this.colours = ["rgba(255,0,0,1)"];
-		this.score = 0;
-		this.scoreZone = 0;
-		this.reRolls = 0;
-		this.gridHomeSection = 0;
 	};
 
 	Team.prototype = {
@@ -23,22 +18,12 @@
 		reRolls : 0,
 		gridHomeSection : 0,
 
-		tick: function () {
+		test : function() {
 
-			this.render();
-		},
-
-		render: function () {
-
-			_.invoke(this.players, 'render');
-		},
-
-		init : function() {
-
-			_.invoke(this.players, 'init');
+			console.log('test');
 		}
 	};
 
-	module.exports.Team = Team;
+	module.exports = Team;
 
 })(require);

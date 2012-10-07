@@ -1,189 +1,33 @@
-//define(['Variables', 'Helpers', 'lib/EaselJS/lib/easeljs-0.4.2.min'], function(variables, helpers) {
 
 (function(req) {
 
-	var Player = function (playerZone, playerName, playerTeam, playerNumber, playerRace, playerAttributes) {
+	var Player = function(name, number, race, attributes){
 
-		var container = new Container();
+		this.name = name;
+		this.number = number;
+		this.race = race;
 
-		_.extend(container, {
+		if (attributes) {
 
-			zone : playerZone,
-			name: playerName,
-			colours: playerTeam.colours,
-			location: null,
-			number: playerNumber,
-			team: playerTeam.name,
-			race: playerRace,
-			movementAllowance: playerAttributes.movement,
-			strength: playerAttributes.strength,
-			agility: playerAttributes.agility,
-			armourValue: playerAttributes.armour,
-			isDown: false,
-			isStunned: false,
-			isKnockedOut: false,
-			hasMoved: false,
-			hasActioned: false,
-			renderCache: null,
-			onClick : function(e) {
-
-				console.log(this);
-
-				//this is bullshit
-				var game = e.target.parent;
-
-				game.onPlayerClick(this);
-			},
-			clearRenderCache: function() {
-				this.renderCache = null;
-			},
-			pickUpBall: function(ball) {
-				//attempt to pickup
-				ball.inPossessionOf = this;
-				console.log("ball picked up");
-			},
-			move: function (grids) {
-				if (!this.hasMoved) {
-					this.renderCache = [];
-					this.location = grids;
-					this.hasMoved = true;
-				} else {
-					console.log('hasMoved: true');
-				}
-			},
-			block: function (defender) {
-				if (!this.hasActioned) {
-					//in dev
-					this.hasActioned = true;
-				} else {
-					console.log('hasActioned: true');
-				}
-			},
-			stun: function () {
-
-				this.isDown = true;
-				this.isStunned = true;
-			},
-			knockout: function () {
-
-				this.isKnockedOut = true;
-			},
-			knockdown: function() {
-
-				this.isDown = true;
-			},
-			tick: function() {
-
-				console.log('tick()');
-			},
-			renderShape : function() {
-
-				var graphics = new Graphics();
-
-				var teamColours = this.colours;
-
-				if (teamColours.length > 1) {
-
-					graphics.beginLinearGradientFill(teamColours, [0, 0.5], 0, 20, 3, 20);
-
-				} else {
-
-					graphics.beginFill(teamColours[0]);
-				}
-
-				graphics.setStrokeStyle(1).beginStroke("#fff");
-
-				graphics.drawCircle(0, 0, 7);
-
-				graphics.setStrokeStyle(1).beginStroke("#000");
-
-				graphics.drawCircle(0, 0, 6);
-
-				graphics.endStroke();
-
-				var shape = new Shape(graphics);
-
-				return shape;
-			},
-			renderNumber : function() {
-
-				var number = new Text();
-
-				number.text = this.number;
-
-				number.color = '#000';
-
-				number.font = 'bold 7px Arial';
-
-				number.textAlign = 'center';
-
-				number.textBaseline  = 'middle';
-
-				number.x = 0.5;
-
-				number.y = 0.5;
-
-				if (this.isDown) {
-
-					number.rotation = 90;
-
-				} else if (this.isStunned) {
-
-					number.rotation = 180;
-				}
-
-				return number;
-			},
-			setSelected : function() {
-
-				this.renderBase();
-			},
-			renderBase : function () {
-
-				//console.log('Player.renderBase()');
-
-				//shim to render top left corner of grid square
-				this.zone.renderBase([-0.5, -0.5]);
-			},
-			clearBase : function () {
-
-				//console.log('Player.clearBase()');
-
-				playerZone.clearBase();
-			},
-			render : function() {
-
-				var gridUnit = variables.gridUnit;
-
-				var location = this.location;
-
-				this.x = (location[0] * gridUnit) + gridUnit/2 - 0.5;
-
-				this.y = (location[1] * gridUnit) + gridUnit/2 - 0.5;
-			},
-			init : function() {
-
-				//console.log('Player.init()');
-
-				this.removeAllChildren();
-
-				this.zone = playerZone;
-
-				this.zone.init();
-
-				this.addChild(this.zone);
-
-				this.addChild(this.renderShape());
-
-				this.addChild(this.renderNumber());
-			}
-		});
-
-		return container;
+			this.movementAllowance = attributes.movement;
+			this.strength = attributes.strength;
+			this.agility = attributes.agility;
+			this.armourValue = attributes.armour;
+		}
 	};
 
-	//helpers.inheritPrototype(Player, Container);
+	Player.prototype = {
 
-	module.exports.Player = Player;
+		name : '',
+		number : 0,
+		race : '',
+		movementAllowance : 0,
+		strength : 0,
+		agility : 0,
+		armourValue : 0
+	};
+
+
+	module.exports = Player;
 
 })(require);

@@ -2,6 +2,8 @@
 (function(req) {
 
 	var Game = req('../objects/Game');
+	var Player = req('../objects/Player');
+	var Team = req('../objects/Team');
 
 	function init(socket) {
 
@@ -9,9 +11,9 @@
 
 		var game = new Game();
 
-		socket.emit('log', game);
-
 		game.init();
+
+		socket.emit('log', game);
 	}
 
 	module.exports.init = init;
