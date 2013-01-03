@@ -3,7 +3,14 @@
 
 	var routes = req('./routes');
 
+	var game = req('./api/game.js');
+	var player = req('./api/player.js');
+	var team = req('./api/team.js');
+	var race = req('./api/race.js');
+
 	var express = req('express');
+
+	var mongoose = req('mongoose');
 
 	var app = express();
 
@@ -34,6 +41,11 @@
 	app.get('/', routes.index);
 
 	app.get('/test', routes.test);
+
+	app.get('/game', game.index);
+	app.get('/player', player.index);
+	app.get('/team', team.index);
+	app.get('/race', race.index);
 
 	var sockets = req('./sockets').connect(io.sockets);
 

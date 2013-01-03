@@ -1,14 +1,14 @@
 {
-	'name' : 'BloodBowlNation',
-	'version' : '12.09.19',
- 	'private' : true,
- 	'dependencies' : {
-		'express' 	: '3.0.x',
-		'jade' 		: '0.27.x',
-		'socket.io' : '0.9.x'
+	"name" : "BloodBowlNation",
+	"version" : "12.09.19",
+ 	"private" : true,
+ 	"dependencies" : {
+		"express" 	: "3.0.x",
+		"jade" 		: "0.27.x",
+		"socket.io" : "0.9.x"
 	},
-	'license' : 'MIT',
-	'engines' : {
-		'node' : '0.8.x'
+	"license" : "MIT",
+	"engines" : {
+		"node" : "0.8.x"
 	}
 }

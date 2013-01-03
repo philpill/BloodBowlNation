@@ -10,8 +10,6 @@ Questions/comments: bbn@philpill.net
 
 ----
 
-npm 1.1.106
-
 node 0.8.9
 
 express 3.0.0rc4
@@ -20,11 +18,19 @@ jade 0.27.2
 
 socket.io 0.9.10
 
+mongoose 3.5.3
+
+mongodb 2.2.2
+
 runs on: http://localhost:3000
 
 ----
 
 ### License ###
+
+BloodBowl and all that stuff are registered trademarks of Games Workshop Limited.
+
+BloodBowlNation is an unofficial software-only product, is unaffiliated and unendorsed by Games Workshop and is subject to the MIT License as described below.
 
 #### The MIT License ####
 
