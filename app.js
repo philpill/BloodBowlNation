@@ -7,6 +7,7 @@
 	var player = req('./api/player.js');
 	var team = req('./api/team.js');
 	var race = req('./api/race.js');
+	var user = req('./api/user.js');
 
 	var express = req('express');
 
@@ -46,6 +47,8 @@
 	app.get('/player', player.index);
 	app.get('/team', team.index);
 	app.get('/race', race.index);
+
+	app.post('/user', user.newUser);
 
 	var sockets = req('./sockets').connect(io.sockets);
 
