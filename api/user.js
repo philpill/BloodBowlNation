@@ -1,9 +1,18 @@
 var mongoose = require('mongoose');
 var UserSchema = require('../schema/user');
 
-exports.newUser = function(req, res){
+exports.getAll = function(req, res) {
 
-	var User = db.model('User', UserSchema);
+	var User = mongoose.model('Game', GameSchema);
+
+	var users = User.find();
+
+	res.send(users);
+};
+
+exports.create = function(req, res){
+
+	var User = mongoose.model('User', UserSchema);
 
 	var name = req.body.name;
 
@@ -11,12 +20,13 @@ exports.newUser = function(req, res){
 
 	var userData = {
 
-		name : name
+		name : name,
+		password : password //todo: bcrypt http://dailyjs.com/2011/02/07/node-tutorial-12/
 	};
 
 	var user = new User(userData);
 
-	//save user
+	user.save();
 
 	res.send(user);
 };

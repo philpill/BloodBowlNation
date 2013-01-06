@@ -2,6 +2,8 @@ var mongoose = require('mongoose');
 
 var Schema = mongoose.Schema;
 
+var ObjectId = Schema.ObjectId;
+
 var GameSchema = new Schema({
     name: { type: String, required: true, index: { unique: true } },
     created: { type: Date, required: true },

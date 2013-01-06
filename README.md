@@ -10,7 +10,7 @@ Questions/comments: bbn@philpill.net
 
 ----
 
-node 0.8.9
+node 0.8.16
 
 express 3.0.0rc4
 

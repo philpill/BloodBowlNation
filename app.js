@@ -11,7 +11,7 @@
 
 	var express = req('express');
 
-	var mongoose = req('mongoose');
+	var database = req('./database');
 
 	var app = express();
 
@@ -40,15 +40,18 @@
 	});
 
 	app.get('/', routes.index);
-
+	app.get('/game', routes.game);
+	app.get('/about', routes.about);
+	app.get('/login', routes.login);
 	app.get('/test', routes.test);
 
-	app.get('/game', game.index);
-	app.get('/player', player.index);
-	app.get('/team', team.index);
-	app.get('/race', race.index);
+	app.get('api/game', game.getAll);
+	app.get('api/player', player.index);
+	app.get('api/team', team.index);
+	app.get('api/race', race.index);
 
-	app.post('/user', user.newUser);
+	app.post('api/game', game.create);
+	app.post('api/user', user.create);
 
 	var sockets = req('./sockets').connect(io.sockets);
 

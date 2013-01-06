@@ -7,46 +7,7 @@ html(lang="en")
 				h1
 					a(href="http://bloodbowlnation.industrialnation.co.uk") BloodBowlNation
 				h2 v120809
-			section#Canvases
-				canvas#PitchCanvas(width="400", height="600")
-				canvas#MainCanvas(width="400", height="600")
-
-			aside#MainAside
-				section#DebugConsole
-					header
-						h3 Debug Console
-					code -- BloodBowlNation --
-					code#Ticks
-					code#MeasuredFps
-				section#DebugControls
-					header
-						h3 Debug Controls
-					label(for="BackgroundCheck") Show/Hide Pitch Background
-					input#BackgroundCheck(type="checkbox")
-					ul
-						li
-							a#ClearCacheLink(href="#") clear HTML5 localstorage
-						li
-							a#StopGameLoopLink(href="#") pause/unpause game loop
-						li
-							a#TurnoverLink(href="#") turnover
-				section#GeneralInfo
-					header
-						h3 General Info
-					article
-						p
-							|Based on 
-							a(href="http://www.games-workshop.com/") Games Workshop's 
-							a(href="http://www.games-workshop.com/gws/catalog/landingArmy.jsp?catId=cat480004a&rootCatGameStyle=specialist-games") Blood Bowl
-						p
-							|Github: 
-							a(href="https://github.com/philpill/BloodBowlNation") Source
-						p
-							|Blood Bowl: 
-							a(href="http://www.bloodbowlonline.com/LivingRulebook5.pdf") Living Rulebook v5
-						p
-							|Unit tests: 
-							a(href="test.html") test.html
-						p
-							|Questions/comments: bbn@philpill.net
+			section#Main
+				h3 Index
+				p BloodBowlNation etc.
 			include includes/footer

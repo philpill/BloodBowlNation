@@ -1,19 +1,36 @@
-exports.index = function(req, res){
+var mongoose = require('mongoose');
+var GameSchema = require('../schema/game');
 
-	var game = {
+exports.getAll = function(req, res){
 
-		name : 'game'
-	};
+	//MyModel.find({ name: /john/i }, 'name friends', function () { })
 
-	res.send(game);
+	var Game = mongoose.model('Game', GameSchema);
+
+	var games = Game.find();
+
+	res.send(games);
 };
 
-exports.new = function(req, res){
+exports.create = function(req, res){
 
-	var game = {
+	var Game = mongoose.model('Game', GameSchema);
 
-		name : 'game'
+	var name = req.body.name;
+
+	var host = req.body.host;
+
+	var created = new Date();
+
+	var data = {
+
+		name : name,
+		host : host,
+		created : created,
+		turn : 0
 	};
+
+	var game = new Game(data);
 
 	res.send(game);
 };
