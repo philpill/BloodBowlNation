@@ -1,6 +1,6 @@
 {
 	"name" : "BloodBowlNation",
-	"version" : "12.09.19",
+	"version" : "13.01.13",
  	"private" : true,
  	"dependencies" : {
 		"express" 	: "3.0.x",

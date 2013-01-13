@@ -7,6 +7,12 @@ html(lang="en")
 				h1
 					a(href="http://bloodbowlnation.industrialnation.co.uk") BloodBowlNation
 				h2 v120809
+			section.login
+				- if (typeof(user) != 'undefined')
+					span= 'user: ' + user.username
+					a(href='/logout') logout
+				- else
+					a(href= '/login') login
 			section#Main
 				h3 Index
 				p BloodBowlNation etc.

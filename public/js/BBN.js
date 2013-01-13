@@ -17,7 +17,7 @@ var requires = [
 ];
 
 require.config({
-	baseUrl: "js/"
+	baseUrl: "/js/"
 });
 
 requirejs(requires, function(BBN) {

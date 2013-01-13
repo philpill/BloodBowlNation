@@ -22,7 +22,7 @@ mongoose 3.5.3
 
 mongodb 2.2.2
 
-runs on: http://localhost:3000
+everyauth 3.1
 
 ----
 

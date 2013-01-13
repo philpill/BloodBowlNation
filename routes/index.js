@@ -4,7 +4,10 @@
  */
 
 exports.index = function(req, res){
-  res.render('index', { title: 'BloodBowlNation' });
+
+	console.log('test');
+
+	res.render('index', { title: 'BloodBowlNation', user: req.user });
 };
 
 exports.test = function(req, res){
@@ -21,4 +24,14 @@ exports.game = function(req, res) {
 
 exports.login = function(req, res) {
   res.render('login', { title: 'BloodBowlNation: Login' });
+};
+
+exports.logout = function(req, res) {
+	req.logout();
+	res.redirect('/');
+};
+
+exports.userLogin = function(req, res) {
+	console.log('login');
+	res.redirect('/');
 };

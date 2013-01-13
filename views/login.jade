@@ -9,9 +9,15 @@ html(lang="en")
 				h2 v120809
 			section#Password.main
 				h3 Login
-				label(for="Username") username
-				input(type="text", id="Username")
-				label(for="Password") password
-				input(type="password", id="Password")
-				button(id="Login") login
+
+			form(action='/login', method='post')
+				#Login
+					label(for='username') Username
+					input(name='username', type='text')
+				#Password
+					label(for='password') Password
+					input(name='password', type='password')
+				#Submit
+					input(type='submit', value='Login')
+
 			include includes/footer
