@@ -22,8 +22,6 @@ mongoose 3.5.3
 
 mongodb 2.2.2
 
-everyauth 3.1
-
 ----
 
 ### License ###
