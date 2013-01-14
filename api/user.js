@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
-var UserSchema = require('../schema/user');
+var User = require('../schema/user');
+var passport = require('passport');
 
 exports.getAll = function(req, res) {
 
@@ -29,4 +30,25 @@ exports.create = function(req, res){
 	user.save();
 
 	res.send(user);
+};
+
+exports.index = function(req, res){
+
+	console.log('getUser');
+
+	var username = req.user.username;
+
+	console.log(username);
+
+	User.find({ username: username }, function(error, data){
+
+		if(error){
+
+			res.json(error);
+
+		} else {
+
+			res.json(data);
+		}
+	});
 };
