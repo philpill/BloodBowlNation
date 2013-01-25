@@ -14,11 +14,10 @@ define(function(require) {
 
             var login = $('#Login');
 
-            this.controls.loginButton = login.find('button.login');
             this.controls.username = login.find('input.username');
             this.controls.password = login.find('input.password');
 
-            loginButton.on('click', this.login);
+
         },
         getLoginData: function() {
 
@@ -47,6 +46,8 @@ define(function(require) {
         },
         loginSuccess: function(data, textStatus, jqXHR) {
 
+            console.log('loginSuccess()');
+
             //set auth cookie using data
             //https://github.com/carhartl/jquery-cookie
 
@@ -55,6 +56,8 @@ define(function(require) {
             //redirect to /game
         },
         loginError: function(xhr, textStatus, errorThrown) {
+
+            console.log('loginError()');
 
             //show error
         }

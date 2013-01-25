@@ -4,7 +4,9 @@
 
 	var mongoose = req('mongoose');
 
-	var uri = 'mongodb://localhost/bbn';
+	var uri = "mongodb://localhost/bbn";
+
+	mongoose.connect(uri);
 
 	var connection = mongoose.createConnection(uri);
 
@@ -14,8 +16,5 @@
 	});
 
 	connection.on("error", console.error.bind(console, "connection error:"));
-
-	mongoose.connect(uri);
-
 
 })(require);

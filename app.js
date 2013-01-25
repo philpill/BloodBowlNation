@@ -46,17 +46,19 @@
 	});
 
 	app.get('/', routes.index);
-	app.get('/game', passport.ensureAuthenticated, routes.game);
+	app.get('/game', routes.game);
 	app.get('/about', routes.about);
 	app.get('/login', routes.login);
 	app.get('/logout', routes.logout);
 	app.get('/test', routes.test);
+	app.get('/team', routes.team);
 
 	app.get('/api/game', passport.ensureAuthenticated, game.getAll);
 	app.get('/api/player', passport.ensureAuthenticated, player.index);
 	app.get('/api/team', passport.ensureAuthenticated, team.index);
 	app.get('/api/race', passport.ensureAuthenticated, race.index);
 	app.get('/api/user', passport.ensureAuthenticated, user.index);
+	app.get('/api/user/:id/team', passport.ensureAuthenticated, user.team);
 
 	app.post('/api/game', passport.ensureAuthenticated, game.create);
 	app.post('/api/user', passport.ensureAuthenticated, user.create);

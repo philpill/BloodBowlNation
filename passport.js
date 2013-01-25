@@ -2,36 +2,41 @@
 (function(req) {
 
 	var passport = req('passport');
-
+	var mongoose = req('mongoose');
+	var User = require('./schema/user');
 	var LocalStrategy = require('passport-local').Strategy;
 
-	var users = [
-		{ id: 1, username: 'admin', password: 'password', email: 'bob@example.com' }
-	];
-
-	function findById(id, fn) {
+	function findById(id, done) {
 
 		console.log('findById()');
 
-		var idx = id - 1;
-		if (users[idx]) {
-			fn(null, users[idx]);
-		} else {
-			fn(new Error('User ' + id + ' does not exist'));
-		}
+		var user = User.findById(id, function(err, user){
+
+			if (user) {
+
+				return done(null, user);
+
+			} else {
+
+				return done(new Error('User ' + id + ' does not exist'), null);
+			}
+		});
 	}
 
-	function findByUsername(username, fn) {
+	function findByUsername(username, password, done) {
 
 		console.log('findByUsername()');
 
-		for (var i = 0, len = users.length; i < len; i++) {
-			var user = users[i];
-			if (user.username === username) {
-				return fn(null, user);
-			}
-		}
-		return fn(null, null);
+		User.findOne({ username : username }, function (err, user) {
+
+			if (err) { return done(err); }
+
+			if (!user) { return done(null, false, { message: 'Unknown user ' + username }); }
+
+			if (user.password != password) { return done(null, false, { message: 'Invalid password' }); }
+
+			return done(null, user);
+		});
 	}
 
 	passport.serializeUser(function(user, done) {
@@ -49,21 +54,10 @@
 
 		console.log(id);
 
-		findById(id, function (err, user) {
-			done(err, user);
-		});
+		findById(id, done);
 	});
 
-	passport.use(new LocalStrategy(
-		function(username, password, done) {
-			findByUsername(username, function(err, user) {
-				if (err) { return done(err); }
-				if (!user) { return done(null, false, { message: 'Unknown user ' + username }); }
-				if (user.password != password) { return done(null, false, { message: 'Invalid password' }); }
-				return done(null, user);
-			});
-		}
-	));
+	passport.use(new LocalStrategy(findByUsername));
 
 	passport.ensureAuthenticated = function(req, res, next){
 

@@ -4,14 +4,12 @@
  */
 
 exports.index = function(req, res){
-
-	console.log('test');
-
+	console.log(req.user);
 	res.render('index', { title: 'BloodBowlNation', user: req.user });
 };
 
 exports.test = function(req, res){
-  res.render('test', { title: 'BloodBowlNation Unit Tests' });
+	res.render('test', { title: 'BloodBowlNation Unit Tests' });
 };
 
 exports.about = function(req, res) {
@@ -34,4 +32,13 @@ exports.logout = function(req, res) {
 exports.userLogin = function(req, res) {
 	console.log('login');
 	res.redirect('/');
+};
+
+exports.team = function(req, res) {
+
+	var teamIds = req.user.teams;
+
+
+
+	res.render('team', { title: 'BloodBowlNation: Team' });
 };

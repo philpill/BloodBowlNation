@@ -1,18 +1,9 @@
 !!! 5
 html(lang="en")
-	include includes/header
+	include includes/head
 	body
 		div#Container
-			header
-				h1
-					a(href="http://bloodbowlnation.industrialnation.co.uk") BloodBowlNation
-				h2 v120809
-			section.login
-				- if (typeof(user) != 'undefined')
-					span= 'user: ' + user.username
-					a(href='/logout') logout
-				- else
-					a(href= '/login') login
+			include includes/header
 			section#Main
 				h3 Index
 				p BloodBowlNation etc.

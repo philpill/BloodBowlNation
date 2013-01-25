@@ -1,10 +1,9 @@
 var mongoose = require('mongoose');
 var User = require('../schema/user');
+var Team = require('../schema/team');
 var passport = require('passport');
 
 exports.getAll = function(req, res) {
-
-	var User = mongoose.model('Game', GameSchema);
 
 	var users = User.find();
 
@@ -12,8 +11,6 @@ exports.getAll = function(req, res) {
 };
 
 exports.create = function(req, res){
-
-	var User = mongoose.model('User', UserSchema);
 
 	var name = req.body.name;
 
@@ -51,4 +48,39 @@ exports.index = function(req, res){
 			res.json(data);
 		}
 	});
+};
+
+exports.team = function(req, res){
+
+	console.log('getTeams');
+
+	var user = req.user;
+
+	console.log(user);
+
+	// User.find({ _id: userId }, function(error, data){
+
+	// 	if(error){
+
+	// 		res.json(error);
+
+	// 	} else {
+
+	// 		var teamIds = data.teams;
+
+	// 		console.log('teamsIds: ', teamIds);
+
+	// 		var teams = Team.find({ _id: { $in: teamIds } }, function(error, data){
+
+	// 			if(error){
+
+	// 				res.json(error);
+
+	// 			} else {
+
+	// 				res.json(data);
+	// 			}
+	// 		});
+	// 	}
+	//});
 };

@@ -3,6 +3,13 @@ nav
 		li
 			a(href="/") home
 		li
-			a(href="/login") login
+			a(href="/game") game
+		li
+			a(href="/team") team
 		li
 			a(href="/about") about
+		li
+			- if (typeof(user) != 'undefined')
+				a(href='/logout') logout
+			- else
+				a(href= '/login') login

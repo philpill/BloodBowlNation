@@ -1,11 +1,8 @@
-head
-	meta(charset="utf-8")
-	title!= title
-	link(rel="stylesheet", href="http://fonts.googleapis.com/css?family=Covered+By+Your+Grace&v1")
-	link(rel="stylesheet", href="/css/reset.css")
-	link(rel="stylesheet", href="/css/BloodBowlNation.css")
-	link(rel="icon", type="image/png", href="/img/favicon.png")
-	script(type="text/javascript", src="/js/lib/require.js")
-	script(type="text/javascript", src="/socket.io/socket.io.js")
-	script(type="text/javascript", src="/js/BBN.js")
-	script(type="text/javascript", src="/js/login.js")
+header
+	h1
+		a(href="http://bloodbowlnation.industrialnation.co.uk") BloodBowlNation
+	h2 v120809
+	include navigation
+	section.login
+		- if (typeof(user) != 'undefined')
+			span= 'user: ' + user.username
