@@ -2,13 +2,10 @@
 (function(req) {
 
 	var passport = req('passport');
-	var mongoose = req('mongoose');
 	var User = require('./schema/user');
 	var LocalStrategy = require('passport-local').Strategy;
 
-	function findById(id, done) {
-
-		console.log('findById()');
+	function userById(id, done) {
 
 		var user = User.findById(id, function(err, user){
 
@@ -23,9 +20,7 @@
 		});
 	}
 
-	function findByUsername(username, password, done) {
-
-		console.log('findByUsername()');
+	function userByUsername(username, password, done) {
 
 		User.findOne({ username : username }, function (err, user) {
 
@@ -39,33 +34,24 @@
 		});
 	}
 
-	passport.serializeUser(function(user, done) {
-
-		console.log('passport.serializeUser()');
-
-		console.log(user);
+	function onSerializeUser(user, done) {
 
 		done(null, user.id);
-	});
+	}
 
-	passport.deserializeUser(function(id, done) {
-
-		console.log('passport.deserializeUser()');
-
-		console.log(id);
-
-		findById(id, done);
-	});
-
-	passport.use(new LocalStrategy(findByUsername));
-
-	passport.ensureAuthenticated = function(req, res, next){
-
-		console.log('ensureAuthenticated()');
+	function ensureAuthenticated(req, res, next) {
 
 		if (req.isAuthenticated()) { return next(); }
 		res.redirect('/login');
-	};
+	}
+
+	passport.serializeUser(onSerializeUser);
+
+	passport.deserializeUser(userById);
+
+	passport.use(new LocalStrategy(userByUsername));
+
+	passport.ensureAuthenticated = ensureAuthenticated;
 
 	module.exports = passport;
 
