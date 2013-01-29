@@ -10,7 +10,8 @@ var TeamSchema = new Schema({
     played: { type: Number },
     won: { type: Number },
     lost: { type: Number },
-    drawn: { type: Number }
+    drawn: { type: Number },
+    created: { type: Date, required: true }
 });
 
 module.exports = mongoose.model('Team', TeamSchema);

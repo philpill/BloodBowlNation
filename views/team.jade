@@ -5,6 +5,10 @@ html(lang="en")
 		div#Container
 			include includes/header
 			section#Main
-				h3 Index
-				p BloodBowlNation etc.
+				h3 Teams
+				ul.teams
+				for team in teams
+					a(href="#")
+						li #{team.name}
+				a(class="create", href="/team/create") Create new team
 			include includes/footer

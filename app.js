@@ -52,12 +52,14 @@
 	app.get('/logout', routes.logout);
 	app.get('/test', routes.test);
 	app.get('/team', routes.team);
+	app.get('/team/create', routes.createTeam);
 
 	app.get('/api/game', passport.ensureAuthenticated, game.getAll);
 	app.get('/api/player', passport.ensureAuthenticated, player.index);
 	app.get('/api/team', passport.ensureAuthenticated, team.index);
 	app.get('/api/race', passport.ensureAuthenticated, race.index);
 	app.get('/api/user', passport.ensureAuthenticated, user.index);
+	app.get('/api/user/:id', passport.ensureAuthenticated, user.get);
 	app.get('/api/user/:id/team', passport.ensureAuthenticated, user.team);
 
 	app.post('/api/game', passport.ensureAuthenticated, game.create);

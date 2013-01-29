@@ -10,6 +10,27 @@ exports.getAll = function(req, res) {
 	res.send(users);
 };
 
+exports.get = function(req, res) {
+
+	console.log('get()');
+
+	var id = req.params.id;
+
+	console.log(id);
+
+	User.findById(id, function(error, data){
+
+		if(error){
+
+			res.json(error);
+
+		} else {
+
+			res.json(data);
+		}
+	});
+};
+
 exports.create = function(req, res){
 
 	var name = req.body.name;
@@ -58,29 +79,5 @@ exports.team = function(req, res){
 
 	console.log(user);
 
-	// User.find({ _id: userId }, function(error, data){
-
-	// 	if(error){
-
-	// 		res.json(error);
-
-	// 	} else {
-
-	// 		var teamIds = data.teams;
-
-	// 		console.log('teamsIds: ', teamIds);
-
-	// 		var teams = Team.find({ _id: { $in: teamIds } }, function(error, data){
-
-	// 			if(error){
-
-	// 				res.json(error);
-
-	// 			} else {
-
-	// 				res.json(data);
-	// 			}
-	// 		});
-	// 	}
-	//});
+	res.json(user.teams);
 };

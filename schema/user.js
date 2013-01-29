@@ -7,7 +7,8 @@ var UserSchema = new Schema({
     password: { type: String, required: true },
     email: { type: String },
     currentGame: { type: Number },
-    teams: { type: Array }
+    teams: { type: Array },
+    created: { type: Date, required: true }
 });
 
 module.exports = mongoose.model('User', UserSchema);
