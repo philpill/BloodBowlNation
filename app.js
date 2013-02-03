@@ -52,6 +52,7 @@
 	app.get('/logout', routes.logout);
 	app.get('/test', routes.test);
 	app.get('/team', routes.team);
+	app.get('/team/:id', routes.getTeam);
 	app.get('/team/create', routes.createTeam);
 
 	app.get('/api/game', passport.ensureAuthenticated, game.getAll);

@@ -6,7 +6,8 @@ var passport = require('passport');
 
 exports.index = function(req, res){
 	console.log(req.user);
-	res.render('index', { title: 'BloodBowlNation', user: req.user });
+	var user = req.user;
+	res.render('index', { title: 'BloodBowlNation', user: user });
 };
 
 exports.test = function(req, res){
@@ -14,15 +15,18 @@ exports.test = function(req, res){
 };
 
 exports.about = function(req, res) {
-  res.render('about', { title: 'BloodBowlNation: About' });
+	var user = req.user;
+	res.render('about', { title: 'BloodBowlNation: About', user: user });
 };
 
 exports.game = function(req, res) {
-  res.render('game', { title: 'BloodBowlNation: Game' });
+	var user = req.user;
+	res.render('game', { title: 'BloodBowlNation: Game', user: user });
 };
 
 exports.login = function(req, res) {
-  res.render('login', { title: 'BloodBowlNation: Login' });
+	var user = req.user;
+	res.render('login', { title: 'BloodBowlNation: Login', user: user });
 };
 
 exports.logout = function(req, res) {
@@ -36,17 +40,36 @@ exports.userLogin = function(req, res) {
 };
 
 exports.team = function(req, res) {
-
 	var user = req.user;
-
-	var teamIds = user.teams;
-
-	console.log(teamIds);
-
 	var teams = [];
+	if (user) {
+		var teamIds = user.teams;
+		Team.find({ _id: { $in: teamIds } }, function (err, teams) {
+			res.render('teams', { title: 'BloodBowlNation: Team', teams: teams, user: user });
+		});
+	} else {
+		res.render('teams', { title: 'BloodBowlNation: Team', teams: teams });
+	}
+};
 
-	Team.find({ _id: { $in: teamIds } }, function (err, teams) {
-		res.render('team', { title: 'BloodBowlNation: Team', teams: teams });
+exports.getTeam = function(req, res) {
+	console.log('getTeam()');
+	console.log(req.params.id);
+	var user = req.user;
+	var teamId = req.params.id;
+	var players = [];
+
+	Team.findOne({ '_id': teamId }, function (err, team) {
+		if (err) {
+			res.render('team', { title: 'BloodBowlNation: Team: not found', team: null, user: user });
+		} else {
+			console.log(team);
+			Player.find({  _id: { $in: team.players } }, function (err, players){
+
+				res.render('team', { title: 'BloodBowlNation: Team: ' + team.name, team: team, user: user, players: players });
+			});
+
+		}
 	});
 };
 
