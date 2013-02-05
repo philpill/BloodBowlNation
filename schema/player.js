@@ -12,7 +12,8 @@ var PlayerSchema = new Schema({
     skills: { type: Array },
     injuries: { type: Array },
     isStarPlayer: { type: Boolean },
-    touchDowns: { type: Number }
+    touchDowns: { type: Number },
+    race: { type: ObjectId }
 });
 
 module.exports = mongoose.model('Player', PlayerSchema);

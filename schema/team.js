@@ -11,7 +11,8 @@ var TeamSchema = new Schema({
     won: { type: Number },
     lost: { type: Number },
     drawn: { type: Number },
-    created: { type: Date, required: true }
+    created: { type: Date, required: true },
+    race: { type: ObjectId }
 });
 
 module.exports = mongoose.model('Team', TeamSchema);

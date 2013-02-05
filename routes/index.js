@@ -73,38 +73,64 @@ exports.getTeam = function(req, res) {
 	});
 };
 
-exports.createTeam = function(req, res) {
-
-	var team = new Team();
-
-	team.name = 'test';
-
-	var players = [];
-
-	for (i = 0; i < 11; i++) {
-
-		var player = new Player();
-
-		player.name = 'player' + i;
-
-		player.created = Date.now();
-
-		players.push(player.id);
-
-		player.save();
-	}
-
-	team.players = players;
-
-	team.created = Date.now();
-
-	team.save();
+exports.newTeam = function(req, res) {
 
 	var user = req.user;
 
-	user.teams.push(team.id);
+	if (user) {
 
-	user.save();
+		res.render('newTeam', { title: 'BloodBowlNation: New Team', user: user });
 
-	res.redirect('/team');
+	} else {
+
+		res.redirect('/login');
+	}
+};
+
+exports.createTeam = function(req, res) {
+
+	var user = req.user;
+
+	var raceId = req.params.race;
+
+	var teamName = req.params.teamName;
+
+	if (user) {
+
+		var team = new Team();
+
+		var players = [];
+
+		for (i = 0; i < 11; i++) {
+
+			var player = new Player();
+
+			player.name = 'player' + i;
+
+			player.created = Date.now();
+
+			players.push(player.id);
+
+			player.save();
+		}
+
+		team.name = teamName;
+
+		team.players = players;
+
+		team.created = Date.now();
+
+		team.save();
+
+		user.teams.push(team.id);
+
+		user.save();
+
+		res.redirect('/team');
+
+	} else {
+
+		res.redirect('/login');
+	}
+
 };
