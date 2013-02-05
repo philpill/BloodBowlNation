@@ -6,7 +6,7 @@ var Schema = mongoose.Schema;
 
 var ObjectId = Schema.Types.ObjectId;
 
-module.exports = mongoose.model('User', new Schema(base({
+module.exports = mongoose.model('User', new Schema(new base({
 
     username: { type: String, required: true, index: { unique: true } },
     password: { type: String, required: true },

@@ -6,7 +6,7 @@ var Schema = mongoose.Schema;
 
 var ObjectId = Schema.Types.ObjectId;
 
-module.exports = mongoose.model('Game', new Schema(base({
+module.exports = mongoose.model('Game', new Schema(new base({
 
     name: { type: String, required: true, index: { unique: true } },
     host: { type: ObjectId, required: true },

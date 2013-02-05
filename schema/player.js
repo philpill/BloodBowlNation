@@ -7,7 +7,7 @@ var Schema = mongoose.Schema;
 
 var ObjectId = Schema.Types.ObjectId;
 
-module.exports = mongoose.model('Player', new Schema(base({
+module.exports = mongoose.model('Player', new Schema(new base({
 
     name: { type: String, required: true },
     position: { type: ObjectId },
