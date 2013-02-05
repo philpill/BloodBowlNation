@@ -1,15 +1,16 @@
 var mongoose = require('mongoose');
 
+var base = require('./_base.js');
+
 var Schema = mongoose.Schema;
 
-var ObjectId = Schema.ObjectId;
+var ObjectId = Schema.Types.ObjectId;
 
-var GameSchema = new Schema({
+module.exports = mongoose.model('Game', new Schema(base({
+
     name: { type: String, required: true, index: { unique: true } },
-    created: { type: Date, required: true },
     host: { type: ObjectId, required: true },
     client: { type: ObjectId, required: true },
     gameTurn: { type: Number, required: true }
-});
 
-module.exports = mongoose.model('Game', GameSchema);
+})));

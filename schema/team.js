@@ -1,8 +1,13 @@
 var mongoose = require('mongoose');
 
+var base = require('./_base.js');
+
 var Schema = mongoose.Schema;
 
-var TeamSchema = new Schema({
+var ObjectId = Schema.Types.ObjectId;
+
+module.exports = mongoose.model('Team', new Schema(base({
+
     name: { type: String, required: true, index: { unique: true } },
     players: { type: Array },
     fanFactor: { type: Number },
@@ -11,8 +16,6 @@ var TeamSchema = new Schema({
     won: { type: Number },
     lost: { type: Number },
     drawn: { type: Number },
-    created: { type: Date, required: true },
     race: { type: ObjectId }
-});
 
-module.exports = mongoose.model('Team', TeamSchema);
+})));

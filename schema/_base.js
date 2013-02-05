@@ -4,11 +4,21 @@ var Schema = mongoose.Schema;
 
 var ObjectId = Schema.ObjectId;
 
-var _baseSchema = {
-    createDate: { type: Date, required: true },
-    createBy: { type: ObjectId, required: true },
-    editDate: { type: Date },
-    editBy: { type: ObjectId }
-};
+module.exports = function(struct) {
 
-module.exports = _baseSchema;
+    var base = {
+
+        createDate : { type: Date, required: true },
+        createBy : { type: ObjectId, required: true },
+        editDate : { type: Date },
+        editBy : { type: ObjectId },
+        description : { type: String }
+    };
+
+    for (var prop in base) {
+
+        struct[prop] = base[prop];
+    }
+
+    return struct;
+};

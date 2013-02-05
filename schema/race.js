@@ -1,11 +1,14 @@
 var mongoose = require('mongoose');
 
+var base = require('./_base.js');
+
 var Schema = mongoose.Schema;
 
-var RaceSchema = new Schema({
-    name: { type: String, required: true, index: { unique: true } },
-    positions: { type: Array },
-    created: { type: Date, required: true }
-});
+var ObjectId = Schema.Types.ObjectId;
 
-module.exports = mongoose.model('Race', RaceSchema);
+module.exports = mongoose.model('Race', new Schema(base({
+
+    name: { type: String, required: true, index: { unique: true } },
+    positions: { type: Array }
+
+})));

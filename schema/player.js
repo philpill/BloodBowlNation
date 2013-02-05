@@ -1,19 +1,21 @@
+
 var mongoose = require('mongoose');
+
+var base = require('./_base.js');
 
 var Schema = mongoose.Schema;
 
-var ObjectId = Schema.ObjectId;
+var ObjectId = Schema.Types.ObjectId;
 
-var PlayerSchema = new Schema({
+module.exports = mongoose.model('Player', new Schema(base({
+
     name: { type: String, required: true },
     position: { type: ObjectId },
-    created: { type: Date, required: true },
     starPlayerPoints: { type: Number },
     skills: { type: Array },
     injuries: { type: Array },
     isStarPlayer: { type: Boolean },
     touchDowns: { type: Number },
     race: { type: ObjectId }
-});
 
-module.exports = mongoose.model('Player', PlayerSchema);
+})));
