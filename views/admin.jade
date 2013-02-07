@@ -1,0 +1,20 @@
+!!! 5
+html(lang="en")
+	include includes/head
+	body
+		div#Container
+			include includes/header
+			section#Admin.main
+				h2 Admin Control Panel
+				h3 Races
+				- if (races)
+					select#Races
+						- if (races.length)
+							- for race in races
+								option(value=race.id) #{race.name}
+					form(action='/race/new', method='post')
+						label(for='race') race name
+						input(name='race', placeholder='race name')
+						label(for='submit') save
+						input(name='submit', type='submit')
+			include includes/footer

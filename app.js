@@ -52,8 +52,10 @@
 	app.get('/logout', routes.logout);
 	app.get('/test', routes.test);
 	app.get('/team', routes.team);
-	app.get('/team/:id', routes.getTeam);
 	app.get('/team/new', routes.newTeam);
+	app.get('/team/:id', routes.getTeam);
+
+	app.get('/admin', passport.ensureAuthenticated, routes.admin);
 
 	app.get('/api/game', passport.ensureAuthenticated, game.getAll);
 	app.get('/api/player', passport.ensureAuthenticated, player.index);
@@ -68,6 +70,7 @@
 
 	app.post('/login', passport.authenticate('local', { failureRedirect: '/login' }), routes.userLogin);
 	app.post('/team/new', passport.ensureAuthenticated, routes.createTeam);
+	app.post('/race/new', passport.ensureAuthenticated, routes.createRace);
 
 	var sockets = req('./sockets').connect(io.sockets);
 

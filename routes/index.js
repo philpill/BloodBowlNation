@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 var User = require('../schema/user');
 var Team = require('../schema/team');
 var Player = require('../schema/player');
+var Race = require('../schema/race');
 var passport = require('passport');
 
 exports.index = function(req, res){
@@ -37,6 +38,44 @@ exports.logout = function(req, res) {
 exports.userLogin = function(req, res) {
 	console.log('login');
 	res.redirect('/');
+};
+
+exports.admin = function(req, res) {
+	var user = req.user;
+	var races;
+	Race.find(function(err, races){
+
+		if (err) {
+			console.log(races);
+			races = [];
+		}
+
+		res.render('admin', { title: 'BloodBowlNation: Admin', user: user, races: races });
+	});
+
+};
+
+exports.createRace = function(req, res) {
+	var user = req.user;
+	var race = req.body.race;
+	console.log(race);
+	var races;
+	if (user && user.username === 'admin') {
+
+		console.log('create');
+
+		Race.create({ 'name' : race, 'createBy': user.id, 'createDate': new Date().getTime()}, function (err, race) {
+			if (err) {
+				console.log(err);
+			}
+
+			res.redirect('/admin');
+		});
+
+	} else {
+
+		res.redirect('/admin');
+	}
 };
 
 exports.team = function(req, res) {

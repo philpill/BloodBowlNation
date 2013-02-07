@@ -8,8 +8,11 @@ nav
 			a(href="/team") team
 		li
 			a(href="/about") about
+		- if (user && user.username === 'admin')
+			li
+				a(href='/admin') admin
 		li
-			- if (typeof(user) != 'undefined')
+			- if (typeof(user) !== 'undefined')
 				a(href='/logout') logout
 			- else
 				a(href= '/login') login
