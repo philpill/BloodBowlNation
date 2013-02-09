@@ -10,9 +10,11 @@ html(lang='en')
 					label(for="teamName") name
 					input(type="text", name="teamName", placeholder='team name')
 					label(for="race") race
-					select(name="race")
-						option(value="human") Human
-						option(value="orc") Orc
+					- if (races)
+						select#Races
+							- if (races.length)
+								- for race in races
+									option(value=race.id) #{race.name}
 					label create team
 					input(type='submit') create
 			include includes/footer

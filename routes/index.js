@@ -116,9 +116,19 @@ exports.newTeam = function(req, res) {
 
 	var user = req.user;
 
+	var races;
+
 	if (user) {
 
-		res.render('newTeam', { title: 'BloodBowlNation: New Team', user: user });
+		Race.find(function(err, races){
+
+			if (err) {
+				console.log(races);
+				races = [];
+			}
+
+			res.render('newTeam', { title: 'BloodBowlNation: New Team', user: user, races: races });
+		});
 
 	} else {
 
@@ -130,9 +140,9 @@ exports.createTeam = function(req, res) {
 
 	var user = req.user;
 
-	var raceId = req.params.race;
+	var raceId = req.body.race;
 
-	var teamName = req.params.teamName;
+	var teamName = req.body.teamName;
 
 	if (user) {
 
@@ -146,26 +156,59 @@ exports.createTeam = function(req, res) {
 
 			player.name = 'player' + i;
 
-			player.created = Date.now();
+			player.createDate = Date.now();
+
+			player.createBy = user.id;
 
 			players.push(player.id);
 
-			player.save();
+			player.save(function(err, player){
+
+				if (err) { console.log(err); }
+
+				console.log(player);
+			});
 		}
 
 		team.name = teamName;
 
 		team.players = players;
 
-		team.created = Date.now();
+		team.createDate = Date.now();
 
-		team.save();
+		console.log(user.id);
 
-		user.teams.push(team.id);
+		team.createBy = user.id;
 
-		user.save();
+		console.log(team);
 
-		res.redirect('/team');
+		team.save(function(err, team){
+
+			console.log(team);
+
+			if (err) {
+
+				console.log(err);
+			}
+
+			console.log('user');
+
+			console.log(user);
+
+			user.teams = [].concat(user.teams, [team.id]);
+
+			user.save(function(err, user){
+
+				console.log(user);
+
+				if (err) {
+
+					console.log(err);
+				}
+			});
+
+			res.redirect('/team');
+		});
 
 	} else {
 
