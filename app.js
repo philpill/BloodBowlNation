@@ -1,17 +1,24 @@
 
 (function(req) {
 
-	var routes = req('./routes');
-	var playerRoutes = req('./routes/player.js');
-	var raceRoutes = req('./routes/race.js');
-	var teamRoutes = req('./routes/team.js');
-	var userRoutes = req('./routes/user.js');
+	var routes = {
 
-	var game = req('./api/game.js');
-	var player = req('./api/player.js');
-	var team = req('./api/team.js');
-	var race = req('./api/race.js');
-	var user = req('./api/user.js');
+		page : req('./routes/page.js'),
+		player : req('./routes/player.js'),
+		race : req('./routes/race.js'),
+		user : req('./routes/user.js'),
+		team : req('./routes/team.js')
+	};
+
+	var api = {
+
+		game: req('./api/game.js'),
+		player: req('./api/player.js'),
+		team: req('./api/team.js'),
+		race: req('./api/race.js'),
+		user: req('./api/user.js')
+	};
+
 	var express = req('express');
 	var passport = req('./passport');
 	var database = req('./database');
@@ -49,34 +56,36 @@
 		app.use(express.errorHandler());
 	});
 
-	app.get('/', routes.index);
-	app.get('/game', routes.game);
-	app.get('/about', routes.about);
-	app.get('/login', routes.login);
-	app.get('/logout', routes.logout);
-	app.get('/test', routes.test);
-	app.get('/team', routes.team);
-	app.get('/team/new', routes.newTeam);
-	app.get('/team/:id', routes.getTeam);
-	app.get('/player/new', routes.newPlayer);
-	app.get('/player/:id', routes.getPlayer);
+	app.get('/', routes.page.index);
+	app.get('/game', routes.page.game);
+	app.get('/about', routes.page.about);
+	app.get('/test', routes.page.test);
+	app.get('/admin', passport.ensureAuthenticated, routes.page.admin);
 
-	app.get('/admin', passport.ensureAuthenticated, routes.admin);
+	app.get('/team', routes.team.getAll);
+	app.get('/team/new', routes.team.createGet);
+	app.get('/team/:id', routes.team.get);
+	app.post('/team/new', passport.ensureAuthenticated, routes.team.createPost);
 
-	app.get('/api/game', passport.ensureAuthenticated, game.getAll);
-	app.get('/api/player', passport.ensureAuthenticated, player.index);
-	app.get('/api/team', passport.ensureAuthenticated, team.index);
-	app.get('/api/race', passport.ensureAuthenticated, race.index);
-	app.get('/api/user', passport.ensureAuthenticated, user.index);
-	app.get('/api/user/:id', passport.ensureAuthenticated, user.get);
-	app.get('/api/user/:id/team', passport.ensureAuthenticated, user.team);
+	app.get('/player/new', routes.player.createGet);
+	app.get('/player/:id', routes.player.get);
 
-	app.post('/api/game', passport.ensureAuthenticated, game.create);
-	app.post('/api/user', passport.ensureAuthenticated, user.create);
+	app.get('/login', routes.user.loginGet);
+	app.get('/logout', routes.user.logout);
+	app.post('/login', passport.authenticate('local', { failureRedirect: '/login' }), routes.user.loginPost);
 
-	app.post('/login', passport.authenticate('local', { failureRedirect: '/login' }), routes.userLogin);
-	app.post('/team/new', passport.ensureAuthenticated, routes.createTeam);
-	app.post('/race/new', passport.ensureAuthenticated, routes.createRace);
+	app.post('/race/new', passport.ensureAuthenticated, routes.race.create);
+
+	app.get('/api/game', passport.ensureAuthenticated, api.game.getAll);
+	app.get('/api/player', passport.ensureAuthenticated, api.player.index);
+	app.get('/api/team', passport.ensureAuthenticated, api.team.index);
+	app.get('/api/race', passport.ensureAuthenticated, api.race.index);
+	app.get('/api/user', passport.ensureAuthenticated, api.user.index);
+	app.get('/api/user/:id', passport.ensureAuthenticated, api.user.get);
+	app.get('/api/user/:id/team', passport.ensureAuthenticated, api.user.team);
+
+	app.post('/api/game', passport.ensureAuthenticated, api.game.create);
+	app.post('/api/user', passport.ensureAuthenticated, api.user.create);
 
 	var sockets = req('./sockets').connect(io.sockets);
 

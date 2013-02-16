@@ -10,6 +10,7 @@ var ObjectId = Schema.Types.ObjectId;
 module.exports = mongoose.model('Player', new Schema(new base({
 
     name: { type: String, required: true },
+    number: { type: Number },
     position: { type: ObjectId },
     starPlayerPoints: { type: Number },
     movement: { type: Number },

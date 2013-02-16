@@ -5,80 +5,7 @@ var Player = require('../schema/player');
 var Race = require('../schema/race');
 var passport = require('passport');
 
-exports.index = function(req, res){
-	console.log(req.user);
-	var user = req.user;
-	res.render('index', { title: 'BloodBowlNation', user: user });
-};
-
-exports.test = function(req, res){
-	res.render('test', { title: 'BloodBowlNation Unit Tests' });
-};
-
-exports.about = function(req, res) {
-	var user = req.user;
-	res.render('about', { title: 'BloodBowlNation: About', user: user });
-};
-
-exports.game = function(req, res) {
-	var user = req.user;
-	res.render('game', { title: 'BloodBowlNation: Game', user: user });
-};
-
-exports.login = function(req, res) {
-	var user = req.user;
-	res.render('login', { title: 'BloodBowlNation: Login', user: user });
-};
-
-exports.logout = function(req, res) {
-	req.logout();
-	res.redirect('/');
-};
-
-exports.userLogin = function(req, res) {
-	console.log('login');
-	res.redirect('/');
-};
-
-exports.admin = function(req, res) {
-	var user = req.user;
-	var races;
-	Race.find(function(err, races){
-
-		if (err) {
-			console.log(races);
-			races = [];
-		}
-
-		res.render('admin', { title: 'BloodBowlNation: Admin', user: user, races: races, positions: [], skills: [], events: []});
-	});
-
-};
-
-exports.createRace = function(req, res) {
-	var user = req.user;
-	var race = req.body.race;
-	console.log(race);
-	var races;
-	if (user && user.username === 'admin') {
-
-		console.log('create');
-
-		Race.create({ 'name' : race, 'createBy': user.id, 'createDate': new Date().getTime()}, function (err, race) {
-			if (err) {
-				console.log(err);
-			}
-
-			res.redirect('/admin');
-		});
-
-	} else {
-
-		res.redirect('/admin');
-	}
-};
-
-exports.team = function(req, res) {
+exports.getAll = function(req, res) {
 	var user = req.user;
 	var teams = [];
 	if (user) {
@@ -91,36 +18,7 @@ exports.team = function(req, res) {
 	}
 };
 
-exports.newPlayer = function(req, res) {
-
-};
-
-exports.getPlayer = function(req, res) {
-	console.log('getPlayer()');
-	console.log(req.params.id);
-
-	var playerId = req.params.id;
-	var user = req.user;
-
-	if (user) {
-
-		Player.findOne({'_id': playerId}, function(err, player) {
-
-			if (err) {
-				console.log(err);
-			}
-
-			res.render('player', { title: 'BloodBowlNation: Player: ' + player.name, player: player, user: user });
-		});
-
-	} else {
-
-		res.redirect('/login');
-	}
-
-};
-
-exports.getTeam = function(req, res) {
+exports.get = function(req, res) {
 	console.log('getTeam()');
 	console.log(req.params.id);
 	var user = req.user;
@@ -141,7 +39,7 @@ exports.getTeam = function(req, res) {
 	});
 };
 
-exports.newTeam = function(req, res) {
+exports.createGet = function(req, res) {
 
 	var user = req.user;
 
@@ -165,7 +63,7 @@ exports.newTeam = function(req, res) {
 	}
 };
 
-exports.createTeam = function(req, res) {
+exports.createPost = function(req, res) {
 
 	var user = req.user;
 
