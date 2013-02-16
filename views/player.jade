@@ -1,0 +1,35 @@
+!!! 5
+html(lang="en")
+	include includes/head
+	body
+		div#Container
+			include includes/header
+			section#Main
+				if (player)
+					h3 #{player.name}
+					table
+						tr
+							td movement
+							td #{player.movement}
+						tr
+							td strength
+							td #{player.strength}
+						tr
+							td agility
+							td #{player.agility}
+						tr
+							td armour
+							td #{player.armour}
+						tr
+							td skills
+							td
+								if (player.skills.length)
+									ul.skills
+										for skill in player.skills
+											li
+												a(href="/skill/" + skill.id) #{skill.name}
+								else
+									-
+				else
+					p Player not found!
+			include includes/footer

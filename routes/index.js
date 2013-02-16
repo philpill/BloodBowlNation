@@ -50,7 +50,7 @@ exports.admin = function(req, res) {
 			races = [];
 		}
 
-		res.render('admin', { title: 'BloodBowlNation: Admin', user: user, races: races });
+		res.render('admin', { title: 'BloodBowlNation: Admin', user: user, races: races, positions: [], skills: [], events: []});
 	});
 
 };
@@ -89,6 +89,35 @@ exports.team = function(req, res) {
 	} else {
 		res.render('teams', { title: 'BloodBowlNation: Team', teams: teams });
 	}
+};
+
+exports.newPlayer = function(req, res) {
+
+};
+
+exports.getPlayer = function(req, res) {
+	console.log('getPlayer()');
+	console.log(req.params.id);
+
+	var playerId = req.params.id;
+	var user = req.user;
+
+	if (user) {
+
+		Player.findOne({'_id': playerId}, function(err, player) {
+
+			if (err) {
+				console.log(err);
+			}
+
+			res.render('player', { title: 'BloodBowlNation: Player: ' + player.name, player: player, user: user });
+		});
+
+	} else {
+
+		res.redirect('/login');
+	}
+
 };
 
 exports.getTeam = function(req, res) {
@@ -155,6 +184,16 @@ exports.createTeam = function(req, res) {
 			var player = new Player();
 
 			player.name = 'player' + i;
+
+			player.movement = 8;
+
+			player.strength = 3;
+
+			player.agility = 3;
+
+			player.armour = 7;
+
+			player.skills = [];
 
 			player.createDate = Date.now();
 

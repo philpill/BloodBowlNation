@@ -54,6 +54,8 @@
 	app.get('/team', routes.team);
 	app.get('/team/new', routes.newTeam);
 	app.get('/team/:id', routes.getTeam);
+	app.get('/player/new', routes.newPlayer);
+	app.get('/player/:id', routes.getPlayer);
 
 	app.get('/admin', passport.ensureAuthenticated, routes.admin);
 
