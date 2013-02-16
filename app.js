@@ -2,6 +2,10 @@
 (function(req) {
 
 	var routes = req('./routes');
+	var playerRoutes = req('./routes/player.js');
+	var raceRoutes = req('./routes/race.js');
+	var teamRoutes = req('./routes/team.js');
+	var userRoutes = req('./routes/user.js');
 
 	var game = req('./api/game.js');
 	var player = req('./api/player.js');
