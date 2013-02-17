@@ -9,6 +9,9 @@ html(lang="en")
 					h3 #{player.name}
 					table
 						tr
+							td number
+							td #{player.number}
+						tr
 							td movement
 							td #{player.movement}
 						tr
@@ -30,6 +33,12 @@ html(lang="en")
 												a(href="/skill/" + skill.id) #{skill.name}
 								else
 									-
+						tr
+							td position
+							td #{player.positionName}
+						tr
+							td race
+							td #{player.raceName}
 				else
 					p Player not found!
 			include includes/footer

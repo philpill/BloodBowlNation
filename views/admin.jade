@@ -6,51 +6,65 @@ html(lang="en")
 			include includes/header
 			section#Admin.main
 				h2 Admin Control Panel
+
 				if (typeof(races) !== 'undefined')
 					h3 Races
-					select#Race
-						if (races.length)
+					if (races.length)
+						select#Race
 							for race in races
 								option(value=race.id) #{race.name}
+					else
+						p No races
 					form(action='/race/new', method='post')
 						label(for='race') race name
 						input(name='race', placeholder='race name')
 						label(for='submit') save race
 						input(name='submit', type='submit')
+
 				if (typeof(positions) !== 'undefined')
 					h3 Positions
-					select#positions
-						if (positions.length)
+					if (positions.length)
+						select#positions
 							for position in positions
-								option(value=position.id) #{position.name} #{position.name}
+								option(value=position.id) #{position.name}
+					else
+						p No positions
 					form(action='/position/new', method='post')
 						label(for='position') position name
 						input(name='position', placeholder='position name')
 						label(for='submit') save position
 						input(name='submit', type='submit')
+
 				if (typeof(skills) !== 'undefined')
 					h3 Skills
-					select#skills
-						if (skills.length)
+					if (skills.length)
+						select#skills
 							for skill in skills
 								option(value=skill.id) #{skill.name} #{skill.name}
+					else
+						p No skills
 					form(action='/skill/new', method='post')
 						label(for='skill') skill name
 						input(name='skill', placeholder='skill name')
 						label(for='race') race restriction
-						if (races)
+
+						if (typeof(races) !== 'undefined')
 							select.races
+								option(value='0') No restrictions
 								if (races.length)
 									for race in races
 										option(value=race.id) #{race.name}
 						label(for='submit') save skill
 						input(name='submit', type='submit')
+
 				if (typeof(events) !== 'undefined')
 					h3 Events
-					select#events
-						if (events.length)
+					if (events.length)
+						select#events
 							for event in events
 								option(value=event.id) #{event.name}
+					else
+						p No events
 					form(action='/event/new', method='post')
 						label(for='event') event name
 						input(name='event', placeholder='event name')

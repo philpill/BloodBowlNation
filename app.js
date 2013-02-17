@@ -7,7 +7,8 @@
 		player : req('./routes/player.js'),
 		race : req('./routes/race.js'),
 		user : req('./routes/user.js'),
-		team : req('./routes/team.js')
+		team : req('./routes/team.js'),
+		position: req('./routes/position.js')
 	};
 
 	var api = {
@@ -67,7 +68,8 @@
 	app.get('/team/:id', routes.team.get);
 	app.post('/team/new', passport.ensureAuthenticated, routes.team.createPost);
 
-	app.get('/player/new', routes.player.createGet);
+	app.get('/team/:id/player/new', routes.player.createGet);
+
 	app.get('/player/:id', routes.player.get);
 
 	app.get('/login', routes.user.loginGet);
@@ -75,6 +77,8 @@
 	app.post('/login', passport.authenticate('local', { failureRedirect: '/login' }), routes.user.loginPost);
 
 	app.post('/race/new', passport.ensureAuthenticated, routes.race.create);
+
+	app.post('/position/new', passport.ensureAuthenticated, routes.position.create);
 
 	app.get('/api/game', passport.ensureAuthenticated, api.game.getAll);
 	app.get('/api/player', passport.ensureAuthenticated, api.player.index);

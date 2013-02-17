@@ -11,7 +11,8 @@ html(lang="en")
 					ul.players
 					for player in players
 						li
-							a(href="/player/" + player.id) #{player.name}
+							a(href='/player/' + player.id) #{player.name}
+					a.createPlayer(href='/team/#{team.id}/player/new/') add new player
 				else
 					p Team not found!
 			include includes/footer
