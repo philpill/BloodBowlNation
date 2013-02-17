@@ -4,6 +4,7 @@
 	var routes = {
 
 		page : req('./routes/page.js'),
+		admin : req('./routes/admin.js'),
 		player : req('./routes/player.js'),
 		race : req('./routes/race.js'),
 		user : req('./routes/user.js'),
@@ -61,7 +62,6 @@
 	app.get('/game', routes.page.game);
 	app.get('/about', routes.page.about);
 	app.get('/test', routes.page.test);
-	app.get('/admin', passport.ensureAuthenticated, routes.page.admin);
 
 	app.get('/team', routes.team.getAll);
 	app.get('/team/new', routes.team.createGet);
@@ -69,6 +69,7 @@
 	app.post('/team/new', passport.ensureAuthenticated, routes.team.createPost);
 
 	app.get('/team/:id/player/new', routes.player.createGet);
+	app.post('/team/:id/player/new', passport.ensureAuthenticated, routes.player.createPost);
 
 	app.get('/player/:id', routes.player.get);
 
@@ -79,6 +80,12 @@
 	app.post('/race/new', passport.ensureAuthenticated, routes.race.create);
 
 	app.post('/position/new', passport.ensureAuthenticated, routes.position.create);
+
+	app.get('/admin', passport.ensureAuthenticated, routes.admin.index);
+	app.get('/admin/events', passport.ensureAuthenticated, routes.admin.events);
+	app.get('/admin/positions', passport.ensureAuthenticated, routes.admin.positions);
+	app.get('/admin/races', passport.ensureAuthenticated, routes.admin.races);
+	app.get('/admin/skills', passport.ensureAuthenticated, routes.admin.skills);
 
 	app.get('/api/game', passport.ensureAuthenticated, api.game.getAll);
 	app.get('/api/player', passport.ensureAuthenticated, api.player.index);

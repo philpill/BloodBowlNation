@@ -1,0 +1,33 @@
+!!! 5
+html(lang="en")
+	include ../includes/head
+	body
+		div#Container
+			include ../includes/header
+				include ../includes/adminNavigation
+			section#Admin.main
+				h2 Admin Control Panel: Skills
+
+				if (typeof(skills) !== 'undefined')
+					h3 Skills
+					if (skills.length)
+						select#skills
+							for skill in skills
+								option(value=skill.id) #{skill.name} #{skill.name}
+					else
+						p No skills
+					form(action='/skill/new', method='post')
+						label(for='skill') skill name
+						input(name='skill', placeholder='skill name')
+						label(for='race') race restriction
+
+						if (typeof(races) !== 'undefined')
+							select.races
+								option(value='0') No restrictions
+								if (races.length)
+									for race in races
+										option(value=race.id) #{race.name}
+						label(for='submit') save skill
+						input(name='submit', type='submit')
+
+			include ../includes/footer

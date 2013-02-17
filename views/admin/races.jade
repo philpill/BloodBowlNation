@@ -1,0 +1,25 @@
+!!! 5
+html(lang="en")
+	include ../includes/head
+	body
+		div#Container
+			include ../includes/header
+				include ../includes/adminNavigation
+			section#Admin.main
+				h2 Admin Control Panel: Races
+
+				if (typeof(races) !== 'undefined')
+					h3 Races
+					if (races.length)
+						select#Race
+							for race in races
+								option(value=race.id) #{race.name}
+					else
+						p No races
+					form(action='/race/new', method='post')
+						label(for='race') race name
+						input(name='race', placeholder='race name')
+						label(for='submit') save race
+						input(name='submit', type='submit')
+
+			include ../includes/footer

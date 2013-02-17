@@ -4,9 +4,25 @@ var Race = require('../schema/race');
 var Position = require('../schema/position');
 var Team = require('../schema/team');
 var passport = require('passport');
+var _ = require('underscore');
 
 exports.createPost = function(req, res) {
 
+	var user = req.user;
+
+	var teamId = req.params.id;
+
+	var playerName = req.body.playerName;
+
+	var positionId = req.body.positionId;
+
+	if (user) {
+
+
+	} else {
+
+		res.redirect('/login');
+	}
 };
 
 exports.createGet = function(req, res) {

@@ -1,0 +1,25 @@
+!!! 5
+html(lang="en")
+	include ../includes/head
+	body
+		div#Container
+			include ../includes/header
+				include ../includes/adminNavigation
+			section#Admin.main
+				h2 Admin Control Panel: Events
+
+				if (typeof(events) !== 'undefined')
+					h3 Events
+					if (events.length)
+						select#events
+							for event in events
+								option(value=event.id) #{event.name}
+					else
+						p No events
+					form(action='/event/new', method='post')
+						label(for='event') event name
+						input(name='event', placeholder='event name')
+						label(for='submit') save event
+						input(name='submit', type='submit')
+
+			include ../includes/footer
