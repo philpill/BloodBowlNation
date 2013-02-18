@@ -109,6 +109,8 @@ exports.createPost = function(req, res) {
 
 		team.name = teamName;
 
+		team.race = raceId;
+
 		team.players = players;
 
 		team.createDate = Date.now();
