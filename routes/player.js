@@ -38,7 +38,14 @@ exports.createGet = function(req, res) {
 		Team.findOne({'_id' : teamId}, function(err, team){
 			if (err) console.log(err);
 			Position.find({}, function(err, positions){
-				res.render('newPlayer', { title: 'BloodBowlNation: New Player', team: team, positions: positions, user: user });
+				_.each(positions, function(position){
+					Race.findOne({'_id' : position.race}, function(err, race){
+						console.log(position);
+						console.log(race);
+						position.raceName = race.name;
+						res.render('newPlayer', { title: 'BloodBowlNation: New Player', team: team, positions: positions, user: user });
+					});
+				});
 			});
 		});
 

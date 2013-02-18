@@ -23,6 +23,6 @@ exports.create = function(req, res) {
 
 	} else {
 
-		res.redirect('/admin');
+		res.redirect('/login');
 	}
 };

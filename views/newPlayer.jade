@@ -14,7 +14,7 @@ html(lang='en')
 						select(name='positionId')
 							if (positions.length)
 								for position in positions
-									option(value='#{position.id}') #{position.name}
+									option(value='#{position.id}') #{position.raceName} #{position.name}
 					label create position
 					input(type='submit') create
 			include includes/footer
