@@ -5,7 +5,6 @@ var Player = require('../schema/player');
 var Race = require('../schema/race');
 var Position = require('../schema/position');
 var Skill = require('../schema/skill');
-var Event = require('../schema/event');
 var passport = require('passport');
 var _ = require('underscore');
 
@@ -64,19 +63,6 @@ exports.skills = function(req, res){
 			Skill.find(function(err, skills){
 				res.render('admin/skills', {	title: 'BloodBowlNation: Admin', user: user, races: races, skills: skills });
 			});
-		});
-	} else {
-
-		res.redirect('/login');
-	}
-};
-
-exports.events = function(req, res){
-	var user = req.user;
-	if (user && user.username === 'admin') {
-		var events = [];
-		Event.find(function(err, events){
-			res.render('admin/events', { title: 'BloodBowlNation: Admin', user: user, events: events });
 		});
 	} else {
 

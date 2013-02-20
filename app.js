@@ -82,7 +82,6 @@
 	app.post('/position/new', passport.ensureAuthenticated, routes.position.create);
 
 	app.get('/admin', passport.ensureAuthenticated, routes.admin.index);
-	app.get('/admin/events', passport.ensureAuthenticated, routes.admin.events);
 	app.get('/admin/positions', passport.ensureAuthenticated, routes.admin.positions);
 	app.get('/admin/races', passport.ensureAuthenticated, routes.admin.races);
 	app.get('/admin/skills', passport.ensureAuthenticated, routes.admin.skills);

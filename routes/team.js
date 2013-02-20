@@ -8,13 +8,13 @@ var passport = require('passport');
 exports.getAll = function(req, res) {
 	var user = req.user;
 	var teams = [];
-	if (user) {
+	if (typeof(user) !== 'undefined') {
 		var teamIds = user.teams;
 		Team.find({ _id: { $in: teamIds } }, function (err, teams) {
 			res.render('teams', { title: 'BloodBowlNation: Team', teams: teams, user: user });
 		});
 	} else {
-		res.render('teams', { title: 'BloodBowlNation: Team', teams: teams });
+		res.render('teams', { title: 'BloodBowlNation: Team', teams: teams, user: user });
 	}
 };
 
