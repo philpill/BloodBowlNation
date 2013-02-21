@@ -79,10 +79,19 @@
 
 	app.post('/race/new', passport.ensureAuthenticated, routes.race.create);
 
-	app.post('/position/new', passport.ensureAuthenticated, routes.position.create);
+	app.get('/admin/position', passport.ensureAuthenticated, routes.position.getAll);
+	app.post('/admin/position/:id', passport.ensureAuthenticated, routes.position.get);
+
+	app.post('/admin/position/edit', passport.ensureAuthenticated, routes.position.update);
+	app.get('/admin/position/new', passport.ensureAuthenticated, routes.position.edit);
+
+	app.post('/admin/position/new', passport.ensureAuthenticated, routes.position.update);
+
+
 
 	app.get('/admin', passport.ensureAuthenticated, routes.admin.index);
-	app.get('/admin/positions', passport.ensureAuthenticated, routes.admin.positions);
+
+
 	app.get('/admin/races', passport.ensureAuthenticated, routes.admin.races);
 	app.get('/admin/skills', passport.ensureAuthenticated, routes.admin.skills);
 

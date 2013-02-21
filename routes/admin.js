@@ -31,29 +31,6 @@ exports.races = function(req, res){
 	}
 };
 
-exports.positions = function(req, res){
-	var user = req.user;
-	if (user && user.username === 'admin') {
-		var races = [];
-		var positions = [];
-		Race.find(function(err, races){
-			Position.find(function(err, positions){
-				_.each(positions, function(position){
-					Race.findOne({'_id' : position.race}, function(err, race){
-						console.log(position);
-						console.log(race);
-						position.raceName = race.name;
-						res.render('admin/positions', { title: 'BloodBowlNation: Admin', user: user, races: races, positions: positions });
-					});
-				});
-			});
-		});
-	} else {
-
-		res.redirect('/login');
-	}
-};
-
 exports.skills = function(req, res){
 	var user = req.user;
 	if (user && user.username === 'admin') {
