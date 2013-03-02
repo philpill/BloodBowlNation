@@ -18,12 +18,15 @@ html(lang="en")
 						p No positions
 					form(action='/position/new', method='post')
 						label(for='position') position name
-						input(name='position', placeholder='position name')
+						if (position)
+							input(name='position', placeholder='position name', value='#{position.name}')
+						else
+							input(name='position', placeholder='position name')
 						label(for='race') race
 						if (typeof(races) !== 'undefined' && races.length)
 							select(name='race')
 								for race in races
-									option(value=race.id) #{race.name}
+									option(value=race.id, selected=race.id == position.race) #{race.name}
 						label(for='movement') movement
 						input(name='movement', type='number', min='2', max='9', value='6')
 						label(for='strength') strength

@@ -66,17 +66,11 @@ exports.get = function(req, res) {
 		var position;
 		Race.find(function(err, races){
 			Position.find(function(err, positions){
-				_.each(positions, function(position){
-					race = _.find(races, function(race){
-						return position.race === race.id;
-					});
-					position.raceName = race.name;
-				});
 				position = _.find(positions, function(position){
 
 					return position.id === positionId;
 				});
-				res.render('admin/positions', { title: 'BloodBowlNation: Admin', user: user, position: position, races: races, positions: positions });
+				res.render('admin/editPosition', { title: 'BloodBowlNation: Admin', user: user, position: position, races: races, positions: positions });
 
 			});
 		});

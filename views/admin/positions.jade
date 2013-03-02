@@ -10,12 +10,10 @@ html(lang="en")
 					if (typeof(positions) !== 'undefined')
 						h3 Positions
 						if (positions.length)
-							form(action='admin/position/edit', method='post')
-								select#positions
-									for position in positions
-										option(value=position.id) #{position.raceName} #{position.name}
-								label(for='submit') edit position
-								input(name='submit', type='submit')
+							ul
+								for position in positions
+									li
+										a(href='/admin/position/' + position.id) #{position.raceName} #{position.name}
 						else
 							p No positions
 						a(href='/admin/position/new') Create new position
