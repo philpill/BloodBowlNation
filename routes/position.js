@@ -7,12 +7,9 @@ var _ = require('underscore');
 
 exports.edit = function(req, res) {
 	var user = req.user;
-
 	var positions;
 	var race;
-
 	if (user && user.username === 'admin') {
-
 		Race.find(function(err, races){
 			Position.find(function(err, positions){
 				_.each(positions, function(position){
