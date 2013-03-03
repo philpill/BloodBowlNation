@@ -80,14 +80,10 @@
 	app.post('/race/new', passport.ensureAuthenticated, routes.race.create);
 
 	app.get('/admin/position', passport.ensureAuthenticated, routes.position.getAll); //get all positions
-
+	app.get('/admin/position/new', passport.ensureAuthenticated, routes.position.createGet); //get new position form
+	app.post('/admin/position/new', passport.ensureAuthenticated, routes.position.createPost); //post new position
 	app.get('/admin/position/:id', passport.ensureAuthenticated, routes.position.get); //get one position
 	app.post('/admin/position/:id', passport.ensureAuthenticated, routes.position.update); //post with id to edit position
-
-	app.get('/admin/position/new', passport.ensureAuthenticated, routes.position.edit); //get new position form
-	app.post('/admin/position/new', passport.ensureAuthenticated, routes.position.update); //post new position
-
-
 
 	app.get('/admin', passport.ensureAuthenticated, routes.admin.index);
 

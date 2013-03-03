@@ -5,7 +5,7 @@ var passport = require('passport');
 var _ = require('underscore');
 
 
-exports.edit = function(req, res) {
+exports.createGet = function(req, res) {
 	var user = req.user;
 	var positions;
 	var race;
@@ -13,12 +13,14 @@ exports.edit = function(req, res) {
 		Race.find(function(err, races){
 			Position.find(function(err, positions){
 				_.each(positions, function(position){
+					console.log(position);
 					race = _.find(races, function(race){
-						return position.race === race.id;
+						return position.race == race.id;
 					});
+					console.log(race);
 					position.raceName = race.name;
 				});
-				res.render('admin/positions', { title: 'BloodBowlNation: Admin', user: user, races: races, positions: positions });
+				res.render('admin/newPosition', { title: 'BloodBowlNation: Admin', user: user, races: races, positions: positions });
 			});
 		});
 
@@ -28,23 +30,57 @@ exports.edit = function(req, res) {
 	}
 };
 
-exports.update = function(req, res) {
+exports.createPost = function(req, res) {
 	var user = req.user;
-	var position = req.body.position;
-	var race = req.body.race;
-	console.log(position);
-	console.log(race);
-	var positions;
+
 	if (user && user.username === 'admin') {
 
-		console.log('create');
+		var positionId = req.params.id;
 
-		Position.create({ 'name' : position, 'race' : race, 'createBy': user.id, 'createDate': new Date().getTime()}, function (err, position) {
+		var name = req.body.name;
+		var race = req.body.race;
+		var movement = req.body.movement;
+		var strength = req.body.strength;
+		var agility = req.body.agility;
+		var armour = req.body.armour;
+		var cost = req.body.cost;
+		var quantity = req.body.quantity;
+		var generalSkills = req.body.generalSkills;
+		var agilitySkills = req.body.agilitySkills;
+		var strengthSkills = req.body.strengthSkills;
+		var passingSkills = req.body.passingSkills;
+		var mutationSkills = req.body.mutationSkills;
+
+		var newDetails = {
+
+			'name' : name,
+			'race' : race,
+			'movement' : movement,
+			'strength' : strength,
+			'agility' : agility,
+			'armour' : armour,
+			'cost' : cost,
+			'quantity' : quantity,
+			'skillsCategories' : {
+				'general' : generalSkills,
+				'agility' : agilitySkills,
+				'strength' : strengthSkills,
+				'passing' : passingSkills,
+				'mutation' : mutationSkills
+			},
+			'editDate' : new Date().getTime(),
+			'editBy': user.id,
+			'createDate' : new Date().getTime(),
+			'createBy': user.id
+		};
+
+		Position.create(newDetails, function (err, position) {
+			console.log(position);
 			if (err) {
 				console.log(err);
 			}
 
-			res.redirect('/admin');
+			res.redirect('/admin/position');
 		});
 
 	} else {
@@ -62,12 +98,87 @@ exports.get = function(req, res) {
 		var race;
 		var position;
 		Race.find(function(err, races){
-			Position.find(function(err, positions){
-				position = _.find(positions, function(position){
+			Position.findOne({ '_id': positionId }, function (err, position) {
+				console.log(position);
+				res.render('admin/editPosition', { title: 'BloodBowlNation: Admin', user: user, position: position, races: races });
 
-					return position.id === positionId;
-				});
-				res.render('admin/editPosition', { title: 'BloodBowlNation: Admin', user: user, position: position, races: races, positions: positions });
+			});
+		});
+	} else {
+
+		res.redirect('/login');
+	}
+};
+
+exports.update = function(req, res) {
+	var user = req.user;
+
+	var positionId = req.params.id;
+
+	var name = req.body.name;
+	var race = req.body.race;
+	var movement = req.body.movement;
+	var strength = req.body.strength;
+	var agility = req.body.agility;
+	var armour = req.body.armour;
+	var cost = req.body.cost;
+	var quantity = req.body.quantity;
+	var generalSkills = req.body.generalSkills;
+	var agilitySkills = req.body.agilitySkills;
+	var strengthSkills = req.body.strengthSkills;
+	var passingSkills = req.body.passingSkills;
+	var mutationSkills = req.body.mutationSkills;
+
+	var newDetails = {
+
+		'name' : name,
+		'race' : race,
+		'movement' : movement,
+		'strength' : strength,
+		'agility' : agility,
+		'armour' : armour,
+		'cost' : cost,
+		'quantity' : quantity,
+		'skillsCategories' : {
+			'general' : generalSkills,
+			'agility' : agilitySkills,
+			'strength' : strengthSkills,
+			'passing' : passingSkills,
+			'mutation' : mutationSkills
+		},
+		'editDate' : new Date().getTime(),
+		'editBy': user.id
+	};
+
+	if (user && user.username === 'admin') {
+
+		Position.findByIdAndUpdate(positionId, newDetails, function (err, position) {
+			console.log(position);
+			if (err) {
+				console.log(err);
+			}
+
+			res.redirect('/admin/position');
+		});
+
+	} else {
+
+		res.redirect('/login');
+	}
+};
+
+exports.get = function(req, res) {
+	var user = req.user;
+	var positionId = req.params.id;
+	if (user && user.username === 'admin') {
+		var races = [];
+		var positions = [];
+		var race;
+		var position;
+		Race.find(function(err, races){
+			Position.findOne({ '_id': positionId }, function (err, position) {
+				console.log(position);
+				res.render('admin/editPosition', { title: 'BloodBowlNation: Admin', user: user, position: position, races: races });
 
 			});
 		});

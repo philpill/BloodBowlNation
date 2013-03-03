@@ -1,0 +1,61 @@
+!!! 5
+html(lang="en")
+	include ../includes/head
+	body
+		div#Container
+			include ../includes/header
+				include ../includes/adminNavigation
+			section#Admin.main
+				h2 Admin Control Panel: Position
+				h3 New Position
+				form(action='/admin/position', method='post')
+					label(for='name') position name
+					input(name='name', placeholder='position name')
+					label(for='race') race
+					if (typeof(races) !== 'undefined' && races.length)
+						select(name='race')
+							for race in races
+								option(value=race.id) #{race.name}
+					label(for='movement') movement
+					input(name='movement', type='number', min='2', max='9', value='6')
+					label(for='strength') strength
+					input(name='strength', type='number', min='1', max='7', value='3')
+					label(for='agility') agility
+					input(name='agility', type='number', min='1', max='4', value='3')
+					label(for='armour') armour
+					input(name='armour', type='number', min='6', max='10', value='8')
+					label(for='cost') cost
+					input(name='cost', type='number', min='10000', max='160000', step='10000', value='50000')
+					label(for='quantity') max quantity
+					input(name='quantity', type='number', min='1', max='16', value='16')
+					fieldset
+						legend skills permitted
+						label(for='generalSkills') general
+						select(name='generalSkills')
+							option(value='0') n/a
+							option(value='1', selected) normal
+							option(value='2') rare
+						label(for='agilitySkills') agility
+						select(name='agilitySkills')
+							option(value='0') n/a
+							option(value='1') normal
+							option(value='2', selected) rare
+						label(for='strengthSkills') strength
+						select(name='strengthSkills')
+							option(value='0') n/a
+							option(value='1') normal
+							option(value='2', selected) rare
+						label(for='passingSkills') passing
+						select(name='passingSkills')
+							option(value='0') n/a
+							option(value='1') normal
+							option(value='2', selected) rare
+						label(for='mutationSkills') mutation
+						select(name='mutationSkills')
+							option(value='0', selected) n/a
+							option(value='1') normal
+							option(value='2') rare
+					label(for='submit') save position
+					input(name='submit', type='submit')
+
+			include ../includes/footer
