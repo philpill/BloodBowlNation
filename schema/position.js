@@ -8,7 +8,7 @@ var ObjectId = Schema.Types.ObjectId;
 
 module.exports = mongoose.model('Position', new Schema(new base({
 
-	name: { type: String, required: true, index: { unique: true } },
+	name: { type: String },
 	skills: { type: Array },
 	race: { type: ObjectId },
 	movement: { type: Number, min: 2, max: 9 },

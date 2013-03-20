@@ -13,11 +13,9 @@ exports.createGet = function(req, res) {
 		Race.find(function(err, races){
 			Position.find(function(err, positions){
 				_.each(positions, function(position){
-					console.log(position);
 					race = _.find(races, function(race){
 						return position.race == race.id;
 					});
-					console.log(race);
 					position.raceName = race.name;
 				});
 				res.render('admin/newPosition', { title: 'BloodBowlNation: Admin', user: user, races: races, positions: positions });
@@ -75,7 +73,6 @@ exports.createPost = function(req, res) {
 		};
 
 		Position.create(newDetails, function (err, position) {
-			console.log(position);
 			if (err) {
 				console.log(err);
 			}
@@ -99,7 +96,6 @@ exports.get = function(req, res) {
 		var position;
 		Race.find(function(err, races){
 			Position.findOne({ '_id': positionId }, function (err, position) {
-				console.log(position);
 				res.render('admin/editPosition', { title: 'BloodBowlNation: Admin', user: user, position: position, races: races });
 
 			});
@@ -153,7 +149,6 @@ exports.update = function(req, res) {
 	if (user && user.username === 'admin') {
 
 		Position.findByIdAndUpdate(positionId, newDetails, function (err, position) {
-			console.log(position);
 			if (err) {
 				console.log(err);
 			}
@@ -196,13 +191,13 @@ exports.getAll = function(req, res){
 		Race.find(function(err, races){
 			Position.find(function(err, positions){
 				_.each(positions, function(position){
-					Race.findOne({'_id' : position.race}, function(err, race){
-						console.log(position);
-						console.log(race);
-						position.raceName = race.name;
-						res.render('admin/positions', { title: 'BloodBowlNation: Admin', user: user, races: races, positions: positions });
+					race = _.find(races, function(race){
+						return position.race == race.id;
 					});
+					position.raceName = race.name;
 				});
+				positions = _.sortBy(positions, 'raceName');
+				res.render('admin/positions', { title: 'BloodBowlNation: Admin', user: user, positions: positions });
 			});
 		});
 	} else {
