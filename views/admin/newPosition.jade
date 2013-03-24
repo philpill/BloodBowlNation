@@ -29,6 +29,13 @@ html(lang="en")
 					label(for='quantity') max quantity
 					input(name='quantity', class='input-mini', type='number', min='1', max='16', value='16')
 					fieldset
+						legend default skills
+							if (typeof(skills) !== 'undefined')
+								each skill, key in skills
+									label.checkbox
+										input(type='checkbox', value='#{key}', name='skills')
+										|#{skill.label}
+					fieldset
 						legend skills permitted
 						label(for='generalSkills') general
 						select(name='generalSkills', class='input-small')

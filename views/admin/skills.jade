@@ -11,22 +11,16 @@ html(lang="en")
 				if (typeof(skills) !== 'undefined')
 					h3 Skills
 					if (skills.length)
-						select#skills
+						ul#skills
 							for skill in skills
-								option(value=skill.id) #{skill.name} #{skill.name}
+								li
+									a(href='/skill/#{skill.id}') #{skill.name}
 					else
 						p No skills
 					form(action='/skill/new', method='post')
 						label(for='skill') skill name
 						input(name='skill', placeholder='skill name')
-						label(for='race') race restriction
 
-						if (typeof(races) !== 'undefined')
-							select.races
-								option(value='0') No restrictions
-								if (races.length)
-									for race in races
-										option(value=race.id) #{race.name}
 						label(for='submit') save skill
 						input(name='submit', type='submit')
 

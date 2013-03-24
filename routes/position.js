@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 var Position = require('../schema/position');
 var Race = require('../schema/race');
+var Skills = require('../skills');
 var passport = require('passport');
 var _ = require('underscore');
 
@@ -18,7 +19,8 @@ exports.createGet = function(req, res) {
 					});
 					position.raceName = race.name;
 				});
-				res.render('admin/newPosition', { title: 'BloodBowlNation: Admin', user: user, races: races, positions: positions });
+				console.log(Skills);
+				res.render('admin/newPosition', { title: 'BloodBowlNation: Admin', user: user, races: races, positions: positions, skills: Skills });
 			});
 		});
 
@@ -48,6 +50,10 @@ exports.createPost = function(req, res) {
 		var strengthSkills = req.body.strengthSkills;
 		var passingSkills = req.body.passingSkills;
 		var mutationSkills = req.body.mutationSkills;
+		var defaultSkills = req.body.defaultSkills;
+
+		console.log('create position');
+		console.log(defaultSkills);
 
 		var newDetails = {
 
@@ -66,6 +72,7 @@ exports.createPost = function(req, res) {
 				'passing' : passingSkills,
 				'mutation' : mutationSkills
 			},
+			'skills' : defaultSkills,
 			'editDate' : new Date().getTime(),
 			'editBy': user.id,
 			'createDate' : new Date().getTime(),
@@ -96,7 +103,7 @@ exports.get = function(req, res) {
 		var position;
 		Race.find(function(err, races){
 			Position.findOne({ '_id': positionId }, function (err, position) {
-				res.render('admin/editPosition', { title: 'BloodBowlNation: Admin', user: user, position: position, races: races });
+				res.render('admin/editPosition', { title: 'BloodBowlNation: Admin', user: user, position: position, races: races, skills: Skills });
 
 			});
 		});
@@ -124,6 +131,7 @@ exports.update = function(req, res) {
 	var strengthSkills = req.body.strengthSkills;
 	var passingSkills = req.body.passingSkills;
 	var mutationSkills = req.body.mutationSkills;
+	var skills = req.body.skills || [];
 
 	var newDetails = {
 
@@ -142,6 +150,7 @@ exports.update = function(req, res) {
 			'passing' : passingSkills,
 			'mutation' : mutationSkills
 		},
+		'skills' : skills,
 		'editDate' : new Date().getTime(),
 		'editBy': user.id
 	};
@@ -173,7 +182,7 @@ exports.get = function(req, res) {
 		Race.find(function(err, races){
 			Position.findOne({ '_id': positionId }, function (err, position) {
 				console.log(position);
-				res.render('admin/editPosition', { title: 'BloodBowlNation: Admin', user: user, position: position, races: races });
+				res.render('admin/editPosition', { title: 'BloodBowlNation: Admin', user: user, position: position, races: races, skills: Skills });
 
 			});
 		});

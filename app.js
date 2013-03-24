@@ -89,7 +89,6 @@
 
 
 	app.get('/admin/races', passport.ensureAuthenticated, routes.admin.races);
-	app.get('/admin/skills', passport.ensureAuthenticated, routes.admin.skills);
 
 	app.get('/api/game', passport.ensureAuthenticated, api.game.getAll);
 	app.get('/api/player', passport.ensureAuthenticated, api.player.index);
