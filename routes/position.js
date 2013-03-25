@@ -50,10 +50,10 @@ exports.createPost = function(req, res) {
 		var strengthSkills = req.body.strengthSkills;
 		var passingSkills = req.body.passingSkills;
 		var mutationSkills = req.body.mutationSkills;
-		var defaultSkills = req.body.defaultSkills;
+		var skills = req.body.skills;
 
 		console.log('create position');
-		console.log(defaultSkills);
+		console.log(skills);
 
 		var newDetails = {
 
@@ -72,7 +72,7 @@ exports.createPost = function(req, res) {
 				'passing' : passingSkills,
 				'mutation' : mutationSkills
 			},
-			'skills' : defaultSkills,
+			'skills' : skills,
 			'editDate' : new Date().getTime(),
 			'editBy': user.id,
 			'createDate' : new Date().getTime(),

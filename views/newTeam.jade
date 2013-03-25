@@ -11,10 +11,11 @@ html(lang='en')
 					input(type="text", name="teamName", placeholder='team name')
 					label(for="race") race
 					- if (races)
-						select#Races
+						select(name="race")
 							- if (races.length)
 								- for race in races
 									option(value=race.id) #{race.name}
 					label create team
-					input(type='submit') create
+					input(name='submit', type='submit', class='btn')
+					a(href='/team/', class='btn') cancel
 			include includes/footer

@@ -75,43 +75,11 @@ exports.createPost = function(req, res) {
 
 		var team = new Team();
 
-		var players = [];
-
-		for (i = 0; i < 11; i++) {
-
-			var player = new Player();
-
-			player.name = 'player' + i;
-
-			player.movement = 8;
-
-			player.strength = 3;
-
-			player.agility = 3;
-
-			player.armour = 7;
-
-			player.skills = [];
-
-			player.createDate = Date.now();
-
-			player.createBy = user.id;
-
-			players.push(player.id);
-
-			player.save(function(err, player){
-
-				if (err) { console.log(err); }
-
-				console.log(player);
-			});
-		}
-
 		team.name = teamName;
 
 		team.race = raceId;
 
-		team.players = players;
+		team.players = [];
 
 		team.createDate = Date.now();
 

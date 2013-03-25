@@ -8,13 +8,14 @@ html(lang='en')
 				h2 #{team.name}: New Player
 				form(action='/team/#{team.id}/player/new', method='post')
 					label(for='playerName') name
-					input(type='text', name='playerName', placeholder='player name')
+					input(type='text', name='playerName', placeholder='player name', autofocus)
 					label(for='positionId') position
 					if (typeof(positions) !== 'undefined')
 						select(name='positionId')
 							if (positions.length)
 								for position in positions
-									option(value='#{position.id}') #{position.raceName} #{position.name}
+									option(value='#{position.id}') #{position.name}
 					label create position
-					input(type='submit') create
+					input(name='submit', type='submit', class='btn')
+					a(href='/team/#{team.id}', class='btn') cancel
 			include includes/footer

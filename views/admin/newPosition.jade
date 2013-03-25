@@ -10,7 +10,7 @@ html(lang="en")
 				h3 New Position
 				form(action='/admin/position/new', method='post')
 					label(for='name') position name
-					input(name='name', placeholder='position name', class='input-medium')
+					input(name='name', placeholder='position name', autofocus, class='input-medium')
 					label(for='race') race
 					if (typeof(races) !== 'undefined' && races.length)
 						select(name='race', class='input-medium')
@@ -63,6 +63,7 @@ html(lang="en")
 							option(value='1') normal
 							option(value='2') rare
 					label(for='submit') save position
-					input(name='submit', type='submit')
+					input(name='submit', type='submit', class='btn')
+					a(href='/admin/position/', class='btn') cancel
 
 			include ../includes/footer
