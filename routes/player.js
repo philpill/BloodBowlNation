@@ -28,41 +28,67 @@ exports.createPost = function(req, res) {
 				res.render('team', { title: 'BloodBowlNation: Team: not found', team: null, user: user });
 			} else {
 
-				Position.findOne({ '_id': positionId, 'race': team.race }, function (err, position) {
 
-					console.log('position');
 
-					var newDetails = {
+				Player.find({ '_id': { $in: team.players }}, function(err, players){
+					console.log(players);
+					var numbers = _.pluck(players, 'number');
+					console.log(numbers);
+					var sortedNumbers = _.uniq(_.compact(_.sortBy(numbers)));
+					console.log(sortedNumbers);
 
-						'name' : playerName,
-						'position' : position.id,
-						'movement' : position.movement,
-						'strength' : position.strength,
-						'agility' : position.agility,
-						'armour' : position.armour,
-						'cost' : position.cost,
-						//'quantity' : quantity,
-						//check quantity
-						'skills' : position.skills,
-						'race' : team.race,
-						'editDate' : new Date().getTime(),
-						'editBy': user.id,
-						'createDate' : new Date().getTime(),
-						'createBy': user.id
-					};
+					var numbersLength = sortedNumbers.length;
 
-					Player.create(newDetails, function (err, player) {
-						if (err) {
-							console.log(err);
+					var number = numbersLength + 1;
+
+					for (var i = 0; i < numbersLength;i++) {
+						console.log('i:' + i);
+						if (sortedNumbers[i]!== i+1) {
+							number = i+1;
+							break;
 						}
+					}
 
-						team.players.push(player.id);
+					console.log(number);
 
-						team.save(function(err, team){
+					Position.findOne({ '_id': positionId, 'race': team.race }, function (err, position) {
 
-							res.redirect('/team/' + team.id);
+						console.log('position');
+
+						var newDetails = {
+
+							'name' : playerName,
+							'number' : number,
+							'position' : position.id,
+							'movement' : position.movement,
+							'strength' : position.strength,
+							'agility' : position.agility,
+							'armour' : position.armour,
+							'cost' : position.cost,
+							//'quantity' : quantity,
+							//check quantity
+							'skills' : position.skills,
+							'race' : team.race,
+							'editDate' : new Date().getTime(),
+							'editBy': user.id,
+							'createDate' : new Date().getTime(),
+							'createBy': user.id
+						};
+
+						Player.create(newDetails, function (err, player) {
+							if (err) {
+								console.log(err);
+							}
+
+							team.players.push(player.id);
+
+							team.save(function(err, team){
+
+								res.redirect('/team/' + team.id);
+							});
 						});
 					});
+
 				});
 			}
 		});
