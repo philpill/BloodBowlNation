@@ -8,10 +8,20 @@ html(lang="en")
 				if (team)
 					h3 #{team.name}
 					h4 players
-					ul.players
-					for player in players
-						li
-							a(href='/player/' + player.id) #{player.name}
+					table.players.table.table-striped.table-bordered
+						thead
+							tr
+								th #
+								th player
+								th position
+						tbody
+							for player in players
+								tr
+									td #{player.number}
+									td
+										a(href='/player/' + player.id)
+											strong #{player.name}
+									td #{player.positionName}
 					a.createPlayer(href='/team/#{team.id}/player/new/') add new player
 				else
 					p Team not found!
