@@ -1,20 +1,32 @@
 
 (function(req) {
 
+	var mysql = req('mysql');
+	var config = req('./config');
 
-	var mongoose = req('mongoose');
+	console.log(config);
 
-	var uri = "mongodb://localhost/bbn";
-
-	mongoose.connect(uri);
-
-	var connection = mongoose.createConnection(uri);
-
-	connection.on("open", function(){
-
-		console.log("Connection opened to mongodb at %s", uri);
+	var pool = mysql.createPool({
+		host : config.database.host,
+		user : config.database.user,
+		password : config.database.password,
+		waitForConnections : config.database.waitForConnections,
+		connectionLimit : config.database.connectionLimit
 	});
 
-	connection.on("error", console.error.bind(console, "connection error:"));
+	module.exports = {
+		execute : function(query, callback) {
+			console.log('\nQUERY: ' + query + '\n');	
+			pool.getConnection(function(err, connection){
+				
+				if (err) console.log('\nERROR:' + err + '\n');
+					
+				connection.query(query, function(err, results) {
+					callback(err, results);
+					connection.end();
+				});
+			});
+		}
+	}
 
 })(require);

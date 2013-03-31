@@ -1,14 +1,19 @@
 
 (function(req) {
 
+	var db = req('./database');
+
 	var passport = req('passport');
 	var User = require('./schema/user');
+	
 	var LocalStrategy = require('passport-local').Strategy;
 
 	function userById(id, done) {
 
-		var user = User.findById(id, function(err, user){
+		var query = "SELECT * FROM users WHERE id = '" + id + "' LIMIT 1;";
 
+		db.execute(query, function(err, user){
+			
 			if (user) {
 
 				return done(null, user);
@@ -22,14 +27,16 @@
 
 	function userByUsername(username, password, done) {
 
-		User.findOne({ username : username }, function (err, user) {
+		var query = "SELECT * FROM users WHERE username = '" + username + "' LIMIT 1;";
+
+		db.execute(query, function(err, user){	
 
 			if (err) { return done(err); }
 
 			if (!user) { return done(null, false, { message: 'Unknown user ' + username }); }
-
+		
 			if (user.password != password) { return done(null, false, { message: 'Invalid password' }); }
-
+			
 			return done(null, user);
 		});
 	}

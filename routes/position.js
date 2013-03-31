@@ -1,7 +1,9 @@
-var mongoose = require('mongoose');
+var db = require('../database');
+
 var Position = require('../schema/position');
 var Race = require('../schema/race');
 var Skills = require('../skills');
+
 var passport = require('passport');
 var _ = require('underscore');
 

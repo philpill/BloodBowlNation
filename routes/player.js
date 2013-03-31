@@ -1,4 +1,5 @@
-var mongoose = require('mongoose');
+var db = require('../database');
+
 var Player = require('../schema/player');
 var Race = require('../schema/race');
 var Position = require('../schema/position');
