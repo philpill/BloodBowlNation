@@ -1,19 +1,18 @@
 
 (function(req) {
 
-	var db = req('./database');
-
 	var passport = req('passport');
-	var User = require('./schema/user');
-	
-	var LocalStrategy = require('passport-local').Strategy;
+	var LocalStrategy = req('passport-local').Strategy;
+	var db = req('./database');
 
 	function userById(id, done) {
 
-		var query = "SELECT * FROM users WHERE id = '" + id + "' LIMIT 1;";
+		var query = "SELECT * FROM user WHERE id = '" + id + "' LIMIT 1";
 
-		db.execute(query, function(err, user){
-			
+		db.execute(query, function(err, results){
+
+			var user = results[0];
+
 			if (user) {
 
 				return done(null, user);
@@ -27,16 +26,21 @@
 
 	function userByUsername(username, password, done) {
 
-		var query = "SELECT * FROM users WHERE username = '" + username + "' LIMIT 1;";
+		var query = "SELECT * FROM user WHERE username = '" + username + "' LIMIT 1";
 
-		db.execute(query, function(err, user){	
+		db.execute(query, function (err, results) {
 
-			if (err) { return done(err); }
+			var user = results[0];
+
+			if (err) {
+				console.log('\nerr: ' + err + '\n');
+				return done(err);
+		   	}
 
 			if (!user) { return done(null, false, { message: 'Unknown user ' + username }); }
-		
+
 			if (user.password != password) { return done(null, false, { message: 'Invalid password' }); }
-			
+
 			return done(null, user);
 		});
 	}
@@ -48,7 +52,7 @@
 
 	function ensureAuthenticated(req, res, next) {
 
-		if (req.isAuthenticated()) { return next(); }
+		if (req.isAuthenticated()) { return next();	}
 		res.redirect('/login');
 	}
 
