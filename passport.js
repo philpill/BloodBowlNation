@@ -7,9 +7,7 @@
 
 	function userById(id, done) {
 
-		var query = "SELECT * FROM user WHERE id = '" + id + "' LIMIT 1";
-
-		db.execute(query, function(err, results){
+		db.user.get(id, function(err, results){
 
 			var user = results[0];
 
@@ -26,9 +24,7 @@
 
 	function userByUsername(username, password, done) {
 
-		var query = "SELECT * FROM user WHERE username = '" + username + "' LIMIT 1";
-
-		db.execute(query, function (err, results) {
+		db.user.getByUsername(username, function (err, results) {
 
 			var user = results[0];
 

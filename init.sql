@@ -27,6 +27,9 @@ INSERT INTO user (username, password, email, create_date, create_by)
 		WHERE NOT EXISTS 
 			(SELECT username FROM user WHERE username = 'admin') LIMIT 1;
 
+PREPARE get_user FROM 'SELECT * FROM user WHERE id = @id LIMIT 1';
+PREPARE get_user_by_username FROM 'SELECT * FROM user WHERE username = @username LIMIT 1';
+
 CREATE TABLE IF NOT EXISTS race (
 	id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
 	name VARCHAR(30) NOT NULL,

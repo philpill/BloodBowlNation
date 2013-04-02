@@ -12,16 +12,28 @@
 		connectionLimit : config.database.connectionLimit
 	});
 
-	module.exports = {
-		execute : function(query, callback) {
-			console.log('\nQUERY: ' + query + '\n');	
-			pool.getConnection(function(err, connection){
-				if (err) console.log('\nERROR:' + err + '\n');
-				connection.query(query, function(err, results) {
+	function execute(query, args, callback) {
+		console.log('\nQUERY: ' + query + '\n');	
+		pool.getConnection(function(err, connection){
+			if (err) console.log('\nERROR:' + err + '\n');
+			connection.query(query, args, function(err, results) {
+				if (callback) {
 					callback(err, results);
-					connection.end();
-				});
+				}
+				connection.end();
 			});
+		});
+	}
+
+	module.exports = {
+		execute : execute,
+		user : {
+			get : function(id, callback) {
+				execute('SET @id = "?"; EXECUTE get_user USING @id;', [id], callback);
+			},
+			getByUsername : function(username, callback) {
+				execute('SET @username = ?"; EXECUTE get_user_by_username USING @username;', [username], callback);
+			}
 		}
 	}
 
