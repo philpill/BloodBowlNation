@@ -6,7 +6,8 @@
 	var LocalStrategy = require('passport-local').Strategy;
 
 	function userById(id, done) {
-		var user = User.findById(id, function(err, user){
+		User.findById(id)
+	   .exec(function(err, user){
 			if (user) {
 				return done(null, user);
 			} else {
@@ -16,10 +17,17 @@
 	}
 
 	function userByUsername(username, password, done) {
-		User.findOne({ username : username }, function (err, user) {
-			if (err) { return done(err); }
-			if (!user) { return done(null, false, { message: 'Unknown user ' + username }); }
-			if (user.password != password) { return done(null, false, { message: 'Invalid password' }); }
+		User.findOne({ username : username })
+		.exec(function (err, user) {
+			if (err) { 
+				return done(err); 
+			}
+			if (!user) { 
+				return done(null, false, { message: 'Unknown user ' + username });
+		   	}
+			if (user.password != password) { 
+				return done(null, false, { message: 'Invalid password' });
+		   	}
 			return done(null, user);
 		});
 	}
