@@ -8,8 +8,8 @@ module.exports = function(struct) {
 
     var base = {
 
-        createDate : { type: Date, required: true },
-        createBy : { type: ObjectId, required: true },
+        createDate : { type: Date },
+        createBy : { type: ObjectId },
         editDate : { type: Date },
         editBy : { type: ObjectId },
         description : { type: String }

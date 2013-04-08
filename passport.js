@@ -7,7 +7,7 @@
 
 	function userById(id, done) {
 		User.findById(id)
-	   .exec(function(err, user){
+		.exec(function(err, user){
 			if (user) {
 				return done(null, user);
 			} else {

@@ -7,14 +7,17 @@ var passport = require('passport');
 
 exports.getAll = function(req, res) {
 	var user = req.user;
-	var teams = [];
-	if (typeof(user) !== 'undefined') {
-		var teamIds = user.teams;
-		Team.find({ _id: { $in: teamIds } }, function (err, teams) {
-			res.render('teams', { title: 'BloodBowlNation: Team', teams: teams, user: user });
+	if (user) {
+		User.findById(user.id)
+		.populate('teams')
+		.exec(function(err, user){
+			var renderObject = { title: '', user: null };
+			renderObject.title = 'BloodBowlNation: Teams';
+			renderObject.user = user;
+			res.render('teams', renderObject);
 		});
 	} else {
-		res.render('teams', { title: 'BloodBowlNation: Team', teams: teams, user: user });
+		res.redirect('/login');
 	}
 };
 
@@ -23,42 +26,36 @@ exports.get = function(req, res) {
 	console.log(req.params.id);
 	var user = req.user;
 	var teamId = req.params.id;
-	var players = [];
-
-	Team.findOne({ '_id': teamId }, function (err, team) {
+	Team.findOne({ '_id': teamId })
+	.populate('players')
+	.exec(function (err, team) {
+		var renderObject = { title: '', team: null, user: null };
 		if (err) {
-			res.render('team', { title: 'BloodBowlNation: Team: not found', team: null, user: user });
-		} else {
-			console.log(team);
-			Player.find({  _id: { $in: team.players } }, function (err, players){
-
-				res.render('team', { title: 'BloodBowlNation: Team: ' + team.name, team: team, user: user, players: players });
-			});
-
+			res.send(500, { error: err });
 		}
+		renderObject.title = 'BloodBowlNation: Team: ' + team.name;
+		renderObject.team = team;
+		renderObject.user = user;
+		res.render('team', renderObject);
 	});
 };
 
 exports.createGet = function(req, res) {
-
 	var user = req.user;
-
 	var races;
-
 	if (user) {
-
-		Race.find(function(err, races){
-
+		Race.find()
+		.exec(function(err, races){
+			var renderObject = {title:'', user: null, races: []};
 			if (err) {
-				console.log(races);
-				races = [];
+				res.send(500, { error: err });
 			}
-
-			res.render('newTeam', { title: 'BloodBowlNation: New Team', user: user, races: races });
+			renderObject.title = 'BloodBowlNation: New Team';
+			renderObject.user = user;
+			renderObject.races = races;
+			res.render('newTeam', renderObject);
 		});
-
 	} else {
-
 		res.redirect('/login');
 	}
 };
@@ -66,55 +63,29 @@ exports.createGet = function(req, res) {
 exports.createPost = function(req, res) {
 
 	var user = req.user;
-
 	var raceId = req.body.race;
-
 	var teamName = req.body.teamName;
 
 	if (user) {
-
-		var team = new Team();
-
-		team.name = teamName;
-
-		team.race = raceId;
-
-		team.players = [];
-
-		team.createDate = Date.now();
-
-		console.log(user.id);
-
-		team.createBy = user.id;
-
-		console.log(team);
-
-		team.save(function(err, team){
-
-			console.log(team);
-
-			if (err) {
-
-				console.log(err);
-			}
-
-			console.log('user');
-
+		User.findById(user._id)
+		.exec(function(err, user){
 			console.log(user);
-
-			user.teams = [].concat(user.teams, [team.id]);
-
-			user.save(function(err, user){
-
-				console.log(user);
-
-				if (err) {
-
-					console.log(err);
-				}
+			var team = new Team();
+			team.name = teamName;
+			team.race = raceId;
+			team.players = [];
+			team.createDate = Date.now();
+			team.createBy = user.id;
+			team.save(function(err){
+				if (err) res.send(500, { error: err });
+				user.teams = [].concat(user.teams, [team.id]);
+				user.editBy = user.id;
+				user.editDate = Date.now();
+				user.save(function(err){
+					if (err) res.send(500, { error: err });
+				});
+				res.redirect('/team');
 			});
-
-			res.redirect('/team');
 		});
 
 	} else {
