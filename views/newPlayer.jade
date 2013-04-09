@@ -9,9 +9,9 @@ html(lang='en')
 				form(action='/team/#{team.id}/player/new', method='post')
 					label(for='playerName') name
 					input(type='text', name='playerName', placeholder='player name', autofocus)
-					label(for='positionId') position
+					label(for='positions') position
 					if (typeof(positions) !== 'undefined')
-						select(name='positionId')
+						select(name='positions')
 							if (positions.length)
 								for position in positions
 									option(value='#{position.id}') #{position.name}

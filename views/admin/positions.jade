@@ -13,7 +13,7 @@ html(lang="en")
 							ul
 								for position in positions
 									li
-										a(href='/admin/position/' + position.id) #{position.raceName} #{position.name}
+										a(href='/admin/position/' + position.id) #{position.race.name} #{position.name}
 						else
 							p No positions
 						a(href='/admin/position/new') Create new position

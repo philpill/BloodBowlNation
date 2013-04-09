@@ -8,209 +8,148 @@ var _ = require('underscore');
 
 exports.createGet = function(req, res) {
 	var user = req.user;
-	var positions;
-	var race;
-	if (user && user.username === 'admin') {
-		Race.find(function(err, races){
-			Position.find(function(err, positions){
-				_.each(positions, function(position){
-					race = _.find(races, function(race){
-						return position.race == race.id;
-					});
-					position.raceName = race.name;
-				});
-				console.log(Skills);
-				res.render('admin/newPosition', { title: 'BloodBowlNation: Admin', user: user, races: races, positions: positions, skills: Skills });
+	if (!user) res.redirect('/login');
+	if (user.username!=='admin') res.send(403);
+	Position.find()
+	.populate('race')
+	.exec(function(err, positions){
+		if (err) res.send(500, { error: err });
+		Race.find()
+		.exec(function(err, races){	
+			if (err) res.send(500, { error: err });
+			res.render('admin/newPosition', {
+				title: 'BloodBowlNation: Admin: Create New Position', 
+				user: user, 
+				races: races, 
+				positions: positions, 
+				skills: Skills 
 			});
 		});
-
-	} else {
-
-		res.redirect('/login');
-	}
+	});
 };
 
 exports.createPost = function(req, res) {
 	var user = req.user;
-
-	if (user && user.username === 'admin') {
-
-		var positionId = req.params.id;
-
-		var name = req.body.name;
-		var race = req.body.race;
-		var movement = req.body.movement;
-		var strength = req.body.strength;
-		var agility = req.body.agility;
-		var armour = req.body.armour;
-		var cost = req.body.cost;
-		var quantity = req.body.quantity;
-		var generalSkills = req.body.generalSkills;
-		var agilitySkills = req.body.agilitySkills;
-		var strengthSkills = req.body.strengthSkills;
-		var passingSkills = req.body.passingSkills;
-		var mutationSkills = req.body.mutationSkills;
-		var skills = req.body.skills;
-
-		console.log('create position');
-		console.log(skills);
-
-		var newDetails = {
-
-			'name' : name,
-			'race' : race,
-			'movement' : movement,
-			'strength' : strength,
-			'agility' : agility,
-			'armour' : armour,
-			'cost' : cost,
-			'quantity' : quantity,
-			'skillsCategories' : {
-				'general' : generalSkills,
-				'agility' : agilitySkills,
-				'strength' : strengthSkills,
-				'passing' : passingSkills,
-				'mutation' : mutationSkills
-			},
-			'skills' : skills,
-			'editDate' : new Date().getTime(),
-			'editBy': user.id,
-			'createDate' : new Date().getTime(),
-			'createBy': user.id
-		};
-
-		Position.create(newDetails, function (err, position) {
-			if (err) {
-				console.log(err);
-			}
-
-			res.redirect('/admin/position');
-		});
-
-	} else {
-
-		res.redirect('/login');
-	}
+	if (!user) res.redirect('/login');
+	if (user.username!=='admin') res.send(403);
+	var newDetails = {
+		'name' : req.body.name,
+		'race' : req.body.race,
+		'movement' : req.body.movement,
+		'strength' : req.body.strength,
+		'agility' : req.body.agility,
+		'armour' : req.body.armour,
+		'cost' : req.body.cost,
+		'quantity' : req.body.quantity,
+		'skillsCategories' : {
+			'general' : req.body.generalSkills,
+			'agility' : req.body.agilitySkills,
+			'strength' : req.body.strengthSkills,
+			'passing' : req.body.passingSkills,
+			'mutation' : req.body.mutationSkills
+		},
+		'skills' : req.body.skills,
+		'editDate' : new Date().getTime(),
+		'editBy': user.id,
+		'createDate' : new Date().getTime(),
+		'createBy': user.id
+	};
+	Position.create(newDetails, function (err) {
+		if (err) res.send(500, { error: err });
+		res.redirect('/admin/position');
+	});
 };
 
 exports.get = function(req, res) {
 	var user = req.user;
+	if (!user) res.redirect('/login');
+	if (user.username!=='admin') res.send(403);
 	var positionId = req.params.id;
-	if (user && user.username === 'admin') {
-		var races = [];
-		var positions = [];
-		var race;
-		var position;
-		Race.find(function(err, races){
-			Position.findOne({ '_id': positionId }, function (err, position) {
-				res.render('admin/editPosition', { title: 'BloodBowlNation: Admin', user: user, position: position, races: races, skills: Skills });
-
+	Position.findOne({'_id': positionId})
+	.exec(function(err, position){
+		if (err) res.send(500, { error: err });
+		Race.find()
+		.exec(function (err, races) {
+			if (err) res.send(500, { error: err });
+			res.render('admin/editPosition', { 
+				title: 'BloodBowlNation: Admin: Edit Position', 
+				user: user, 
+				position: position, 
+				races: races, 
+				skills: Skills 
 			});
 		});
-	} else {
-
-		res.redirect('/login');
-	}
+	});
 };
 
 exports.update = function(req, res) {
 	var user = req.user;
-
+	if (!user) res.redirect('/login');
+	if (user.username!=='admin') res.send(403);
 	var positionId = req.params.id;
-
-	var name = req.body.name;
-	var race = req.body.race;
-	var movement = req.body.movement;
-	var strength = req.body.strength;
-	var agility = req.body.agility;
-	var armour = req.body.armour;
-	var cost = req.body.cost;
-	var quantity = req.body.quantity;
-	var generalSkills = req.body.generalSkills;
-	var agilitySkills = req.body.agilitySkills;
-	var strengthSkills = req.body.strengthSkills;
-	var passingSkills = req.body.passingSkills;
-	var mutationSkills = req.body.mutationSkills;
 	var skills = req.body.skills || [];
-
 	var newDetails = {
-
-		'name' : name,
-		'race' : race,
-		'movement' : movement,
-		'strength' : strength,
-		'agility' : agility,
-		'armour' : armour,
-		'cost' : cost,
-		'quantity' : quantity,
+		'name' : req.body.name,
+		'race' : req.body.race,
+		'movement' : req.body.movement,
+		'strength' : req.body.strength,
+		'agility' : req.body.agility,
+		'armour' : req.body.armour,
+		'cost' : req.body.cost,
+		'quantity' : req.body.quantity,
 		'skillsCategories' : {
-			'general' : generalSkills,
-			'agility' : agilitySkills,
-			'strength' : strengthSkills,
-			'passing' : passingSkills,
-			'mutation' : mutationSkills
+			'general' : req.body.generalSkills,
+			'agility' : req.body.agilitySkills,
+			'strength' : req.body.strengthSkills,
+			'passing' : req.body.passingSkills,
+			'mutation' : req.body.mutationSkills
 		},
 		'skills' : skills,
 		'editDate' : new Date().getTime(),
 		'editBy': user.id
 	};
-
-	if (user && user.username === 'admin') {
-
-		Position.findByIdAndUpdate(positionId, newDetails, function (err, position) {
-			if (err) {
-				console.log(err);
-			}
-
-			res.redirect('/admin/position');
-		});
-
-	} else {
-
-		res.redirect('/login');
-	}
+	Position.findByIdAndUpdate(positionId, newDetails)
+	.exec(function (err, position) {
+		if (err) res.send(500, { error: err });
+		res.redirect('/admin/position');
+	});
 };
 
 exports.get = function(req, res) {
 	var user = req.user;
 	var positionId = req.params.id;
-	if (user && user.username === 'admin') {
-		var races = [];
-		var positions = [];
-		var race;
-		var position;
-		Race.find(function(err, races){
-			Position.findOne({ '_id': positionId }, function (err, position) {
-				console.log(position);
-				res.render('admin/editPosition', { title: 'BloodBowlNation: Admin', user: user, position: position, races: races, skills: Skills });
-
+	if (!user) res.redirect('/login');
+	if (user.username!=='admin') res.send(403);
+	Position.findOne({'_id':positionId})
+	.exec(function(err, position){
+		if (err) res.send(500, { error: err });
+		Race.find()
+		.exec(function (err, races) {
+			if (err) res.send(500, { error: err });
+			res.render('admin/editPosition', { 
+				title: 'BloodBowlNation: Admin', 
+				user: user, 
+				position: position, 
+				races: races, 
+				skills: Skills 
 			});
 		});
-	} else {
-
-		res.redirect('/login');
-	}
+	});
 };
 
 exports.getAll = function(req, res){
 	var user = req.user;
-	if (user && user.username === 'admin') {
-		var races = [];
-		var positions = [];
-		Race.find(function(err, races){
-			Position.find(function(err, positions){
-				_.each(positions, function(position){
-					race = _.find(races, function(race){
-						return position.race == race.id;
-					});
-					position.raceName = race.name;
-				});
-				positions = _.sortBy(positions, 'raceName');
-				res.render('admin/positions', { title: 'BloodBowlNation: Admin', user: user, positions: positions });
-			});
+	if (!user) res.redirect('/login');
+	if (user.username!=='admin') res.send(403);
+	Position.find()
+	.populate('race')
+	.exec(function(err, positions){
+		if (err) res.send(500, { error: err });
+		positions = _.sortBy(positions, 'race.name'); // .... ?
+		res.render('admin/positions', { 
+			title: 'BloodBowlNation: Admin: Positions', 
+			user: user, 
+			positions: positions 
 		});
-	} else {
-
-		res.redirect('/login');
-	}
+	});
 };

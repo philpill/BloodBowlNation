@@ -7,96 +7,73 @@ var passport = require('passport');
 var _ = require('underscore');
 
 exports.createPost = function(req, res) {
-
 	var user = req.user;
-
 	var teamId = req.params.id;
-
 	var playerName = req.body.playerName;
-
 	var positionId = req.body.positionId;
 
-	if (user) {
+	if (!user) res.redirect('/login');
 
-		console.log('create player');
+	console.log('create player');
 
-		Team.findOne({ '_id': teamId }, function (err, team) {
+	Team.findOne({ '_id': teamId }, function (err, team) {
 
-			console.log('team');
+		if (err) {
+			res.render('team', { title: 'BloodBowlNation: Team: not found', team: null, user: user });
+		} else {
 
-			if (err) {
-				res.render('team', { title: 'BloodBowlNation: Team: not found', team: null, user: user });
-			} else {
+			Player.find({ '_id': { $in: team.players }}, function(err, players){
+				var numbers = _.pluck(players, 'number');
+				var sortedNumbers = _.uniq(_.compact(_.sortBy(numbers)));
 
+				var numbersLength = sortedNumbers.length;
 
+				var number = numbersLength + 1;
 
-				Player.find({ '_id': { $in: team.players }}, function(err, players){
-					console.log(players);
-					var numbers = _.pluck(players, 'number');
-					console.log(numbers);
-					var sortedNumbers = _.uniq(_.compact(_.sortBy(numbers)));
-					console.log(sortedNumbers);
-
-					var numbersLength = sortedNumbers.length;
-
-					var number = numbersLength + 1;
-
-					for (var i = 0; i < numbersLength;i++) {
-						console.log('i:' + i);
-						if (sortedNumbers[i]!== i+1) {
-							number = i+1;
-							break;
-						}
+				for (var i = 0; i < numbersLength;i++) {
+					if (sortedNumbers[i]!== i+1) {
+						number = i+1;
+						break;
 					}
+				}
 
-					console.log(number);
+				Position.findOne({ '_id': positionId, 'race': team.race }, function (err, position) {
 
-					Position.findOne({ '_id': positionId, 'race': team.race }, function (err, position) {
+					var newDetails = {
 
-						console.log('position');
+						'name' : playerName,
+						'number' : number,
+						'position' : position.id,
+						'movement' : position.movement,
+						'strength' : position.strength,
+						'agility' : position.agility,
+						'armour' : position.armour,
+						'cost' : position.cost,
+						//'quantity' : quantity,
+						//check quantity
+						'skills' : position.skills,
+						'race' : team.race,
+						'editDate' : new Date().getTime(),
+						'editBy': user.id,
+						'createDate' : new Date().getTime(),
+						'createBy': user.id
+					};
 
-						var newDetails = {
+					Player.create(newDetails, function (err, player) {
+						if (err) {
+							console.log(err);
+						}
 
-							'name' : playerName,
-							'number' : number,
-							'position' : position.id,
-							'movement' : position.movement,
-							'strength' : position.strength,
-							'agility' : position.agility,
-							'armour' : position.armour,
-							'cost' : position.cost,
-							//'quantity' : quantity,
-							//check quantity
-							'skills' : position.skills,
-							'race' : team.race,
-							'editDate' : new Date().getTime(),
-							'editBy': user.id,
-							'createDate' : new Date().getTime(),
-							'createBy': user.id
-						};
+						team.players.push(player.id);
+						team.save(function(err, team){
 
-						Player.create(newDetails, function (err, player) {
-							if (err) {
-								console.log(err);
-							}
-
-							team.players.push(player.id);
-
-							team.save(function(err, team){
-
-								res.redirect('/team/' + team.id);
-							});
+							res.redirect('/team/' + team.id);
 						});
 					});
-
 				});
-			}
-		});
-
-	} else {
-
-		res.redirect('/login');
-	}
+			});
+		}
+	});
 };
 
 exports.createGet = function(req, res) {
@@ -104,59 +81,52 @@ exports.createGet = function(req, res) {
 	console.log('createGet()');
 
 	var user = req.user;
-
 	var teamId = req.params.id;
 
-	if (user) {
+	if (!user) res.redirect('/login');
 
-		Team.findOne({'_id' : teamId}, function(err, team){
-			if (err) console.log(err);
-
-			Race.find(function(err, races){
-				Position.find({'race': team.race}, function(err, positions){
-					_.each(positions, function(position){
-						race = _.find(races, function(race){
-							return position.race == race.id;
-						});
-						position.raceName = race.name;
-					});
-					res.render('newPlayer', { title: 'BloodBowlNation: New Player', team: team, positions: positions, user: user });
-				});
-			});
+	Team.findOne({'_id' : teamId})
+	.exec(function(err, team){
+		if (err) res.send(500, { error: err });
+		console.log(team);
+		Position.find()
+		.where('race').equals(team.race)
+		.populate('race')
+		.exec(function(err, positions){	
+			if (err) res.send(500, { error: err });
+			var renderObject = { 
+				title: '', 
+				team: null, 
+				positions: null, 
+				user: null 
+			}
+			renderObject.title = 'BloodBowlNation: New Player';
+			renderObject.team = team;
+			renderObject.positions = positions;
+			renderObject.user = user;
+			res.render('newPlayer', renderObject);
 		});
-
-	} else {
-
-		res.redirect('/login');
-	}
-
+	});
 };
 
 exports.get = function(req, res) {
+
 	console.log('getPlayer()');
 	console.log(req.params.id);
 
 	var playerId = req.params.id;
 	var user = req.user;
 
-	if (user) {
+	if (!user) res.redirect('/login');
 
-		Player.findOne({'_id': playerId}, function(err, player) {
-			if (err) console.log(err);
-			Race.findOne({'_id': player.race}, function(err, race){
-				if (err) console.log(err);
-				player.raceName = race.name;
-				Position.findOne({'_id': player.position}, function(err, position){
-					if (err) console.log(err);
-					player.positionName = position.name;
-					res.render('player', { title: 'BloodBowlNation: Player: ' + player.name, player: player, user: user });
-				});
-			});
-		});
-
-	} else {
-
-		res.redirect('/login');
-	}
-
+	Player.findOne({'_id': playerId})
+	.populate('position race')
+	.exec(function(err, player) {
+		if (err) res.send(500, { error: err });
+		var renderObject = { title: '', player: null, user: null };
+		renderObject.title = 'BloodBowlNation: Player: ' + player.name;
+		renderObject.player = player;
+		renderObject.user = user;
+		res.render('player', renderObject);
+	});
 };
