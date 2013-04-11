@@ -1,0 +1,30 @@
+!!! 5
+html(lang="en")
+	include includes/head
+	body
+		div#Container
+			include includes/header
+			section#Canvases
+				canvas#PitchCanvas(width="400", height="600")
+				canvas#MainCanvas(width="400", height="600")
+
+			aside#MainAside
+				section#DebugConsole
+					header
+						h3 Debug Console
+					code -- BloodBowlNation --
+					code#Ticks
+					code#MeasuredFps
+				section#DebugControls
+					header
+						h3 Debug Controls
+					label(for="BackgroundCheck") Show/Hide Pitch Background
+					input#BackgroundCheck(type="checkbox")
+					ul
+						li
+							a#ClearCacheLink(href="#") clear HTML5 localstorage
+						li
+							a#StopGameLoopLink(href="#") pause/unpause game loop
+						li
+							a#TurnoverLink(href="#") turnover
+			include includes/footer

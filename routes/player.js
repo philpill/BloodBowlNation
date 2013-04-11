@@ -40,6 +40,7 @@ exports.createPost = function(req, res) {
         Position.findById(positionId)
         .exec(function (err, position) {
             if (err) res.send(500, { error: err });
+            console.log(position);
             var newDetails = {
                 'name' : playerName,
                 'number' : newNumber,

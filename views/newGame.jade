@@ -1,0 +1,22 @@
+!!! 5
+html(lang="en")
+    include includes/head
+    body
+        div#Container
+            include includes/header
+            section#Main
+                h2 Create Game
+                if (typeof(teams) !== 'undefined')
+                    form(action='/game/new', method='post')
+                        label(for='gameName') name
+                        input.span4(name='gameName', type='text')
+                        label(for='team') team    
+                        select.span4(name='team')
+                            each team in teams
+                                option(value='#{team.id}') #{team.name}
+                        label create game
+                        input.btn(name='submit', type='submit')
+                        a.btn(href='/game') cancel
+                else
+                    p No teams available
+            include includes/footer

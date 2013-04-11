@@ -17,7 +17,7 @@ module.exports = mongoose.model('Player', new Schema(new base({
     strength: { type: Number },
     agility: { type: Number },
     armour: { type: Number },
-    skills: [{ type: ObjectId, ref: 'Skill' ]},
+    skills: { type: Array },
     injuries: { type: Array },
     isStarPlayer: { type: Boolean },
     touchDowns: { type: Number },

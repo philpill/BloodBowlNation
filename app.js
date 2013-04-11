@@ -9,7 +9,8 @@
 		race : req('./routes/race.js'),
 		user : req('./routes/user.js'),
 		team : req('./routes/team.js'),
-		position: req('./routes/position.js')
+		position: req('./routes/position.js'),
+        game: req('./routes/game.js')
 	};
 
 	var api = {
@@ -59,9 +60,14 @@
 	});
 
 	app.get('/', routes.page.index);
-	app.get('/game', routes.page.game);
 	app.get('/about', routes.page.about);
 	app.get('/test', routes.page.test);
+
+    app.get('/game', routes.game.getAll);
+    app.get('/game/new', passport.ensureAuthenticated, routes.game.createGet);
+    app.post('/game/new', passport.ensureAuthenticated, routes.game.createPost);
+    app.get('/game/:id', routes.game.get);
+    app.get('/game/:id/join', routes.game.join);
 
 	app.get('/team', routes.team.getAll);
 	app.get('/team/new', routes.team.createGet);
