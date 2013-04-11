@@ -1,7 +1,5 @@
 ----
 
-DEFUNCT MONGO BRANCH 28/03/13
-
 Based on [Games Workshop's](http://www.games-workshop.com/gws/home.jsp) [Blood Bowl](http://www.games-workshop.com/gws/catalog/landingArmy.jsp?catId=cat480004a&rootCatGameStyle=)
 
 Github: [Source](https://github.com/philpill/BloodBowlNation)
@@ -14,15 +12,15 @@ Questions/comments: bbn@philpill.net
 
 node 0.8.16
 
-express 3.0.0rc4
+express 3.1.1
 
-jade 0.27.2
+jade 0.28.2
 
-socket.io 0.9.10
+socket.io 0.9.14
 
-mongoose 3.5.3
+mongoose 3.6.4
 
-mongodb 2.2.2
+mongodb 2.4.1
 
 ----
 

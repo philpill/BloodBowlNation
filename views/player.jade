@@ -28,16 +28,16 @@ html(lang="en")
 							td
 								if (player.skills.length)
 									ul.skills.unstyled
-										for skill in player.skills
-											li #{skill}
+										each skill in player.skills
+											li #{skill.name}
 								else
 									-
 						tr
 							td position
-							td #{player.positionName}
+							td #{player.position.name}
 						tr
 							td race
-							td #{player.raceName}
+							td #{player.race.name}
 				else
 					p Player not found!
 			include includes/footer

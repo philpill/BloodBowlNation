@@ -12,10 +12,6 @@ exports.createPost = function(req, res) {
 	var playerName = req.body.playerName;
 	var positionId = req.body.position;
 
-    console.log('create')
-    console.log(req.body);
-    console.log(req.params);
-
 	if (!user) res.redirect('/login');
 
     function getNextAvailableNumber(takenNumbers) {
@@ -41,11 +37,8 @@ exports.createPost = function(req, res) {
 
         var date = new Date().getTime();
         var userId =  user._id;
-        console.log('positionId: ' + positionId);
         Position.findById(positionId)
         .exec(function (err, position) {
-            console.log('Position: ');
-            console.log(position);
             if (err) res.send(500, { error: err });
             var newDetails = {
                 'name' : playerName,
@@ -89,26 +82,20 @@ exports.createGet = function(req, res) {
 
 	if (!user) res.redirect('/login');
 
-	Team.findOne({'_id' : teamId})
+	Team.findById(teamId)
 	.exec(function(err, team){
 		if (err) res.send(500, { error: err });
-		console.log(team);
 		Position.find()
 		.where('race').equals(team.race)
 		.populate('race')
 		.exec(function(err, positions){	
 			if (err) res.send(500, { error: err });
-			var renderObject = { 
-				title: '', 
-				team: null, 
-				positions: null, 
-				user: null 
-			}
-			renderObject.title = 'BloodBowlNation: New Player';
-			renderObject.team = team;
-			renderObject.positions = positions;
-			renderObject.user = user;
-			res.render('newPlayer', renderObject);
+			res.render('newPlayer', {
+                title: 'BloodBowlNation: New Player',
+                team: team,
+                positions: positions,
+			    user: user
+            });
 		});
 	});
 };
@@ -118,7 +105,7 @@ exports.get = function(req, res) {
 	var user = req.user;
 	if (!user) res.redirect('/login');
 	Player.findOne({'_id': playerId})
-	.populate('position race')
+	.populate('position race skill')
 	.exec(function(err, player) {
 		if (err) res.send(500, { error: err });
         var title =  'BloodBowlNation: Player: ' + player.name;
