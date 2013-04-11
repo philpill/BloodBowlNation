@@ -1,3 +1,5 @@
+run db: mongod --dbpath db --rest
+
 ----
 
 Based on [Games Workshop's](http://www.games-workshop.com/gws/home.jsp) [Blood Bowl](http://www.games-workshop.com/gws/catalog/landingArmy.jsp?catId=cat480004a&rootCatGameStyle=)
