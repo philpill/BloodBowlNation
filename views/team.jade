@@ -15,13 +15,13 @@ html(lang="en")
 								th player
 								th position
 						tbody
-							for player in team.players
+							each player, i in team.players
 								tr
 									td #{player.number}
 									td
 										a(href='/player/' + player.id)
 											strong #{player.name}
-									td #{player.positionName}
+									td #{team.players[i].position.name}
 					a.createPlayer(href='/team/#{team.id}/player/new/') add new player
 				else
 					p Team not found!

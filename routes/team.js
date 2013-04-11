@@ -3,6 +3,7 @@ var User = require('../schema/user');
 var Team = require('../schema/team');
 var Player = require('../schema/player');
 var Race = require('../schema/race');
+var Position = require('../schema/position');
 var passport = require('passport');
 
 exports.getAll = function(req, res) {
@@ -22,21 +23,27 @@ exports.getAll = function(req, res) {
 };
 
 exports.get = function(req, res) {
-	console.log('getTeam()');
-	console.log(req.params.id);
 	var user = req.user;
 	var teamId = req.params.id;
-	Team.findOne({ '_id': teamId })
+	Team.findById(teamId)
 	.populate('players')
+    //.populate('players.position')
 	.exec(function (err, team) {
-		var renderObject = { title: '', team: null, user: null };
-		if (err) {
-			res.send(500, { error: err });
-		}
-		renderObject.title = 'BloodBowlNation: Team: ' + team.name;
-		renderObject.team = team;
-		renderObject.user = user;
-		res.render('team', renderObject);
+		if (err) res.send(500, { error: err });
+        //horrible hack to populate() grandchildren
+        //https://github.com/LearnBoost/mongoose/issues/1377#issuecomment-15911192
+        Position.populate(
+            team.players, 
+            { path: 'position' }, 
+            function(err, players) {
+		        if (err) res.send(500, { error: err });
+                var title = 'BloodBowlNation: Team: ' + team.name;
+                res.render('team', {
+                    title: title,
+                    team: team,
+                    user: user
+                });
+        });
 	});
 };
 

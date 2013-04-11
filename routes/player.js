@@ -10,69 +10,73 @@ exports.createPost = function(req, res) {
 	var user = req.user;
 	var teamId = req.params.id;
 	var playerName = req.body.playerName;
-	var positionId = req.body.positionId;
+	var positionId = req.body.position;
+
+    console.log('create')
+    console.log(req.body);
+    console.log(req.params);
 
 	if (!user) res.redirect('/login');
 
-	console.log('create player');
+    function getNextAvailableNumber(takenNumbers) {
+        var sortedNumbers = _.uniq(_.compact(_.sortBy(takenNumbers)));
+        var numbersLength = sortedNumbers.length;
+        var newNumber = numbersLength + 1;
+        for (var i = 0; i < numbersLength;i++) {
+            if (sortedNumbers[i]!== i+1) {
+                newNumber = i+1;
+                break;
+            }
+        }
+        return newNumber;
+    }
 
-	Team.findOne({ '_id': teamId }, function (err, team) {
+	Team.findOne({ '_id': teamId })
+    .populate('players')
+    .exec(function (err, team) {
+        if (err) res.send(500, { error: err });
+        var players = team.players;
+        var takenNumbers = _.pluck(players, 'number');
+        var newNumber = getNextAvailableNumber(takenNumbers);
 
-		if (err) {
-			res.render('team', { title: 'BloodBowlNation: Team: not found', team: null, user: user });
-		} else {
+        var date = new Date().getTime();
+        var userId =  user._id;
+        console.log('positionId: ' + positionId);
+        Position.findById(positionId)
+        .exec(function (err, position) {
+            console.log('Position: ');
+            console.log(position);
+            if (err) res.send(500, { error: err });
+            var newDetails = {
+                'name' : playerName,
+                'number' : newNumber,
+                'position' : position.id,
+                'movement' : position.movement,
+                'strength' : position.strength,
+                'agility' : position.agility,
+                'armour' : position.armour,
+                'cost' : position.cost,
+                //'quantity' : quantity,
+                //check quantity
+                'skills' : position.skills,
+                'race' : team.race,
+                'editDate' : date,
+                'editBy': userId,
+                'createDate' : date,
+                'createBy': userId
+            };
 
-			Player.find({ '_id': { $in: team.players }}, function(err, players){
-				var numbers = _.pluck(players, 'number');
-				var sortedNumbers = _.uniq(_.compact(_.sortBy(numbers)));
-
-				var numbersLength = sortedNumbers.length;
-
-				var number = numbersLength + 1;
-
-				for (var i = 0; i < numbersLength;i++) {
-					if (sortedNumbers[i]!== i+1) {
-						number = i+1;
-						break;
-					}
-				}
-
-				Position.findOne({ '_id': positionId, 'race': team.race }, function (err, position) {
-
-					var newDetails = {
-
-						'name' : playerName,
-						'number' : number,
-						'position' : position.id,
-						'movement' : position.movement,
-						'strength' : position.strength,
-						'agility' : position.agility,
-						'armour' : position.armour,
-						'cost' : position.cost,
-						//'quantity' : quantity,
-						//check quantity
-						'skills' : position.skills,
-						'race' : team.race,
-						'editDate' : new Date().getTime(),
-						'editBy': user.id,
-						'createDate' : new Date().getTime(),
-						'createBy': user.id
-					};
-
-					Player.create(newDetails, function (err, player) {
-						if (err) {
-							console.log(err);
-						}
-
-						team.players.push(player.id);
-						team.save(function(err, team){
-
-							res.redirect('/team/' + team.id);
-						});
-					});
-				});
-			});
-		}
+            Player.create(newDetails, function (err, player) {
+                if (err) res.send(500, { error: err });
+                team.players = [].concat(team.players, [player]);
+                team.editDate = date;
+                team.editUser = userId;
+                team.save(function(err, team){
+                    if (err) res.send(500, { error: err });
+                    res.redirect('/team/' + team.id);
+                });
+            });
+        });
 	});
 };
 
@@ -110,23 +114,18 @@ exports.createGet = function(req, res) {
 };
 
 exports.get = function(req, res) {
-
-	console.log('getPlayer()');
-	console.log(req.params.id);
-
 	var playerId = req.params.id;
 	var user = req.user;
-
 	if (!user) res.redirect('/login');
-
 	Player.findOne({'_id': playerId})
 	.populate('position race')
 	.exec(function(err, player) {
 		if (err) res.send(500, { error: err });
-		var renderObject = { title: '', player: null, user: null };
-		renderObject.title = 'BloodBowlNation: Player: ' + player.name;
-		renderObject.player = player;
-		renderObject.user = user;
-		res.render('player', renderObject);
+        var title =  'BloodBowlNation: Player: ' + player.name;
+		res.render('player', {
+            title : title,
+            player : player,
+            user : user,
+        });
 	});
 };

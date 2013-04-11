@@ -9,7 +9,7 @@ var ObjectId = Schema.Types.ObjectId;
 module.exports = mongoose.model('Team', new Schema(new base({
 
     name: { type: String, required: true, index: { unique: true } },
-    players: { type: Array },
+    players: [{ type: ObjectId, ref: 'Player'}],
     fanFactor: { type: Number },
     treasury: { type: Number },
     played: { type: Number },

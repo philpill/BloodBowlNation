@@ -11,7 +11,7 @@ module.exports = mongoose.model('Player', new Schema(new base({
 
     name: { type: String, required: true },
     number: { type: Number },
-    position: { type: ObjectId },
+    position: { type: ObjectId, ref: 'Position' },
     starPlayerPoints: { type: Number },
     movement: { type: Number },
     strength: { type: Number },
@@ -21,6 +21,6 @@ module.exports = mongoose.model('Player', new Schema(new base({
     injuries: { type: Array },
     isStarPlayer: { type: Boolean },
     touchDowns: { type: Number },
-    race: { type: ObjectId }
+    race: { type: ObjectId, ref: 'Race' }
 
 })));
