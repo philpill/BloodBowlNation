@@ -93,8 +93,10 @@
 
 	app.get('/admin', passport.ensureAuthenticated, routes.admin.index);
 
-
+    //should be in race.js?
 	app.get('/admin/races', passport.ensureAuthenticated, routes.admin.races);
+    
+    app.get('/admin/users', passport.ensureAuthenticated, routes.user.getAll);
 
 	app.get('/api/game', passport.ensureAuthenticated, api.game.getAll);
 	app.get('/api/player', passport.ensureAuthenticated, api.player.index);

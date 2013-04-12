@@ -5,8 +5,6 @@ var passport = require('passport');
 exports.create = function(req, res) {
 	var user = req.user;
 	var race = req.body.race;
-	console.log(race);
-	var races;
 	if (user && user.username === 'admin') {
 
 		console.log('create');

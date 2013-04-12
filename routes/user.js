@@ -34,14 +34,14 @@ exports.get = function(req, res) {
 };
 
 exports.getAll = function(req, res) {
-    var user = req.user; 
+	var user = req.user;
 	if (!user) res.redirect('/login');
-	if (user.username!=='admin') res.send(401);
+    if (user.username!=='admin') res.send(401);
     User.find()
-    .exec(function(err, users) {
-        if (err) res.send(500, { error: err });
-        res.render('users', {
-            title: 'BloodBowlNation: Players',
+    .exec(function(err, users){
+        if (err) res.send(500, {error: err});
+        res.render('admin/users', {
+            title: 'BloodBowlNation: Admin: Users',
             user: user,
             users: users
         });
@@ -52,10 +52,9 @@ exports.createGet = function() {
     var user = req.user; 
 	if (!user) res.redirect('/login');
 	if (user.username!=='admin') res.send(401);
-        res.render('newUser', {
-            title: 'BloodBowlNation: Players',
-            user: user
-        });
+    res.render('newUser', {
+        title: 'BloodBowlNation: Players',
+        user: user
     });
 };
 
@@ -63,6 +62,16 @@ exports.createPost = function() {
     var user = req.user; 
 	if (!user) res.redirect('/login');
 	if (user.username!=='admin') res.send(401);
-        //implement create user
+    var username = req.body.username;
+    var password = req.body.password;
+    var email = req.body.email;    
+    var newUser = new User();
+    newUser.username = username;
+    newUser.password = password;
+    newUser.email = email;
+    newUser.save(function(err){
+        if (err) res.send(500, {error:err});
+        res.redirect('/admin/user');
     });
 };
+

@@ -34,7 +34,7 @@ BloodBowlNation is an unofficial software-only product, is unaffiliated and unen
 
 #### The MIT License ####
 
-Copyright (C) 2011 by [Phillip Shum](http://philshum.co.uk)
+Copyright (C) 2013 by [Phillip Shum](http://philshum.co.uk)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
