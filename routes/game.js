@@ -1,7 +1,9 @@
 var mongoose = require('mongoose');
 var User = require('../schema/user');
 var Game = require('../schema/game');
+var Team = require('../schema/team');
 var passport = require('passport');
+var _ = require('underscore');
 
 exports.getAll = function(req, res) {
 	var user = req.user;
@@ -76,6 +78,33 @@ exports.get = function(req, res){
 
 exports.join = function(req, res) {
     var gameId = req.params.id;
+    var user = req.user;
+    var team = req.body.team;
+    console.log(user);
+
+    //SELECT TEAM!
+
+
+    Game.findById(gameId)
+    .exec(function(err, game){
+        if (err) res.send(500, {error: err});
+        User.findById(user._id)
+        .exec(function(err, user) {
+            if (err) res.send(500, {error: err});
+            console.log(user);
+            if (_.contains(user.teams, team)) {
+                game.client = user.id;
+                game.clientTeam = team.id;
+                game.editBy = user.id;
+                game.editDate = Date.now;
+                game.save(function(err){
+                    if (err) res.send(500, {error:err});
+                    res.redirect('/game');
+                }); 
+            }
+        });
+    });
+    res.send(500);
 }
 
 

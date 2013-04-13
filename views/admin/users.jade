@@ -16,7 +16,7 @@ html(lang="en")
                                 option(value=user.id) #{user.username}
                     else
                         p No users
-                    form(action='/user/new', method='post')
+                    form(action='/admin/user/new', method='post')
                         label(for='username') username
                         input(name='username', placeholder='username')
                         label(for='password') password

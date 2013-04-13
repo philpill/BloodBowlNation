@@ -48,7 +48,7 @@ exports.getAll = function(req, res) {
     });
 };
 
-exports.createGet = function() {
+exports.createGet = function(req, res) {
     var user = req.user; 
 	if (!user) res.redirect('/login');
 	if (user.username!=='admin') res.send(401);
@@ -58,7 +58,7 @@ exports.createGet = function() {
     });
 };
 
-exports.createPost = function() {
+exports.createPost = function(req, res) {
     var user = req.user; 
 	if (!user) res.redirect('/login');
 	if (user.username!=='admin') res.send(401);

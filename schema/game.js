@@ -14,8 +14,4 @@ module.exports = mongoose.model('Game', new Schema(new base({
     hostTeam : { type: ObjectId, ref: 'Team' },
     clientTeam : { type: ObjectId, ref: 'Team' },
     gameTurn: { type: Number, required: true },
-    createDate: { type: Date, default: Date.now },
-    createBy: { type: ObjectId, ref: 'User'},
-    editDate: { type: Date, default: Date.now },
-    editBy: { type: ObjectId, ref: 'User' }
 })));
