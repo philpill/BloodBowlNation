@@ -3,7 +3,6 @@ var User = require('../schema/user');
 var Game = require('../schema/game');
 var Team = require('../schema/team');
 var passport = require('passport');
-var _ = require('underscore');
 
 exports.getAll = function(req, res) {
 	var user = req.user;
@@ -11,7 +10,6 @@ exports.getAll = function(req, res) {
 	.populate('hostTeam clientTeam host client')
 	.exec(function(err, games){ 
 	if (err) res.send(500, { error: err });
-			console.log(games);
 			res.render('games', {
 					title:'BloodBowlNation: Games',
 					user: user,
@@ -43,8 +41,6 @@ exports.createPost = function(req, res) {
 		var user = req.user;
 		var name = req.body.gameName;
 		var teamId = req.body.team;
-		console.log('new game');
-		console.log(req.body);
 		if (!user) res.redirect('/login');
 		//check user against team
 		//check team is viable for new game

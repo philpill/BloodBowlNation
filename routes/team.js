@@ -39,7 +39,6 @@ exports.get = function(req, res) {
             function(err, players) {
 		        if (err) res.send(500, { error: err });
                 var title = 'BloodBowlNation: Team: ' + team.name;
-                console.log(team);
                 res.render('team', {
                     title: title,
                     team: team,
@@ -71,7 +70,6 @@ exports.createPost = function(req, res) {
 	if (!user) res.redirect('/login');
     User.findById(user.id)
     .exec(function(err, user){
-        console.log(user);
         var team = new Team();
         team.name = teamName;
         team.race = raceId;

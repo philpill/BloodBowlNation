@@ -6,7 +6,6 @@ var Race = require('../schema/race');
 var Position = require('../schema/position');
 var User = require('../schema/user');
 var passport = require('passport');
-var _ = require('underscore');
 
 exports.index = function(req, res){
 	var user = req.user;
