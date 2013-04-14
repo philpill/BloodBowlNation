@@ -1,60 +1,57 @@
-Evented I/O for V8 javascript. [![Build Status](https://secure.travis-ci.org/joyent/node.png)](http://travis-ci.org/joyent/node)
-===
+Based on [Games Workshop's](http://www.games-workshop.com/gws/home.jsp) [Blood Bowl](http://www.games-workshop.com/gws/catalog/landingArmy.jsp?catId=cat480004a&rootCatGameStyle=)
 
-### To build:
+Github: [Source](https://github.com/philpill/BloodBowlNation)
 
-Prerequisites (Unix only):
+Blood Bowl: [Living Rulebook v5](http://www.bloodbowlonline.com/LivingRulebook5.pdf)
 
-    * Python 2.6 or 2.7
-    * GNU Make 3.81 or newer
-    * libexecinfo (FreeBSD and OpenBSD only)
+Questions/comments: bbn@philpill.net
 
-Unix/Macintosh:
+----
 
-    ./configure
-    make
-    make install
+node 0.10.4
 
-If your python binary is in a non-standard location or has a
-non-standard name, run the following instead:
+express 3.1.2
 
-    export PYTHON=/path/to/python
-    $PYTHON ./configure
-    make
-    make install
+jade 0.28.2
 
-Windows:
+socket.io 0.9.14
 
-    vcbuild.bat
+mongoose 3.6.4
 
-### To run the tests:
+mongo 2.4.1
 
-Unix/Macintosh:
+----
 
-    make test
+### License ###
 
-Windows:
+BloodBowl and all that stuff are registered trademarks of Games Workshop Limited.
 
-    vcbuild.bat test
+BloodBowlNation is an unofficial software-only product, is unaffiliated and unendorsed by Games Workshop and is subject to the MIT License as described below.
 
-### To build the documentation:
+#### The MIT License ####
 
-    make doc
+Copyright (C) 2013 by [Phillip Shum](http://philshum.co.uk)
 
-### To read the documentation:
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-    man doc/node.1
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
 
-Resources for Newcomers
----
-  - [The Wiki](https://github.com/joyent/node/wiki)
-  - [nodejs.org](http://nodejs.org/)
-  - [how to install node.js and npm (node package manager)](http://joyeur.com/2010/12/10/installing-node-and-npm/)
-  - [list of modules](https://github.com/joyent/node/wiki/modules)
-  - [searching the npm registry](http://search.npmjs.org/)
-  - [list of companies and projects using node](https://github.com/joyent/node/wiki/Projects,-Applications,-and-Companies-Using-Node)
-  - [node.js mailing list](http://groups.google.com/group/nodejs)
-  - irc chatroom, [#node.js on freenode.net](http://webchat.freenode.net?channels=node.js&uio=d4)
-  - [community](https://github.com/joyent/node/wiki/Community)
-  - [contributing](https://github.com/joyent/node/wiki/Contributing)
-  - [big list of all the helpful wiki pages](https://github.com/joyent/node/wiki/_pages)
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+----
+
+http://en.wikipedia.org/wiki/MIT_License
+
+----
