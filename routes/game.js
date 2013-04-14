@@ -67,17 +67,24 @@ exports.get = function(req, res){
 	.populate('clientTeam hostTeam host client')
 	.exec(function(err, game){
 		if (err) res.send(500, {error: err});
-		User.findById(user.id)
-		.populate('teams')
-		.exec(function(err, user){
-			console.log(game);
-			console.log(user);
+		if (!user) {
 			res.render('game', {
-				user: user,
 				title: 'BloodBowlNation: Game',
 				game: game
 			});
-		});
+
+		} else {
+			User.findById(user.id)
+			.populate('teams')
+			.exec(function(err, user){
+				if (err) res.send(500, {err: error});
+				res.render('game', {
+					user: user,
+					title: 'BloodBowlNation: Game',
+					game: game
+				});
+			});
+		}
 	});
 }
 

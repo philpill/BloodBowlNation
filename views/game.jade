@@ -16,7 +16,7 @@ html(lang="en")
 							if (game.clientTeam)
 								a(href='/team/#{game.clientTeam.id}')
 									#{game.clientTeam.name}
-							else if (user && user.teams && user.teams.length > 0)
+							else if ((typeof(user) !== 'undefined') && (typeof(user.teams) !== 'undefined'))
 								form(action='/game/#{game.id}/join', method='post')	
 									label(for='team') team
 									select(name='team')
@@ -24,5 +24,7 @@ html(lang="en")
 											option(value='#{team.id}') #{team.name}
 									label(for='submit') join game
 									input.btn(name='submit', type='submit')
+							else
+								p Awaiting team
 					// canvas(width="400", height="600") 
 					include includes/footer

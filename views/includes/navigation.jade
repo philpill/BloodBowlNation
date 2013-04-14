@@ -1,5 +1,5 @@
 nav
-	ul
+	ul.nav.nav-pills
 		li
 			a(href="/") home
 		li
@@ -8,7 +8,7 @@ nav
 			a(href="/team") team
 		li
 			a(href="/about") about
-		- if (user && user.username === 'admin')
+		- if ((typeof(user) !== 'undefined') && (user.username === 'admin'))
 			li
 				a(href='/admin') admin
 		li
