@@ -16,6 +16,6 @@ html(lang='en')
 								- for race in races
 									option(value=race.id) #{race.name}
 					label create team
-					input(name='submit', type='submit', class='btn')
-					a(href='/team/', class='btn') cancel
+					input.btn(name='submit', type='submit')
+					a.btn(href='/team/') cancel
 			include includes/footer

@@ -1,19 +1,28 @@
 !!! 5
 html(lang="en")
-    include includes/head
-    body
-        div#Container
-            include includes/header
-            section#Main
-                h2 Game
-                if (typeof(game) !== 'undefined')
-                    h3
-                        |#{game.name} 
-                        if (typeof(game.hostTeam) !== 'undefined')
-                          | #{game.hostTeam.name} 
-                        if (typeof(game.clientTeam) !== 'undefined')
-                          | /- #{game.clientTeam.name}
-                    canvas(width="400", height="600") 
-                else
-                    p Game doesn't exist
-            include includes/footer
+	include includes/head
+	body
+		div#Container
+			include includes/header
+				section#Main
+					h2 Game
+					h3
+						|#{game.name}: 
+						if (game.hostTeam)
+							| #{game.hostTeam.name} 
+						if (game.clientTeam)
+							| - #{game.clientTeam.name}
+						else
+							if (game.clientTeam)
+								a(href='/team/#{game.clientTeam.id}')
+									#{game.clientTeam.name}
+							else if (user && user.teams && user.teams.length > 0)
+								form(action='/game/#{game.id}/join', method='post')	
+									label(for='team') team
+									select(name='team')
+										each team in user.teams
+											option(value='#{team.id}') #{team.name}
+									label(for='submit') join game
+									input.btn(name='submit', type='submit')
+					// canvas(width="400", height="600") 
+					include includes/footer
