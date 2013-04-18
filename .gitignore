@@ -58,4 +58,3 @@ node_modules
 # custom #
 ##########
 *.stackdump
-db

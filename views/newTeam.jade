@@ -8,7 +8,7 @@ html(lang='en')
 				h2 New Team
 				form(action='/team/new', method='post')
 					label(for="teamName") name
-					input(type="text", name="teamName", placeholder='team name')
+					input(type="text", name="teamName", placeholder='team name', autofocus)
 					label(for="race") race
 					- if (races)
 						select(name="race")
