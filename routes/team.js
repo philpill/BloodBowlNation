@@ -16,8 +16,8 @@ exports.getAll = function(req, res) {
 	
 		var pusher = new Pusher({
 			appId: '42184',
-			key: 'e67e6af24a68875be966',
-			secret: '8d7cc7ac8a731fec56bb'
+			key: 'd3ad66f3eb116013654a',
+			secret: '51741d0fa2e4695233a1'
 		});
 
 		pusher.trigger( 'test_channel', 'test_event', { message: "hello world" } );
