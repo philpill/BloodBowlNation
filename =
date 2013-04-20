@@ -1,0 +1,10 @@
+(function($){
+
+	console.log('bbn');
+
+	return {
+		
+		test: 'test'
+	}
+
+}(jQuery))

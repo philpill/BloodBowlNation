@@ -6,11 +6,22 @@ var Race = require('../schema/race');
 var Position = require('../schema/position');
 var passport = require('passport');
 
+var Pusher = require('pusher');
+
 exports.getAll = function(req, res) {
 	var user = req.user;
 	if (!user) {
         res.redirect('/login');
     } else {
+	
+		var pusher = new Pusher({
+			appId: '42184',
+			key: 'e67e6af24a68875be966',
+			secret: '8d7cc7ac8a731fec56bb'
+		});
+
+		pusher.trigger( 'test_channel', 'test_event', { message: "hello world" } );
+
         User.findById(user.id)
         .populate('teams')
         .exec(function(err, user){ 
