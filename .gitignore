@@ -59,4 +59,4 @@ node_modules
 ##########
 *.stackdump
 *.swp
-config.*.js
+*.env
