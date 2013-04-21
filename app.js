@@ -31,8 +31,10 @@
 	var server = req('http').createServer(app);
 
 	var io = req('socket.io').listen(server);
-
-	server.listen(25553);
+	
+	var port = process.env.PORT || 3000;
+	
+	server.listen(port);
 
 	app.configure(function(){
 		app.set('views', __dirname + '/views');
