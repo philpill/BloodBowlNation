@@ -109,6 +109,6 @@
 	app.get('/api/user/:id', passport.ensureAuthenticated, api.user.get);
 	app.get('/api/user/:id/team', passport.ensureAuthenticated, api.user.team);
 
-	var sockets = req('./sockets').connect(io.sockets);
+	//var sockets = req('./sockets').connect(io.sockets);
 
 })(require);
