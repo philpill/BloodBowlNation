@@ -4,7 +4,9 @@
 
 	var mongoose = req('mongoose');
 
-	var uri = "mongodb://localhost/bbn";
+	//var uri = "mongodb://localhost/bbn";
+	
+	var uri = "mongodb://localhost:10015/app6556230";
 
 	mongoose.connect(uri);
 
