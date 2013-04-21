@@ -11,9 +11,9 @@
 
 	// https://devcenter.heroku.com/articles/config-vars#setting-up-config-vars-for-a-deployed-application
 
-	//var config = req('./config.heroku');
+	var config = req('./config.heroku');
 	
-	var config = req('./config.local');
+	//var config = req('./config.local');
 
 	module.exports = config;
 
