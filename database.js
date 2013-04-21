@@ -6,7 +6,7 @@
 
 	//var uri = "mongodb://localhost/bbn";
 	
-	var uri = "mongodb://localhost:10015/app6556230";
+	var uri = "mongodb://alex.mongohq.com:10015/app6556230";
 
 	mongoose.connect(uri);
 
