@@ -66,7 +66,7 @@
 	app.get('/test', routes.page.test);
 
 	app.get('/game', routes.game.getAll);
-  app.get('/game/new', passport.ensureAuthenticated, routes.game.createGet);
+	app.get('/game/new', passport.ensureAuthenticated, routes.game.createGet);
 	app.post('/game/new', passport.ensureAuthenticated, routes.game.createPost);
 	app.get('/game/:id', routes.game.get);
 	app.post('/game/:id/join', passport.ensureAuthenticated, routes.game.join);
@@ -95,11 +95,11 @@
 
 	app.get('/admin', passport.ensureAuthenticated, routes.admin.index);
 
-  //should be in race.js?
+	//should be in race.js?
 	app.get('/admin/race', passport.ensureAuthenticated, routes.admin.races);
     
-  app.get('/admin/user', passport.ensureAuthenticated, routes.user.getAll);
-  app.post('/admin/user/new', passport.ensureAuthenticated, routes.user.createPost);
+	app.get('/admin/user', passport.ensureAuthenticated, routes.user.getAll);
+	app.post('/admin/user/new', passport.ensureAuthenticated, routes.user.createPost);
 
 	app.get('/api/game', passport.ensureAuthenticated, api.game.getAll);
 	app.get('/api/player/:id', passport.ensureAuthenticated, api.player.get);
