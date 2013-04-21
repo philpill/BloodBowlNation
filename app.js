@@ -30,7 +30,7 @@
 
 	var server = req('http').createServer(app);
 
-	var io = req('socket.io').listen(server);
+	//var io = req('socket.io').listen(server);
 	
 	var port = process.env.PORT || 3000;
 	
