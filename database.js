@@ -22,8 +22,23 @@
 	var connection = mongoose.createConnection(uri);
 
 	connection.on("open", function(){
-
 		console.log("Connection opened to mongodb at %s", uri);
+	});
+
+	connection.on("error", function(){
+		console.log("Mongo connection error");
+	});
+
+	connection.on("connected", function(){ 
+		console.log("Mongo connected");
+  	});
+
+	connection.on("disconnected", function(){ 
+		console.log("Mongo disconnected");  
+	});
+	
+	connection.on("reconnected", function(){ 
+		console.log("Mongo reconnected");  
 	});
 
 	connection.on("error", console.error.bind(console, "connection error:"));

@@ -5,20 +5,14 @@ var Player = require('../schema/player');
 var Race = require('../schema/race');
 var Position = require('../schema/position');
 var passport = require('passport');
-
-var Pusher = require('pusher');
+var config = require('../config.js');
+var pusher = require('../pusher.js');
 
 exports.getAll = function(req, res) {
 	var user = req.user;
 	if (!user) {
         res.redirect('/login');
     } else {
-	
-		var pusher = new Pusher({
-			appId: '42184',
-			key: 'd3ad66f3eb116013654a',
-			secret: '51741d0fa2e4695233a1'
-		});
 
 		pusher.trigger( 'test_channel', 'test_event', { message: "hello world" } );
 

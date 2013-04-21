@@ -44,7 +44,7 @@
 		app.use(express.methodOverride());
 		app.use(express.cookieParser());
 
-		app.use(express.session({ secret: '4d84rWuEMaWXSPVnAF4t' }));
+		app.use(express.session({ secret: config.app.secret }));
 		app.use(passport.initialize());
 		app.use(passport.session());
 
