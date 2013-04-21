@@ -3,14 +3,17 @@
 
 
 	var mongoose = req('mongoose');
-
-	//var uri = "mongodb://localhost/bbn";
+	var config = req('./config');
 	
-	var username = 'admin';
+	var dbconfig = config.database;
 
-	var password = 'admin';
+	var username = dbconfig.user;
+	var password = dbconfig.pass;
+	var url = dbconfig.url;
+	var port = dbconfig.port;
+	var db = dbconfig.db;
 
-	var uri = "mongodb://" + username + ":" + password + "@alex.mongohq.com:10015/app6556230";
+	var uri = "mongodb://" + username + ":" + password + "@" + url + ":" + port + "/" + db;
 
 	mongoose.connect(uri);
 

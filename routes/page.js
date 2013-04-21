@@ -2,7 +2,6 @@ var mongoose = require('mongoose');
 var passport = require('passport');
 
 exports.index = function(req, res){
-	console.log(req.user);
 	var user = req.user;
 	res.render('index', { title: 'BloodBowlNation', user: user });
 };

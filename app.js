@@ -25,12 +25,13 @@
 	var express = req('express');
 	var passport = req('./passport');
 	var database = req('./database');
+	var config = req('./config');
 
 	var app = express();
 
 	var server = req('http').createServer(app);
 
-	var port = process.env.PORT || 3000;
+	var port = config.app.port;
 	
 	server.listen(port);
 
