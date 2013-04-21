@@ -6,7 +6,11 @@
 
 	//var uri = "mongodb://localhost/bbn";
 	
-	var uri = "mongodb://alex.mongohq.com:10015/app6556230";
+	var username = 'admin';
+
+	var password = 'admin';
+
+	var uri = "mongodb://" + username + ":" + password + "@alex.mongohq.com:10015/app6556230";
 
 	mongoose.connect(uri);
 

@@ -30,8 +30,6 @@
 
 	var server = req('http').createServer(app);
 
-	//var io = req('socket.io').listen(server);
-	
 	var port = process.env.PORT || 3000;
 	
 	server.listen(port);
@@ -108,7 +106,5 @@
 	app.get('/api/user', passport.ensureAuthenticated, api.user.index);
 	app.get('/api/user/:id', passport.ensureAuthenticated, api.user.get);
 	app.get('/api/user/:id/team', passport.ensureAuthenticated, api.user.team);
-
-	//var sockets = req('./sockets').connect(io.sockets);
 
 })(require);
