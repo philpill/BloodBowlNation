@@ -15,6 +15,8 @@
 
 	var uri = "mongodb://" + username + ":" + password + "@" + url + ":" + port + "/" + db;
 
+	console.log(uri);
+
 	mongoose.connect(uri);
 
 	var connection = mongoose.createConnection(uri);

@@ -4,7 +4,7 @@
 
 	var config = { 
 		database: {
-			url: 'alex.mongohq.com:',
+			url: 'alex.mongohq.com',
 			port: '10015',
 			user: 'admin',
 			pass: 'admin',
