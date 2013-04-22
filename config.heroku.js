@@ -20,6 +20,11 @@
 	url = process.env.mongo_url;
 	db = process.env.mongo_db;
 	
+	//Pusher
+	pusherId = process.env.pusher_id;
+	pusherKey = process.env.pusher_key;
+	pusherSecret = process.env.pusher_secret;
+
 	//heroku config:set mongo_user=user
 	//https://devcenter.heroku.com/articles/nodejs#setting-node-env
 
@@ -33,12 +38,12 @@
 		},
 		app: {
 			port: appPort,
-			secret: '7bqMLyN767Ga7djMjT6S'
+			secret: 
 		},
 		pusher: {
-			id: '42184',
-			key: 'd3ad66f3eb116013654a',
-			secret: '51741d0fa2e4695233a1'
+			id: pusherId,
+			key: pusherKey,
+			secret: pusherSecret
 		}
 	}
 	module.exports = config;
