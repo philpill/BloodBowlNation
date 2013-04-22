@@ -25,6 +25,9 @@
 	pusherKey = process.env.pusher_key;
 	pusherSecret = process.env.pusher_secret;
 
+	//Express
+	expressSecret = process.env.express_secret;	
+
 	//heroku config:set mongo_user=user
 	//https://devcenter.heroku.com/articles/nodejs#setting-node-env
 
@@ -38,7 +41,7 @@
 		},
 		app: {
 			port: appPort,
-			secret: 
+			secret: expressSecret
 		},
 		pusher: {
 			id: pusherId,
