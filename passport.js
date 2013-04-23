@@ -38,7 +38,9 @@
 
 	function ensureAuthenticated(req, res, next) {
 		if (req.isAuthenticated()) { return next(); }
-		res.redirect('/login');
+		//redirect is ignored here
+		//just use send(401)?
+		res.redirect(401, '/login');
 	}
 
 	passport.serializeUser(onSerializeUser);

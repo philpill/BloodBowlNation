@@ -104,7 +104,7 @@
 	app.get('/api/player/:id', passport.ensureAuthenticated, api.player.get);
 	app.get('/api/team', passport.ensureAuthenticated, api.team.index);
 	app.get('/api/race', passport.ensureAuthenticated, api.race.index);
-	app.get('/api/user', passport.ensureAuthenticated, api.user.index);
+	app.get('/api/user', passport.ensureAuthenticated, api.user.get);
 	app.get('/api/user/:id', passport.ensureAuthenticated, api.user.get);
 	app.get('/api/user/:id/team', passport.ensureAuthenticated, api.user.team);
 

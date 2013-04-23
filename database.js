@@ -1,6 +1,4 @@
-
 (function(req) {
-
 
 	var mongoose = req('mongoose');
 	var config = req('./config');
@@ -14,8 +12,6 @@
 	var db = dbconfig.db;
 
 	var uri = "mongodb://" + username + ":" + password + "@" + url + ":" + port + "/" + db;
-
-	console.log(uri);
 
 	mongoose.connect(uri);
 

@@ -1,6 +1,5 @@
 var mongoose = require('mongoose');
 var User = require('../schema/user');
-var Team = require('../schema/team');
 var passport = require('passport');
 
 exports.getAll = function(req, res) {
@@ -11,23 +10,13 @@ exports.getAll = function(req, res) {
 };
 
 exports.get = function(req, res) {
-
-	console.log('get()');
-
-	var id = req.params.id;
-
-	console.log(id);
-
-	User.findById(id, function(error, data){
-
-		if(error){
-
-			res.json(error);
-
-		} else {
-
-			res.json(data);
-		}
+	console.log('get user');
+	var user = req.user;
+	if (!user) res.send(401);
+	User.findById(user._id, function(error, data){
+		if (error) res.json(500, {error: error});
+		console.log(data);
+		res.json(data);
 	});
 };
 
