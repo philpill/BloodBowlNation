@@ -107,5 +107,6 @@
 	app.get('/api/user', passport.ensureAuthenticated, api.user.get);
 	app.get('/api/user/:id', passport.ensureAuthenticated, api.user.get);
 	app.get('/api/user/:id/team', passport.ensureAuthenticated, api.user.team);
+	app.get('/api/user/:id/game', passport.ensureAuthenticated, api.user.getGames);
 
 })(require);

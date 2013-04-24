@@ -11,7 +11,6 @@ module.exports = mongoose.model('User', new Schema(new base({
     username: { type: String, required: true, index: { unique: true } },
     password: { type: String, required: true },
     email: { type: String },
-    currentGame: { type: Number },
     teams: [{ type: ObjectId, ref: 'Team' }]
 
 })));

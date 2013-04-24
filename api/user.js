@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 var User = require('../schema/user');
 var passport = require('passport');
+var Game = require('../schema/game');
 
 exports.getAll = function(req, res) {
 
@@ -17,6 +18,23 @@ exports.get = function(req, res) {
 		if (error) res.json(500, {error: error});
 		console.log(data);
 		res.json(data);
+	});
+};
+
+exports.getGames = function(req, res) {
+	var user = req.user;
+	var userId = req.params.id;
+	if (!user) res.json(401);
+	if (!userId) userId = user._id;
+	Game.find()
+	.or({'host': userId}, {'client': userId})
+	.populate('hostTeam clientTeam')
+	.exec(function(err, games){
+		if (err) {
+			res.json(500, {error: err});
+		} else {
+			res.json(games);
+		}
 	});
 };
 

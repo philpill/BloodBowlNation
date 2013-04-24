@@ -12,6 +12,14 @@ define(['jquery'], function($){
 			.fail(function(jqXHR, textStatus, errorThrown){
 				console.log(textStatus + ': ' + errorThrown);
 			});
+
+			$.when($.ajax('/api/user/' + local.user.id + '/game'))
+			.then(function(data){
+				console.log(data);
+			})
+			.fail(function(jqXHR, textStatus, errorThrown){
+				console.log(textStatus + ': ' + errorThrown);
+			});
 		}
 	}
 });

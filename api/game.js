@@ -12,9 +12,26 @@ exports.getAll = function(req, res) {
 		if (err){
 			res.json(500, { error: err });
 		} else {
-			res.json({
-				games: games
-			});
+			res.json(games);
+		}
+	});
+};
+
+
+exports.get = function(req, res) {
+	var user = req.user;
+	var gameId = req.params.id;
+	if (!user) res.json(401);
+	if (!gameId) res.json(204);
+	Game.findOne()
+	.or({'host': user._id}, {'client': user._id})
+	.or({'clientTeam': gameId}, {'hostTeam': gameId})
+	.populate('hostTeam clientTeam host client')
+	.exec(function(err, game){ 
+		if (err){
+			res.json(500, { error: err });
+		} else {
+			res.json(game);
 		}
 	});
 };

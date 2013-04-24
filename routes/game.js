@@ -60,7 +60,7 @@ exports.get = function(req, res){
 	var user = req.user;
 	var gameId = req.params.id;
 	Game.findById(gameId)
-	.populate('clientTeam hostTeam host client')
+	.populate('clientTeam hostTeam')
 	.exec(function(err, game){
 		if (err) res.send(500, {error: err});
 		if (!user) {
