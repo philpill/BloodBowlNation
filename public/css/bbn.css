@@ -1,17 +1,17 @@
 #Container {
-  margin: 10px;
+  margin: 5px;
   border: solid 1px #efefef;
-  padding: 10px; }
+  padding: 5px; }
 
 #Main {
   border: solid 1px #efefef;
-  padding: 10px;
-  margin: 10px; }
+  padding: 5px;
+  margin: 5px; }
 
 header {
   border: solid 1px #efefef;
-  padding: 10px;
-  margin: 10px;
+  padding: 5px;
+  margin: 5px;
   background: #efefef; }
   header h1 {
     display: inline-block;
@@ -21,11 +21,11 @@ header {
 
 footer {
   border: solid 1px #efefef;
-  padding: 10px;
-  margin: 10px;
+  padding: 5px;
+  margin: 5px;
   background: #efefef; }
   footer .thirdParty {
     font-size: 75%; }
     footer .thirdParty li {
       display: inline-block;
-      padding: 5px 10px; }
+      padding: 5px 5px; }

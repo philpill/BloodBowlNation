@@ -16,6 +16,6 @@ module.exports = mongoose.model('Team', new Schema(new base({
     won: { type: Number },
     lost: { type: Number },
     drawn: { type: Number },
-    race: { type: ObjectId, ref: 'Race' }
-
+    race: { type: ObjectId, ref: 'Race' },
+	rerolls: { type: Number }
 })));

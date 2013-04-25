@@ -7,6 +7,11 @@ html(lang="en")
 			section#Main
 				if (team)
 					h3 #{team.name}
+					h4 re-rolls
+					if (team.rerolls)
+						p team.rerolls
+					else
+						p 0
 					h4 players
 					table.players.table.table-striped.table-bordered
 						thead
@@ -14,6 +19,7 @@ html(lang="en")
 								th #
 								th player
 								th position
+								th cost
 						tbody
 							each player, i in team.players
 								tr
@@ -22,6 +28,7 @@ html(lang="en")
 										a(href='/player/' + player.id)
 											strong #{player.name}
 									td #{team.players[i].position.name}
+									td #{team.players[i].position.cost}
 					a.createPlayer(href='/team/#{team.id}/player/new/') add new player
 				else
 					p Team not found!
