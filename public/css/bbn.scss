@@ -1,40 +1,92 @@
 
 #Container {
-	margin: 10px;
+	margin: 5px;
 	border: solid 1px #efefef;
-	padding: 10px;
+	padding: 5px;
 }
 
 #Main {
 	border: solid 1px #efefef;
-	padding: 10px;
-	margin: 10px;
+	padding: 5px;
+	margin: 5px;
 }
 
 header {
 	border: solid 1px #efefef;
-	padding: 10px;
-	margin: 10px;
-	background: #efefef;
+	padding: 5px;
+	margin: 5px;
 	h1 {
-		display: inline-block;
-		font-family: 'Covered By Your Grace'
-	}
-	p {
-		display: inline-block;
+		//font-family: 'Covered By Your Grace'
 	}
 }
 
 footer {
 	border: solid 1px #efefef;
-	padding: 10px;
-	margin: 10px;
-	background: #efefef;
+	padding: 5px;
+	margin: 5px;
 	.thirdParty {
 		font-size:75%;
 		li {
 			display: inline-block;
-			padding: 5px 10px;
+			padding: 5px 5px;
 		}
 	}
 }
+
+#Stadium {
+	border: solid 1px black;
+	position: relative;
+	height: 310px; //15 * 20 + 10
+	width: 530px; //26 * 20 + 10
+	#Field {
+		width: 520px;
+		height: 300px;
+		position: absolute;
+		top: 5px;
+		left: 5px;
+		opacity: 0.1;
+		background: #0f0;
+	}	
+	#Grid {
+		top: 5px;
+		left: 5px;
+		position: absolute;
+		width: 521px;
+		height: 301px;
+		background:url(data:image/gif;base64,R0lGODlhFAAUAIAAAMDAwP///yH5BAEAAAEALAAAAAAUABQAAAImhI+pwe3vAJxQ0hssnnq/7jVgmJGfGaGiyoyh68GbjNGXTeEcGxQAOw==);
+		.line {
+			position: absolute;
+			background: #666;
+		}
+		.gutter {
+			height: 1px;
+			width: 520px;
+		}
+		.left {
+			top: 80px;
+			left: 0	
+		}
+		.right {
+			top: 220px;
+			left: 0;
+		}
+		.zone {
+			height: 300px;
+			width: 1px;
+		}
+		.home {
+			top: 0;
+			left: 20px;
+		}
+		.away {
+			top: 0;
+			left: 500px;
+		}
+		.mid {
+			top: 0;
+			left: 260px;
+		}
+	}
+}
+
+
