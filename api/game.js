@@ -26,7 +26,7 @@ exports.get = function(req, res) {
 	Game.findOne()
 	.or({'host': user._id}, {'client': user._id})
 	.or({'clientTeam': gameId}, {'hostTeam': gameId})
-	.populate('hostTeam clientTeam host client')
+	.populate('hostTeam clientTeam')
 	.exec(function(err, game){ 
 		if (err){
 			res.json(500, { error: err });
