@@ -19,5 +19,8 @@
 	},
 	"scripts": {
 		"test": "node test/testrunner.js"
+	},
+	"devDependencies": {
+		"mocha": "0.3.x"
 	}
 }
