@@ -1,21 +1,23 @@
-var mongoose = require('mongoose');
+var sequelize = require('sequelize');
+var Player = require('./schema/player.js');
+var Race = require('./schema/race.js');
 
-var base = require('./_base.js');
+var Team = sequelize.define('Team', {
+	name: { type: sequelize.STRING, allowNull: false },
+	fanFactor: sequelize.INTEGER,
+	treasury: sequelize.INTEGER,
+	played: sequelize.INTEGER,
+	won: sequelize.INTEGER,
+	lost: sequelize.INTEGER,
+	drawn: sequelize.INTEGER,
+	rerolls: sequelize.INTEGER
+});
 
-var Schema = mongoose.Schema;
+Team.hasMany(Player, {as: 'Players'});
 
-var ObjectId = Schema.Types.ObjectId;
+// doublecheck
+// seems technically right, but semantically incorrect
+// Team.hasOne(Race);
+Race.belongsTo(Team);
 
-module.exports = mongoose.model('Team', new Schema(new base({
-
-    name: { type: String, required: true, index: { unique: true } },
-    players: [{ type: ObjectId, ref: 'Player'}],
-    fanFactor: { type: Number },
-    treasury: { type: Number },
-    played: { type: Number },
-    won: { type: Number },
-    lost: { type: Number },
-    drawn: { type: Number },
-    race: { type: ObjectId, ref: 'Race' },
-	rerolls: { type: Number }
-})));
+module.exports = Team;

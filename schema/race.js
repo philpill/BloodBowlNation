@@ -1,14 +1,10 @@
-var mongoose = require('mongoose');
+var sequelize = require('sequelize');
+var Position = require('./schema/position.js');
 
-var base = require('./_base.js');
+var Race = sequelize.define('Race', {
+	name: { type: sequelize.STRING. allowNull: false }
+});
 
-var Schema = mongoose.Schema;
+Race.hasMany(Position, {as: 'Positions'});
 
-var ObjectId = Schema.Types.ObjectId;
-
-module.exports = mongoose.model('Race', new Schema(new base({
-
-    name: { type: String, required: true, index: { unique: true } },
-    positions: { type: Array }
-
-})));
+module.exports = Race;

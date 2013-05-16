@@ -1,16 +1,12 @@
-var mongoose = require('mongoose');
+var sequelize = require('sequelize');
+var Team = require('./schema/team.js');
 
-var base = require('./_base.js');
+var User = sequelize.define('User', {
+	username: { type: sequelize.STRING, allowNull: false },
+	password: sequelize.TEXT,
+	email: sequelize.TEXT
+});
 
-var Schema = mongoose.Schema;
+User.hasMany(Team, {as: 'Teams'});
 
-var ObjectId = Schema.Types.ObjectId;
-
-module.exports = mongoose.model('User', new Schema(new base({
-
-    username: { type: String, required: true, index: { unique: true } },
-    password: { type: String, required: true },
-    email: { type: String },
-    teams: [{ type: ObjectId, ref: 'Team' }]
-
-})));
+module.exports = User;

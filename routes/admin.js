@@ -1,4 +1,4 @@
-var mongoose = require('mongoose');
+var sequelize = require("sequelize")
 var User = require('../schema/user');
 var Team = require('../schema/team');
 var Player = require('../schema/player');

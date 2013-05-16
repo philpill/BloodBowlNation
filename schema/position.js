@@ -1,11 +1,6 @@
-var mongoose = require('mongoose');
+var sequelize =  require('sequelize');
 
-var base = require('./_base.js');
-
-var Schema = mongoose.Schema;
-
-var ObjectId = Schema.Types.ObjectId;
-
+/*
 module.exports = mongoose.model('Position', new Schema(new base({
 
 	name: { type: String },
@@ -26,3 +21,10 @@ module.exports = mongoose.model('Position', new Schema(new base({
 	}
 
 })));
+*/
+
+var Position = sequelize.define('Position', {
+	name: sequelize.STRING
+});
+
+module.exports = Position;

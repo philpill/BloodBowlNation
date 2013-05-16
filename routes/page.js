@@ -1,4 +1,4 @@
-var mongoose = require('mongoose');
+var sequelize = require("sequelize")
 var passport = require('passport');
 
 exports.index = function(req, res){
