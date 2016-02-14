@@ -1,0 +1,26 @@
+{
+  "name": "bloodbowlnation",
+  "version": "0.0.1",
+  "description": "Blood Bowl Server",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/philpill/BloodBowlNation.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/philpill/BloodBowlNation/issues"
+  },
+  "homepage": "https://github.com/philpill/BloodBowlNation#readme",
+  "dependencies": {
+    "bluebird": "^3.3.1",
+    "co-nedb": "^2.0.1",
+    "koa": "^1.1.2",
+    "koa-route": "^2.4.2",
+    "nedb": "^1.7.4"
+  }
+}
