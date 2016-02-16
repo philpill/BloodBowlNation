@@ -21,7 +21,8 @@
     "bluebird": "^3.3.1",
     "co-nedb": "^2.0.1",
     "koa": "^1.1.2",
-    "koa-route": "^2.4.2",
+    "koa-bodyparser": "^2.0.1",
+    "koa-router": "^5.4.0",
     "nedb": "^1.7.4"
   },
   "devDependencies": {

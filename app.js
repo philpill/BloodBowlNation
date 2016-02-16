@@ -1,24 +1,24 @@
 var koa = require('koa');
-var route = require('koa-route');
+var router = require('koa-router')();
+var bodyParser = require('koa-bodyparser');
+
 var players = require('./controllers/players');
+var teams = require('./controllers/teams');
+var users = require('./controllers/users');
 
 var app = koa();
 
-app.use(route.get('/players', players.all));
+app.use(bodyParser());
 
-// logger
+router.get('/players', players.all);
 
-app.use(function *(next){
-  var start = new Date;
-  yield next;
-  var ms = new Date - start;
-  console.log('%s %s - %s', this.method, this.url, ms);
-});
+router.post('/teams/:id/player', teams.addPlayer);
 
-// response
+router.post('/users', users.createUser);
 
-app.use(function *(){
-  this.body = 'Hello World';
-});
+
+app
+  .use(router.routes())
+  .use(router.allowedMethods());
 
 app.listen(3000);
