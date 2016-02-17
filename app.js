@@ -2,6 +2,7 @@ var koa = require('koa');
 var router = require('koa-router')();
 var bodyParser = require('koa-bodyparser');
 
+var auth = require('./controllers/authentication');
 var players = require('./controllers/players');
 var teams = require('./controllers/teams');
 var users = require('./controllers/users');
