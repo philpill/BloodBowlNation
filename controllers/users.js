@@ -7,6 +7,7 @@ module.exports.createUser = function * createUser () {
     var body = this.request.body;
 
     data.users.insertAsync({
+
         name : body.name,
         password : body.password,
         email : body.email
@@ -16,5 +17,4 @@ module.exports.createUser = function * createUser () {
         this.type = 'application/json';
         this.body = newUser;
     });
-
 };

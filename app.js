@@ -1,4 +1,4 @@
-var koa = require('koa');
+var app = require('koa')();
 var router = require('koa-router')();
 var bodyParser = require('koa-bodyparser');
 
@@ -7,8 +7,6 @@ var players = require('./controllers/players');
 var teams = require('./controllers/teams');
 var users = require('./controllers/users');
 
-var app = koa();
-
 app.use(bodyParser());
 
 router.get('/players', players.all);
@@ -16,6 +14,8 @@ router.get('/players', players.all);
 router.post('/teams/:id/player', teams.addPlayer);
 
 router.post('/users', users.createUser);
+
+router.post('/authentication', auth.authenticate);
 
 
 app
