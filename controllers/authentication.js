@@ -17,7 +17,7 @@ function authenticateUser (user) {
 
     if (user.password === data.password) { // should be some hashing going on here
 
-        isAuthed = truel
+        isAuthed = true;
         // issue web token
     }
 
@@ -41,9 +41,7 @@ function authenticateGetToken (user) {
     return token;
 }
 
-var auth = {};
-
-auth.authenticate = function * authenticate (next) {
+function * login () {
 
     var data = this.request.body;
 
@@ -59,5 +57,32 @@ auth.authenticate = function * authenticate (next) {
 
     this.body = token;
 }
+
+function * signup () {
+
+    var data = this.request.body;
+    this.type="application/json";
+
+    var user = {
+      email : email,
+      password : password
+    };
+
+    var token = yield data.users.insertAsync(user)
+    .then(authenticateGetToken)
+    .catch(function(e) {
+
+    });
+
+    this.status = token ? 200 : 401;
+
+    this.body = token;
+}
+
+var auth = {
+    login : login,
+    signup : signup
+};
+
 
 module.exports = auth;

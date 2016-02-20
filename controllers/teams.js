@@ -1,16 +1,33 @@
 var data = require('../data/data');
 
-var team = {};
+function TeamFactory (name, race) {
 
-team.addPlayer = function * addPlayer (next) {
+    function getTeam () {
 
-    console.log('teams', data.teams);
+    }
 
-    // this.request.body
+    return {
+      getTeam : getTeam
+    }
+}
 
-    this.type = 'application/json';
+function * create () {
 
-    this.body = yield { 'foo' : 'bar' };
+    var data = this.request.body;
+
+    var factory = new TeamFactory(data.name, data.race);
+
+    var team = factory.getTeam();
+
+    var team = yield data.teams.insertAsync(team)
+    .then(function (team) {
+
+        return team
+    });
+
+    this.body = 'thing'; 
+}
+
+module.exports = {
+    create : create
 };
-
-module.exports = team;

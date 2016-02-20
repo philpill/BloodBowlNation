@@ -1,6 +1,6 @@
 var data = require('../data/data');
 
-module.exports.createUser = function * createUser () {
+function * create () {
 
     console.log('users', data.users);
 
@@ -17,4 +17,8 @@ module.exports.createUser = function * createUser () {
         this.type = 'application/json';
         this.body = newUser;
     });
+};
+
+module.exports = {
+    create : create
 };

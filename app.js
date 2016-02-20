@@ -11,11 +11,15 @@ app.use(bodyParser());
 
 router.get('/players', players.all);
 
-router.post('/teams/:id/player', teams.addPlayer);
+router.post('/players', players.create);
 
-router.post('/users', users.createUser);
+router.post('/teams', teams.create);
 
-router.post('/authentication', auth.authenticate);
+router.post('/users', users.create);
+
+router.post('/authentication/login', auth.login);
+
+router.post('/authentication/signup', auth.signup);
 
 
 app
