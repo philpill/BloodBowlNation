@@ -59,4 +59,6 @@ node_modules
 ##########
 *.stackdump
 *.swp
+*.swo
 *.env
+
