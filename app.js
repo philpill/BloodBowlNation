@@ -9,8 +9,6 @@ var users = require('./controllers/users');
 
 app.use(bodyParser());
 
-router.get('/players', players.all);
-
 router.post('/players', players.create);
 
 router.post('/teams', teams.create);

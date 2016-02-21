@@ -1,52 +1,90 @@
 var data = require('../data/data');
 
-function * all () {
+var positions = require('../config/positions');
 
-    console.log('players', data.players);
+var Promisee = require("bluebird");
 
-    this.type = 'application/json';
+/**
+ * Check race exists in config
+ * @param {string} race Value to check against config
+ * @returns {boolean} If race exists in config
+ */ 
+function isRaceValid (race) {
+    var isRaceValid;
+    isRaceValid = positions[race] && positions[race].length > 0; 
+    return isRaceValid;
+}
 
-    this.body = { 'foo' : 'bar' };
-};
+/**
+ * Check position exists and valid for given race
+ * @param {string} race Player race to check position against
+ * @param {string} position Position to validate
+ * @returns {boolean} If race is valid and position is valid for race
+ */
+function isPositionValid (race, position) {
+    return isRaceValid(race) && positions[race].indexOf(position) > -1;
+}
 
-function PlayerFactory (name, race, position) {
+/**
+ * Validate data to create player
+ * @param {object} data Data to validate
+ * @param {string} data.race Player race
+ * @param {string} data.position Player position
+ * @returns {Promise.<object|string>} Promise of player data or error message
+ */
+function validateData (data) {
 
-    function create () {
-        return {
-            name : name,
-            race : 'human',
-            position : 'lineman'
-        }
-    }
+    var isValid = true;
 
-    return {
-        create : create
-    }
+    isValid = isValid && isRaceValid(data.race);
+
+    isValid = isValid && isPositionValid(data.race, data.position);    
+
+    // check race
+    // check position
+    // check team belongs to logged in player
+
+    return isValid ? Promise.resolve(data) : Promise.reject('validateData: data invalid');
+}
+
+/**
+ * Create player from given data
+ * @param {object} data Player data
+ * @param {string} data.name Player name 
+ * @param {string} data.race Player race
+ * @param {string} data.position Player position
+ * @param {string} data.team Team to add player to
+ * @returns {Promise.<object>} Promise of a player object 
+ */
+function createPlayer (data) {
+
+    var player = {
+        name : data.name,
+        race : data.race,
+        position : data.position,
+        team : data.team
+    };
+
+    return Promise.resolve(player);
 }
 
 function * create () {
-
-    var body = this.request.body;
-
-    var factory = new PlayerFactory(body.name, 'human', 'lineman');
-
-    var data = factory.create();
-
-    data.team = body.team;
-
-    var player = yield data.players.insertAsync(data)
-    .catch(function (error) {
-        // stuff
-    });
-
+    
     this.type = 'application/json';
 
-    this.status = player ? 200 : 500;
-
-    this.body = player;
+    validateData(this.request.body)
+    .then(createPlayer)
+    .then(data.players.insertAsync)
+    .then((player) => {
+        this.status = 200;
+        this.body = player;
+    })
+    .catch((error) => {
+        this.status = 500;
+        this.body = error;
+    });
 }
 
 module.exports = {
-    all : all,
     create : create
 };
