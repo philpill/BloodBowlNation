@@ -25,19 +25,29 @@ function authenticateUser (user) {
 }
 
 function getToken (user) {
+
+    console.log('getToken()');
+
     var token = jwt.sign(user, config.secret, {
-        expiresInMinutes: 1440 // expires in 24 hours
+        expiresIn: 86400 // expires in 24 hours
     });
+
+    console.log('token', token);
+
     return token;
 }
 
 function authenticateGetToken (user) {
+
+    console.log('authenticateGetToken()');
+    console.log(user);
+
     var token = '';
-    if (validateEmail(user)) {
-        if (authenticateUser(user)) {
+    // if (validateEmail(user)) {
+    //     if (authenticateUser(user)) {
             token = getToken(user);
-        }
-    }
+        // }
+    // }
     return token;
 }
 
@@ -58,30 +68,32 @@ function * login () {
     this.body = token;
 }
 
-function * signup () {
+function * register () {
 
-    var data = this.request.body;
-    this.type="application/json";
+    console.log('register()');
 
-    var user = {
-      email : email,
-      password : password
-    };
+    var body = this.request.body;
+    this.type='application/json';
 
-    var token = yield data.users.insertAsync(user)
-    .then(authenticateGetToken)
-    .catch(function(e) {
+    var user = yield data.users.findOne({ email : body.email });
 
-    });
+    if (user) {
+        this.status = 409;
+        this.body = 'email already registered';
+    } else {
+        var user = yield data.users.insert({
+            email : body.email,
+            password : body.password
+        });
 
-    this.status = token ? 200 : 401;
-
-    this.body = token;
+        this.status = 200;
+        this.body = authenticateGetToken(user);
+    }
 }
 
 var auth = {
     login : login,
-    signup : signup
+    register : register
 };
 
 

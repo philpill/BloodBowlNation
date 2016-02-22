@@ -2,7 +2,7 @@ var Datastore = require('nedb');
 var wrap = require('co-nedb');
 var Promise = require('bluebird');
 
-Promise.promisifyAll(Datastore.prototype);
+// Promise.promisifyAll(Datastore.prototype);
 
 var data = {};
 

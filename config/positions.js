@@ -1,13 +1,15 @@
+var races = require('./races');
+
 var positions = {};
 
-positions['human'] = [
+positions[races[0]] = [
     'lineman',
     'blitzer',
     'thrower',
     'catcher'
 ];
 
-positions['orc'] = [
+positions[races[1]] = [
     'lineman',
     'black orc blocker',
     'goblin',

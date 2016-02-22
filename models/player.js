@@ -1,14 +1,15 @@
 var positions = require('../config/positions');
+var races = require('../config/races');
 var Entity = require('./entity.js');
 
 /**
  * Check race exists in config
  * @param {string} race Value to check against config
  * @returns {boolean} If race exists in config
- */ 
+ */
 function isRaceValid (race) {
     var isRaceValid;
-    isRaceValid = positions[race] && positions[race].length > 0; 
+    isRaceValid = races.indexof(race) > -1 && positions[race] && positions[race].length > 0;
     return isRaceValid;
 }
 
@@ -34,7 +35,7 @@ var Player = function (name, race, position, opts) {
 
     Entity.call(this);
 
-    this.isValid = isValid(name, race, position); 
+    this.isValid = isValid(name, race, position);
 
     this.name = name;
     this.race = race;
