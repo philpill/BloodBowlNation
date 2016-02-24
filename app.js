@@ -22,6 +22,8 @@ router.post('/login', auth.login);
 
 router.post('/register', auth.register);
 
+router.post('/authenticate', auth.authenticate);
+
 app
   .use(router.routes())
   .use(router.allowedMethods());

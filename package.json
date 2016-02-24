@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/philpill/BloodBowlNation#readme",
   "dependencies": {
+    "bcrypt": "^0.8.5",
     "bluebird": "^3.3.1",
     "co-nedb": "^2.0.1",
     "jsonwebtoken": "^5.7.0",

@@ -1,28 +1,7 @@
 var data = require('../data/data');
 var config = require('../config/config');
 var jwt = require('jsonwebtoken');
-
-function validateEmail (users) {
-
-    if (users.length !== 1) {
-
-    }
-
-    return users[0];
-}
-
-function authenticateUser (user) {
-
-    var isAuthed = false;
-
-    if (user.password === data.password) { // should be some hashing going on here
-
-        isAuthed = true;
-        // issue web token
-    }
-
-    return isAuthed;
-}
+var bcrypt = require('bcrypt');
 
 function getToken (user) {
 
@@ -37,31 +16,41 @@ function getToken (user) {
     return token;
 }
 
-function authenticateGetToken (user) {
+function * authenticate () {
 
-    console.log('authenticateGetToken()');
-    console.log(user);
+    var body = this.request.body;
 
-    var token = '';
-    // if (validateEmail(user)) {
-    //     if (authenticateUser(user)) {
-            token = getToken(user);
-        // }
-    // }
-    return token;
+    this.type = 'application/json';
+
+    try {
+
+        jwt.verify(body.token, config.secret);
+        this.status = 200;
+
+    } catch (e) {
+
+        this.status = 401;
+    }
 }
 
 function * login () {
 
-    var data = this.request.body;
+    var body = this.request.body;
 
     this.type = 'application/json';
 
-    var token = yield data.users.findAsync({ email : data.email })
-    .then(authenticateGetToken)
-    .catch(function(e) {
-        // do stuff
-    });
+    var users = yield data.users.find({ email : body.email });
+
+    // check there's only 1 user
+
+    console.log(users[0]);
+
+    var token;
+
+    console .log('body.password ', body.password);
+    console .log('users.password ', users[0].password);
+
+    token = bcrypt.compareSync(body.password, users[0].password) ? getToken(users[0]) : null;
 
     this.status = token ? 200 : 401;
 
@@ -81,19 +70,24 @@ function * register () {
         this.status = 409;
         this.body = 'email already registered';
     } else {
+
+        var hash = bcrypt.hashSync(body.password, 8);
+
         var user = yield data.users.insert({
             email : body.email,
-            password : body.password
+            password : hash
         });
 
         this.status = 200;
-        this.body = authenticateGetToken(user);
+        this.body = getToken(user);
+
     }
 }
 
 var auth = {
     login : login,
-    register : register
+    register : register,
+    authenticate : authenticate,
 };
 
 
