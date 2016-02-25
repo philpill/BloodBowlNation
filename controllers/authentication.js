@@ -5,19 +5,20 @@ var bcrypt = require('bcrypt');
 
 function getToken (user) {
     return jwt.sign(user, config.secret, {
-        expiresIn: 86400
+        expiresIn : 86400,
+        subject : user._id
     });
 }
 
-function isTokenValid (token, secret) {
-    var isValid;
+function getDecodedToken (token, secret) {
+    var decodedToken;
     try {
-        jwt.verify(token, secret);
-        isValid = true;
+        decodedToken = jwt.verify(token, secret);
     } catch (e) {
-        isValid = false;
+        console.log(e);
+        decodedToken = null;
     }
-    return isValid;
+    return decodedToken;
 }
 
 function isPasswordValid (password, hash) {
@@ -26,7 +27,12 @@ function isPasswordValid (password, hash) {
 
 function * authenticate () {
     this.type = 'application/json';
-    this.status = isTokenValid(this.request.body.token, config.secret) ? 200 : 401;
+
+    var decodedToken = getDecodedToken(this.request.body.token, config.secret);
+
+    console.log(decodedToken);
+
+    this.status = decodedToken ? 200 : 401;
 }
 
 function * login () {
