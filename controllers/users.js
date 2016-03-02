@@ -1,4 +1,4 @@
-var data = require('../data/data');
+var userService = require('../services/user');
 
 function * create () {
 
@@ -6,14 +6,8 @@ function * create () {
 
     var body = this.request.body;
 
-    data.users.insertAsync({
-
-        name : body.name,
-        password : body.password,
-        email : body.email
-
-    }).then((newUser) => {
-
+    userService.addNewUser(body.email, body.password)
+    .then((newUser) => {
         this.type = 'application/json';
         this.body = newUser;
     });

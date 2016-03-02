@@ -1,31 +1,34 @@
 var app = require('koa')();
-var router = require('koa-router')();
+
 var bodyParser = require('koa-bodyparser');
 
 var cors = require('kcors');
-app.use(cors());
 
-var auth = require('./controllers/authentication');
-var players = require('./controllers/players');
-var teams = require('./controllers/teams');
-var users = require('./controllers/users');
+var router = require('./router');
+
+var security = require('./services/security');
+
+app.use(cors());
 
 app.use(bodyParser());
 
-router.post('/players', players.create);
+app.use(function * (next) {
 
-router.post('/teams', teams.create);
+    console.log('some middleware to examine JWT here');
 
-router.post('/users', users.create);
+    var auth = this.request.header.authorization;
 
-router.post('/login', auth.login);
+    var token = auth ? security.getDecodedToken(auth) : null;
 
-router.post('/register', auth.register);
+    this.state.userId = token ? token.id : null;
 
-router.post('/authenticate', auth.authenticate);
+    yield next;
+});
 
 app
   .use(router.routes())
   .use(router.allowedMethods());
+
+// autogenerate token here
 
 app.listen(3000);
