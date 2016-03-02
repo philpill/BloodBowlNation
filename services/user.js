@@ -1,6 +1,3 @@
-var Datastore = require('nedb');
-var wrap = require('co-nedb');
-
 var db = require('../data/data').users;
 
 function addNewUser (email, hash) {

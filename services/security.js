@@ -4,21 +4,14 @@ var bcrypt = require('bcrypt');
 var config = require('../config/config');
 
 function getDecodedToken (authHeader) {
-
-    console.log('getDecodedToken()');
-
     var decodedToken;
     var token = authHeader.replace('Bearer ', '');
-
     try {
         decodedToken = jwt.verify(token, config.secret);
     } catch (e) {
         console.log(e);
         decodedToken = null;
     }
-
-    console.log(decodedToken);
-
     return decodedToken;
 }
 
@@ -38,7 +31,6 @@ function getPasswordHash (password) {
 }
 
 module.exports = {
-
     getDecodedToken : getDecodedToken,
     getNewToken : getNewToken,
     isPasswordValid : isPasswordValid,

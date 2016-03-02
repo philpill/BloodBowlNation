@@ -10,9 +10,7 @@ function * identify () {
 }
 
 function * authenticate () {
-    console.log('authenticate()');
     this.type = 'application/json';
-    console.log(this.state.userId);
     this.status = this.state.userId ? 200 : 401;
 }
 
