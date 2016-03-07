@@ -7,9 +7,7 @@ var positions = require('../config/positions');
  * @returns {boolean} If race exists in config
  */
 function isRaceValid (race) {
-    var isRaceValid;
-    isRaceValid = positions[race] && positions[race].length > 0;
-    return isRaceValid;
+    return positions[race] && positions[race].length > 0;
 }
 
 /**
@@ -18,9 +16,7 @@ function isRaceValid (race) {
  * @returns {boolean} Is name valid
  */
 function isNameValid (name) {
-    var isNameValid;
-    isNameValid = name !== '';
-    return isNameValid;
+    return name !== '';
 }
 
 /**
@@ -31,13 +27,7 @@ function isNameValid (name) {
  * @returns {boolean} IsDataValid
  */
 function isDataValid (data) {
-
-    var isValid = true;
-
-    isValid = isValid && isRaceValid(data.race);
-    isValid = isValid && isNameValid(data.name);
-
-    return isValid;
+    return isRaceValid(data.race) && isNameValid(data.name);
 }
 
 /**
@@ -45,7 +35,7 @@ function isDataValid (data) {
  * @param {object} validData data to create team
  * @param {string} validData.name New team name
  * @param {string} validData.race New team race
- * @returns {object} New team
+ * @returns {object.<Team>} New team
  */
 function createNewTeam (team) {
     return db.insert({
@@ -55,7 +45,43 @@ function createNewTeam (team) {
     });
 }
 
+/**
+ * Get team by team id
+ * @param {number} id Team id to search for team
+ * @returns {object.<Team>} Team data
+ */
+function getTeamById (id) {
+    return db.findOne({ _id : id });
+}
+
+/**
+ * Get all teams
+ * @returns {Array.<Team>}
+ */
+function getAllTeams () {
+    return db.find({});
+}
+
+/**
+ * Create a new player and add new player to team
+ * @param {number} teamId
+ * @param {object.<Player>} player New player data
+ * @param {string} player.name New player name
+ * @param {string} player.race New player race
+ * @param {string} player.position New player position
+ * @returns {object.<Team>} Updated team
+ */
+function addNewPlayerToTeam (teamId, player) {
+    // create new player
+    // get new player id
+    // update team with new player id
+    // return team
+}
+
 module.exports = {
     createNewTeam : createNewTeam,
-    isDataValid : isDataValid
+    isDataValid : isDataValid,
+    getTeamById : getTeamById,
+    getAllTeams : getAllTeams,
+    addPlayerToTeam : addPlayerToTeam
 };
