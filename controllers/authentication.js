@@ -22,21 +22,18 @@ function * login () {
     this.type = 'application/json';
     var body = this.request.body;
     var token = null;
-    userService.getUserByEmail(body.email).then(function (user) {
-        if (securityService.isPasswordValid(body.password, user.password)) {
-            token = securityService.getNewToken(user._id);
-            this.status = 200;
-            this.body = token;
-        } else {
-            this.status = 401;
+    var response = this;
+    yield userService.getUserByEmail(body.email).then(function (user) {
+        if (user && securityService.isPasswordValid(body.password, user.password)) {
+            token = securityService.getNewToken(user.id);
+            response.status = 200;
+            response.body = token;
         }
-    }).catch(function (err) {
-        this.status = 401;
-        this.body = err;
     });
-
-    // http://www.slideshare.net/derekperkins/authentication-cookies-vs-jwts-and-why-youre-doing-it-wrong
+    this.status = 401;
 }
+
+// http://www.slideshare.net/derekperkins/authentication-cookies-vs-jwts-and-why-youre-doing-it-wrong
 
 function * register () {
     this.type='application/json';
@@ -45,7 +42,7 @@ function * register () {
     yield userService.isEmailAvailable(body.email).then(function (isAvailable) {
         if (isAvailable) {
             var hash = securityService.getPasswordHash(body.password);
-            return userService.addNewUser(body.email, hash).then(function (user) {
+            return userService.addNewUser(body.email, hash).then((user) => {
                 response.body = securityService.getNewToken(user._id);
                 response.status = 200;
             });

@@ -21,6 +21,7 @@ function getNewToken (id) {
 }
 
 function isPasswordValid (password, hash) {
+    console.log('isPasswordValid()');
     return bcrypt.compareSync(password, hash);
 }
 

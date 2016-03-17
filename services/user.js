@@ -8,7 +8,7 @@ var User = require('../models/user');
  * @returns {Promise}
  */
 function addNewUser (email, hash) {
-    return db.addNewUser(email, hash).then(function (newUser) {
+    return db.addNewUser(email, hash).then((newUser) => {
         return new User(newUser._id, newUser.email, newUser.password);
     });
 }
@@ -19,8 +19,10 @@ function addNewUser (email, hash) {
  * @returns {Promise}
  */
 function getUserByEmail (email) {
-    return db.getUserByEmail({ email : email }).then(function (user) {
-        return new User(user._id, user.email, user.password);
+    console.log('getUserByEmail()');
+    console.log(email);
+    return db.getUserByEmail(email).then((user) => {
+        return user ? new User(user._id, user.email, user.password) : null;
     });
 }
 
@@ -30,7 +32,7 @@ function getUserByEmail (email) {
  * @returns {Promise}
  */
 function getUserById (id) {
-    return db.getUserById({ _id : id }).then(function (user) {
+    return db.getUserById(id).then((user) => {
         return new User(user._id, user.email, user.password);
     });
 }
@@ -42,7 +44,7 @@ function getUserById (id) {
  * returns {boolean} Is user available
  */
 function isEmailAvailable (email) {
-    return db.getUserByEmail(email).then(function (user) {
+    return db.getUserByEmail(email).then((user) => {
         return user ? false : true; // does this need to be resolved as a promise?
     });
 }
