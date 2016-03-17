@@ -83,5 +83,5 @@ module.exports = {
     isDataValid : isDataValid,
     getTeamById : getTeamById,
     getAllTeams : getAllTeams,
-    addPlayerToTeam : addPlayerToTeam
+    addNewPlayerToTeam : addNewPlayerToTeam
 };

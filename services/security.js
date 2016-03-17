@@ -1,5 +1,4 @@
 var jwt = require('jsonwebtoken');
-var data = require('../data/data');
 var bcrypt = require('bcrypt');
 var config = require('../config/config');
 
@@ -26,7 +25,9 @@ function isPasswordValid (password, hash) {
 }
 
 function getPasswordHash (password) {
+    console.log('getPasswordHash()');
     var hash = bcrypt.hashSync(password, 8);
+    console.log(hash);
     return hash;
 }
 

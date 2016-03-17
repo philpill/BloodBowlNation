@@ -1,15 +1,12 @@
 var userService = require('../services/user');
 
 function * create () {
-
-    console.log('users', data.users);
-
     var body = this.request.body;
-
-    userService.addNewUser(body.email, body.password)
-    .then((newUser) => {
-        this.type = 'application/json';
-        this.body = newUser;
+    var response = this;
+    yield userService.addNewUser(body.email, body.password).then(function (newUser) {
+        response.type = 'application/json';
+        response.status = 200;
+        response.body = newUser;
     });
 };
 

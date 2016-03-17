@@ -2,18 +2,16 @@ var data = require('../data/data');
 
 var positions = require('../config/positions');
 
-var Promise = require('bluebird');
-
 var Player = require('../models/player');
 
 /**
  * Create player from given data
  * @param {object} data Player data
- * @param {string} data.name Player name 
+ * @param {string} data.name Player name
  * @param {string} data.race Player race
  * @param {string} data.position Player position
  * @param {string} data.team Team to add player to
- * @returns {Promise.<object>} Promise of a player object 
+ * @returns {Promise.<object>} Promise of a player object
  */
 function createPlayer (data) {
 
@@ -25,7 +23,7 @@ function createPlayer (data) {
 }
 
 function * create () {
-    
+
     this.type = 'application/json';
 
     createPlayer(this.request.body)
