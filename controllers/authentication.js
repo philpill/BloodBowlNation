@@ -4,12 +4,13 @@ var userService = require('../services/user');
 function * identify () {
     this.type = 'application/json';
     var id = this.state.userId;
-    userService.getUserById(id).then(function (user) {
-        this.status = 200;
-        this.body = user;
+    var response = this;
+    yield userService.getUserById(id).then(function (user) {
+        response.status = 200;
+        response.body = user;
     }).catch(function (err) {
-        this.status = 404;
-        this.bdy = err;
+        response.status = 404;
+        response.body = err;
     });
 }
 
@@ -21,16 +22,18 @@ function * authenticate () {
 function * login () {
     this.type = 'application/json';
     var body = this.request.body;
-    var token = null;
     var response = this;
     yield userService.getUserByEmail(body.email).then(function (user) {
         if (user && securityService.isPasswordValid(body.password, user.password)) {
-            token = securityService.getNewToken(user.id);
             response.status = 200;
-            response.body = token;
+            response.body = securityService.getNewToken(user.id);
+        } else {
+            response.status = 401;
         }
+    }).catch(function (err) {
+        response.status = 500;
+        response.body = err;
     });
-    this.status = 401;
 }
 
 // http://www.slideshare.net/derekperkins/authentication-cookies-vs-jwts-and-why-youre-doing-it-wrong
@@ -42,8 +45,8 @@ function * register () {
     yield userService.isEmailAvailable(body.email).then(function (isAvailable) {
         if (isAvailable) {
             var hash = securityService.getPasswordHash(body.password);
-            return userService.addNewUser(body.email, hash).then((user) => {
-                response.body = securityService.getNewToken(user._id);
+            userService.addNewUser(body.email, hash).then((user) => {
+                response.body = securityService.getNewToken(user.id);
                 response.status = 200;
             });
         } else {

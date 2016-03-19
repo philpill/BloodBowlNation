@@ -14,8 +14,6 @@ app.use(bodyParser());
 
 app.use(function * (next) {
 
-    console.log('some middleware to examine JWT here');
-
     var auth = this.request.header.authorization;
 
     var token = auth ? security.getDecodedToken(auth) : null;

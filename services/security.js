@@ -21,14 +21,11 @@ function getNewToken (id) {
 }
 
 function isPasswordValid (password, hash) {
-    console.log('isPasswordValid()');
     return bcrypt.compareSync(password, hash);
 }
 
 function getPasswordHash (password) {
-    console.log('getPasswordHash()');
     var hash = bcrypt.hashSync(password, 8);
-    console.log(hash);
     return hash;
 }
 

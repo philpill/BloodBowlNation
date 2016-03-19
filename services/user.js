@@ -19,8 +19,6 @@ function addNewUser (email, hash) {
  * @returns {Promise}
  */
 function getUserByEmail (email) {
-    console.log('getUserByEmail()');
-    console.log(email);
     return db.getUserByEmail(email).then((user) => {
         return user ? new User(user._id, user.email, user.password) : null;
     });
