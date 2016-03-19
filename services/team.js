@@ -51,7 +51,7 @@ function createNewTeam (team) {
  * @returns {object.<Team>} Team data
  */
 function getTeamById (id) {
-    return db.findOne({ _id : id });
+    return db.getTeamById(id);
 }
 
 /**

@@ -26,7 +26,7 @@ function getUserByEmail (email) {
 
 /**
  * Find user by user id
- * @param {Number}} id User id to search for user
+ * @param {Number} id User id to search for user
  * @returns {Promise}
  */
 function getUserById (id) {
@@ -39,7 +39,7 @@ function getUserById (id) {
  * Check db to see if a email address is available or currently taken by another user.
  * May not be required if not using NeDB
  * @param {string} email Email address to check for existing user
- * returns {boolean} Is user available
+ * returns {Promise}
  */
 function isEmailAvailable (email) {
     return db.getUserByEmail(email).then((user) => {

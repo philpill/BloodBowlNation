@@ -14,12 +14,9 @@ var Promise = require('bluebird');
  * @returns {Promise}
  */
 function createNewPlayer (data) {
-
     return playerData.createNewPlayer(data).then(function(newPlayer) {
-
         return new Player(newPlayer.id, newPlayer.name, newPlayer.race, newPlayer.position);
     });
-
 }
 
 module.exports = {
