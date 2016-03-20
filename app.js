@@ -23,10 +23,16 @@ app.use(function * (next) {
     yield next;
 });
 
-app
-  .use(router.routes())
-  .use(router.allowedMethods());
+app.use(router.public.routes());
 
-// autogenerate token here
+app.use(function * (next) {
+    if (this.state.userId) {
+        yield next;
+    } else {
+        this.status = 404;
+    }
+});
+
+app.use(router.private.routes());
 
 app.listen(3000);

@@ -1,23 +1,28 @@
-var router = require('koa-router')();
+var router = require('koa-router');
+
+var public = new router();
+
+var private = new router();
 
 var auth = require('./controllers/authentication');
 var players = require('./controllers/players');
 var teams = require('./controllers/teams');
 var users = require('./controllers/users');
 
-router.post('/players', players.create);
+public.post('/login', auth.login);
 
-router.post('/teams', teams.create);
-
-router.post('/users', users.create);
-
-router.post('/login', auth.login);
-
-router.post('/register', auth.register);
-
-router.post('/authenticate', auth.authenticate);
-
-router.post('/identify', auth.identify);
+public.post('/register', auth.register);
 
 
-module.exports = router;
+private.post('/authenticate', auth.authenticate);
+
+private.post('/identify', auth.identify);
+
+private.post('/players', players.create);
+
+private.post('/teams', teams.create);
+
+module.exports = {
+    public : public,
+    private : private
+};

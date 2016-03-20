@@ -1,13 +1,13 @@
 var positions = require('../config/positions');
 var Entity = require('./entity.js');
 
-var Team = function (name, race, opts) {
+var Team = function (manager, name, race) {
 
     // validate
 
     this.name = name;
     this.race = race;
-    this.manager = opts.manager;
+    this.manager = manager;
 }
 
-return Team;
+module.exports = Team;

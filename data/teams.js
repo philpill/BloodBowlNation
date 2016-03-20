@@ -10,19 +10,19 @@ function getTeamById(teamId) {
 }
 
 /**
- * Create team from valid data
- * @param {object} validData data to create team
- * @param {string} validData.name New team name
- * @param {string} validData.race New team race
+ * Create new team
+ * @param {string} userId User Id for manager
+ * @param {string} teamName New team name
+ * @param {string} teamRace New team race
  * @returns {Promise}
  */
-function createNewTeam (team) {
+function createNewTeam (userId, teamName, teamRace) {
     return db.insertAsync({
-        manager : this.state.userId,
-        name : team.name,
-        race : team.race,
+        manager : userId,
+        name : teamName,
+        race : teamRace,
         created : Date.now(),
-        createdBy : this.state.userId
+        createdBy : userId
     });
 }
 

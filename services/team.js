@@ -1,5 +1,6 @@
-var db = require('../data/data').teams;
+var db = require('../data/teams');
 var positions = require('../config/positions');
+var Team = require('../models/team');
 
 /**
  * Check race exists in config
@@ -32,16 +33,15 @@ function isDataValid (data) {
 
 /**
  * Create team from valid data
+ * @param {object} userId owner of team
  * @param {object} validData data to create team
  * @param {string} validData.name New team name
  * @param {string} validData.race New team race
  * @returns {object.<Team>} New team
  */
-function createNewTeam (team) {
-    return db.insert({
-        manager : this.state.userId,
-        name : team.name,
-        race : team.race
+function createNewTeam (userId, newTeam) {
+    return db.createNewTeam(userId, newTeam.name, newTeam.race).then(function (newTeam) {
+        return newTeam ? new Team(userId, newTeam.name, newTeam.race) : null;
     });
 }
 

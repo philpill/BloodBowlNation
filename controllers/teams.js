@@ -3,21 +3,16 @@ var teamService = require('../services/team');
 
 function * create () {
     this.type = 'application/json';
-
-    if (!this.state.userId) {
-        this.status = 401;
-        this.body = 'need to log in';
-    }
-
     var body = this.request.body;
-
+    var response = this;
     if (teamService.isDataValid(body)) {
-        var team = yield teamService.createNewTeam(body);
-        this.status = 200;
-        this.body = team;
+        yield teamService.createNewTeam(this.state.userId, body).then(function (newTeam) {
+            response.status = 200;
+            response.body = newTeam;
+        });
     } else {
-        this.status = 400;
-        this.body = 'data invalid';
+        response.status = 400;
+        response.body = 'data invalid';
     }
 }
 
