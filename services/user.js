@@ -9,7 +9,7 @@ var User = require('../models/user');
  */
 function addNewUser (email, hash) {
     return db.addNewUser(email, hash).then((newUser) => {
-        return new User(newUser._id, newUser.email, newUser.password);
+        return newUser ? new User(newUser._id, newUser.email, newUser.password) : null;
     });
 }
 

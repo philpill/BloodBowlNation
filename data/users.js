@@ -7,10 +7,12 @@ var db = require('./data').users;
  * @returns {Promise}
  */
 function addNewUser (email, hash) {
-    return db.insertAsync({
-        email : email,
-        password : hash,
-        created : Date.now()
+    return getUserByEmail(email).then(function (user) {
+        return user ? null : db.insertAsync({
+            email : email,
+            password : hash,
+            created : Date.now()
+        });
     });
 }
 
