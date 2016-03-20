@@ -5,7 +5,7 @@ var db = require('./data').teams;
  * @param {Number} teamId Id of team to return
  * @returns {Promise}
  */
-function getTeamById(teamId) {
+function getTeamById (teamId) {
     return db.findOneAsync({ _id : teamId });
 }
 
@@ -26,7 +26,16 @@ function createNewTeam (userId, teamName, teamRace) {
     });
 }
 
+/**
+ * Get all teams
+ * @returns {Promise}
+ */
+function getAllTeams () {
+    return db.findAsync({ });
+}
+
 module.exports = {
     getTeamById : getTeamById,
-    createNewTeam : createNewTeam
+    createNewTeam : createNewTeam,
+    getAllTeams : getAllTeams
 };

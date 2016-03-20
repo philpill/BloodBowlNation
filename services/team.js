@@ -41,7 +41,7 @@ function isDataValid (data) {
  */
 function createNewTeam (userId, newTeam) {
     return db.createNewTeam(userId, newTeam.name, newTeam.race).then(function (newTeam) {
-        return newTeam ? new Team(userId, newTeam.name, newTeam.race) : null;
+        return newTeam ? new Team(newTeam._id, userId, newTeam.name, newTeam.race) : null;
     });
 }
 
@@ -51,7 +51,9 @@ function createNewTeam (userId, newTeam) {
  * @returns {object.<Team>} Team data
  */
 function getTeamById (id) {
-    return db.getTeamById(id);
+    return db.getTeamById(id).then(function (team) {
+        return team ? new Team(team._id, team.manager, team.name, team.race) : null;
+    });
 }
 
 /**
@@ -59,7 +61,11 @@ function getTeamById (id) {
  * @returns {Array.<Team>}
  */
 function getAllTeams () {
-    return db.find({});
+    return db.getAllTeams().then(function (teams) {
+        return teams.map(function (team) {
+            return new Team(team._id, team.manager, team.name, team.race);
+        });
+    });
 }
 
 /**
