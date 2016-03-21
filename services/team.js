@@ -21,6 +21,17 @@ function isNameValid (name) {
 }
 
 /**
+ * Check if team name is already taken
+ * @param {string} teamName Name to check
+ * @returns {boolean} Is name currently in use
+ */
+function isNameUnique (teamName) {
+    return db.getTeamByName(teamName).then(function (team) {
+        return !team;
+    });
+}
+
+/**
  * Validate data to create new team
  * @param {object} data Data to validate
  * @param {string} data.name Team name to validate
@@ -28,7 +39,9 @@ function isNameValid (name) {
  * @returns {boolean} IsDataValid
  */
 function isDataValid (data) {
-    return isRaceValid(data.race) && isNameValid(data.name);
+    return isNameUnique(data.name).then(function (isValid) {
+        return isValid && isRaceValid(data.race) && isNameValid(data.name) && isNameUnique(data.name);
+    });
 }
 
 /**
@@ -40,8 +53,10 @@ function isDataValid (data) {
  * @returns {object.<Team>} New team
  */
 function createNewTeam (userId, newTeam) {
-    return db.createNewTeam(userId, newTeam.name, newTeam.race).then(function (newTeam) {
-        return newTeam ? new Team(newTeam._id, userId, newTeam.name, newTeam.race) : null;
+    return isDataValid(newTeam).then(function (isValid) {
+        return isValid ? db.createNewTeam(userId, newTeam.name, newTeam.race).then(function (newTeam) {
+            return newTeam ? new Team(newTeam._id, userId, newTeam.name, newTeam.race) : null;
+        }) : null;
     });
 }
 
@@ -86,7 +101,6 @@ function addNewPlayerToTeam (teamId, player) {
 
 module.exports = {
     createNewTeam : createNewTeam,
-    isDataValid : isDataValid,
     getTeamById : getTeamById,
     getAllTeams : getAllTeams,
     addNewPlayerToTeam : addNewPlayerToTeam

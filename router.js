@@ -11,7 +11,7 @@ var users = require('./controllers/users');
 
 public.post('/login', auth.login);
 
-public.post('/register', auth.register);
+public.post('/register', auth.validateRegister, auth.register);
 
 public.get('/teams', teams.getAll);
 

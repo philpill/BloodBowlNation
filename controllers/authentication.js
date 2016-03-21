@@ -24,6 +24,7 @@ function * login () {
     var body = this.request.body;
     var response = this;
     yield userService.getUserByEmail(body.email).then(function (user) {
+        console.log(user);
         if (user && securityService.isPasswordValid(body.password, user.password)) {
             response.status = 200;
             response.body = securityService.getNewToken(user.id);
@@ -38,26 +39,32 @@ function * login () {
 
 // http://www.slideshare.net/derekperkins/authentication-cookies-vs-jwts-and-why-youre-doing-it-wrong
 
+function * validateRegister (next) {
+    this.type='application/json';
+    var body = this.request.body;
+    var isAvailable = yield userService.isEmailAvailable(body.email);
+    if (isAvailable) {
+        yield next;
+    } else {
+        this.status = 409;
+        this.body = 'email already registered';
+    }
+}
+
 function * register () {
     this.type='application/json';
     var body = this.request.body;
     var response = this;
-    yield userService.isEmailAvailable(body.email).then(function (isAvailable) {
-        if (isAvailable) {
-            var hash = securityService.getPasswordHash(body.password);
-            userService.addNewUser(body.email, hash).then((user) => {
-                response.body = securityService.getNewToken(user.id);
-                response.status = 200;
-            });
-        } else {
-            response.status = 409;
-            response.body = 'email already registered';
-        }
-    })
+    var hash = securityService.getPasswordHash(body.password);
+    yield userService.addNewUser(body.email, hash).then((user) => {
+        response.body = securityService.getNewToken(user.id);
+        response.status = 200;
+    });
 }
 
 var auth = {
     login : login,
+    validateRegister : validateRegister,
     register : register,
     authenticate : authenticate,
     identify : identify

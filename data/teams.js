@@ -27,6 +27,17 @@ function createNewTeam (userId, teamName, teamRace) {
 }
 
 /**
+ * Find a team by name
+ * @param {string} teamName
+ * @returns {Promise}
+ */
+function getTeamByName (teamName) {
+    console.log('getTeamByName()');
+    console.log(teamName);
+    return db.findOneAsync({ name : teamName });
+}
+
+/**
  * Get all teams
  * @returns {Promise}
  */
@@ -35,7 +46,8 @@ function getAllTeams () {
 }
 
 module.exports = {
-    getTeamById : getTeamById,
     createNewTeam : createNewTeam,
-    getAllTeams : getAllTeams
+    getTeamById : getTeamById,
+    getAllTeams : getAllTeams,
+    getTeamByName : getTeamByName
 };

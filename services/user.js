@@ -8,9 +8,16 @@ var User = require('../models/user');
  * @returns {Promise}
  */
 function addNewUser (email, hash) {
-    return db.addNewUser(email, hash).then((newUser) => {
-        return newUser ? new User(newUser._id, newUser.email, newUser.password) : null;
-    });
+    return isDataValid(email) ? db.addNewUser(email, hash) : null;
+}
+
+/**
+ * Check data to create new user is valid
+ * @param {string} email Email address to validate
+ * returns {boolean}
+ */
+function isDataValid (email) {
+    return true;
 }
 
 /**
@@ -19,9 +26,8 @@ function addNewUser (email, hash) {
  * @returns {Promise}
  */
 function getUserByEmail (email) {
-    return db.getUserByEmail(email).then((user) => {
-        return user ? new User(user._id, user.email, user.password) : null;
-    });
+    console.log('getUserByEmail()');
+    return db.getUserByEmail(email);
 }
 
 /**
@@ -30,9 +36,7 @@ function getUserByEmail (email) {
  * @returns {Promise}
  */
 function getUserById (id) {
-    return db.getUserById(id).then((user) => {
-        return new User(user._id, user.email, user.password);
-    });
+    return db.getUserById(id);
 }
 
 /**

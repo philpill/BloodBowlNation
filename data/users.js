@@ -1,4 +1,5 @@
 var db = require('./data').users;
+var User = require('../models/user');
 
 /**
  * Create a new user in the db
@@ -12,6 +13,8 @@ function addNewUser (email, hash) {
             email : email,
             password : hash,
             created : Date.now()
+        }).then(function (data) {
+            return new User(data._id, data.email, data.password);
         });
     });
 }
@@ -22,7 +25,9 @@ function addNewUser (email, hash) {
  * @returns {Promise}
  */
 function getUserByEmail (email) {
-    return db.findOneAsync({ email : email });
+    return db.findOneAsync({ email : email }).then(function (data) {
+        return data ? new User(data._id, data.email, data.password) : null;
+    });
 }
 
 /**
@@ -31,7 +36,9 @@ function getUserByEmail (email) {
  * @returns {Promise}
  */
 function getUserById (id) {
-    return db.findOneAsync({ _id : id });
+    return db.findOneAsync({ _id : id }).then(function (data) {
+        return data ? new User(data._id, data.email, data.password) : null;
+    });
 }
 
 module.exports = {
