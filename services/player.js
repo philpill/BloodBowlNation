@@ -1,9 +1,5 @@
-var db = require('../data/data').players;
-var positions = require('../config/positions');
 var Player = require('../models/player');
-var playerData = require('../data/players');
-var Promise = require('bluebird');
-
+var data = require('../data/players');
 
 /**
  * Create a new player
@@ -15,11 +11,22 @@ var Promise = require('bluebird');
  * @returns {Promise}
  */
 function createNewPlayer (userId, data) {
-    return playerData.createNewPlayer(userId, data.name, data.race, data.position, data.teamId).then(function(newPlayer) {
-        return new Player(newPlayer.id, newPlayer.name, newPlayer.race, newPlayer.position, newPlayer.teamId);
+    return data.createNewPlayer(userId, data.name, data.race, data.position, data.teamId).then(function(data) {
+        return getNewPlayer(data);
     });
 }
 
+function getPlayerById (playerId) {
+    return data.getPlayerById(playerId).then(function(data) {
+        return getNewPlayer(data);
+    });
+}
+
+function getNewPlayer (data) {
+    return new Player(data.id, data.name, data.race, data.position, data.teamId);
+}
+
 module.exports = {
-    createNewPlayer : createNewPlayer
+    createNewPlayer : createNewPlayer,
+    getPlayerById : getPlayerById
 }

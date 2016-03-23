@@ -22,7 +22,7 @@ private.post('/authenticate', auth.authenticate);
 
 private.post('/identify', auth.identify);
 
-private.post('/players', players.create);
+private.post('/players/:playerId', players.getById);
 
 private.post('/teams', teams.validateCreate, teams.create);
 

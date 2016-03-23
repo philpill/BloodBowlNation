@@ -1,4 +1,3 @@
-var data = require('../data/data');
 var teamService = require('../services/team');
 var playerService = require('../services/player');
 
