@@ -24,8 +24,6 @@ function createPlayer (data) {
 
 function * create () {
 
-    this.type = 'application/json';
-
     createPlayer(this.request.body)
     .then(data.players.insertAsync)
     .then((player) => {

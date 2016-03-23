@@ -39,6 +39,10 @@ function getUserById (id) {
     return db.getUserById(id);
 }
 
+function getAllUsers () {
+    return db.getAllUsers();
+}
+
 /**
  * Check db to see if a email address is available or currently taken by another user.
  * May not be required if not using NeDB
@@ -55,5 +59,6 @@ module.exports = {
     addNewUser : addNewUser,
     getUserByEmail : getUserByEmail,
     getUserById : getUserById,
-    isEmailAvailable : isEmailAvailable
+    isEmailAvailable : isEmailAvailable,
+    getAll : getAllUsers
 };

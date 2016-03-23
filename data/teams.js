@@ -21,6 +21,7 @@ function createNewTeam (userId, teamName, teamRace) {
         manager : userId,
         name : teamName,
         race : teamRace,
+        players : [],
         created : Date.now(),
         createdBy : userId
     });
@@ -32,8 +33,6 @@ function createNewTeam (userId, teamName, teamRace) {
  * @returns {Promise}
  */
 function getTeamByName (teamName) {
-    console.log('getTeamByName()');
-    console.log(teamName);
     return db.findOneAsync({ name : teamName });
 }
 
@@ -43,6 +42,14 @@ function getTeamByName (teamName) {
  */
 function getAllTeams () {
     return db.findAsync({ });
+}
+
+/**
+ * Add player to team
+ * @returns {Promise}
+ */
+function addPlayerToTeam (teamId, playerId) {
+    return db.updateAsync({ _id: teamId }, { $push: { players: playerId } }, { returnUpdatedDocs : true });
 }
 
 module.exports = {

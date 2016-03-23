@@ -1,6 +1,6 @@
 var positions = require('../config/positions');
 var races = require('../config/races');
-var Entity = require('./entity.js');
+var Base = require('./base.js');
 
 /**
  * Check race exists in config
@@ -31,19 +31,20 @@ function isValid (name, race, position) {
     return isNameValid(name) && isRaceValid(race) && isPositionValid(position);
 }
 
-var Player = function (name, race, position, opts) {
+var Player = function (playerId, name, race, position, teamId) {
 
-    Entity.call(this);
+    Base.call(this);
 
     this.isValid = isValid(name, race, position);
 
+    this.id = playerId;
     this.name = name;
     this.race = race;
     this.postion = position;
-    this.team = opts.team;
+    this.team = teamId;
 };
 
-Player.prototype = Object.create(Entity.prototype);
+Player.prototype = Object.create(Base.prototype);
 Player.prototype.constructor = Player;
 
 module.exports = Player;

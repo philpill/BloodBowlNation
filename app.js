@@ -14,6 +14,8 @@ app.use(bodyParser());
 
 app.use(function * (next) {
 
+    this.type = 'application/json';
+
     var auth = this.request.header.authorization;
 
     var token = auth ? security.getDecodedToken(auth) : null;

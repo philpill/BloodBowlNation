@@ -1,23 +1,33 @@
 var data = require('../data/data');
 var teamService = require('../services/team');
+var playerService = require('../services/player');
 
 function * create () {
-    this.type = 'application/json';
     var body = this.request.body;
     var newTeam = yield teamService.createNewTeam(this.state.userId, body);
     this.status = newTeam ? 200 : 400;
     this.body = newTeam ? newTeam : 'data invalid';
 }
 
+function * validateCreate (next) {
+    var body = this.request.body;
+    var teamName = body.name;
+    var isNameUnique = yield teamService.isNameUnique(teamName);
+    if (isNameUnique) {
+        yield next;
+    } else {
+        this.status = 409;
+        this.body = 'team name already registered';
+    }
+}
+
 function * getAll () {
-    this.type = 'application/json';
     var teams = yield teamService.getAllTeams();
     this.body = teams ? teams : 'no data';
     this.status = teams && teams.length ? 200 : 204;
 }
 
 function * getById () {
-    this.type = 'application/json';
     var id = this.params.teamId;
     var body = this.request.body;
     var team = yield teamService.getTeamById(id);
@@ -28,8 +38,28 @@ function * getById () {
     }
 }
 
+function * addNewPlayer () {
+    var body = this.request.body;
+    var teamId = body.teamId;
+    var newPlayer = yield playerService.createNewPlayer(this.state.userId, {
+        name : body.name,
+        position : body.position,
+        race : body.race,
+        teamId: teamId
+    });
+    if (!newPlayer) {
+        this.status = 400;
+        this.body = 'data invalid';
+    }
+    var team = yield teamService.addPlayerToTeam(teamId, newPlayer.id);
+    this.status = team ? 200 : 400;
+    this.body = team ? team : 'data invalid';
+}
+
 module.exports = {
     create : create,
+    validateCreate : validateCreate,
     getAll : getAll,
-    getById : getById
+    getById : getById,
+    addNewPlayer : addNewPlayer
 };

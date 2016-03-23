@@ -39,25 +39,21 @@ function isNameUnique (teamName) {
  * @returns {boolean} IsDataValid
  */
 function isDataValid (data) {
-    return isNameUnique(data.name).then(function (isValid) {
-        return isValid && isRaceValid(data.race) && isNameValid(data.name) && isNameUnique(data.name);
-    });
+    return isValid && isRaceValid(data.race) && isNameValid(data.name);
 }
 
 /**
  * Create team from valid data
- * @param {object} userId owner of team
+ * @param {string} userId owner of team
  * @param {object} validData data to create team
  * @param {string} validData.name New team name
  * @param {string} validData.race New team race
- * @returns {object.<Team>} New team
+ * @returns {Promise} New team
  */
 function createNewTeam (userId, newTeam) {
-    return isDataValid(newTeam).then(function (isValid) {
-        return isValid ? db.createNewTeam(userId, newTeam.name, newTeam.race).then(function (newTeam) {
-            return newTeam ? new Team(newTeam._id, userId, newTeam.name, newTeam.race) : null;
-        }) : null;
-    });
+    return isDataValid(newTeam) ? db.createNewTeam(userId, newTeam.name, newTeam.race).then(function (newTeam) {
+        return newTeam ? new Team(newTeam._id, userId, newTeam.name, newTeam.race, newTeam.players) : null;
+    }) : null;
 }
 
 /**
@@ -67,7 +63,7 @@ function createNewTeam (userId, newTeam) {
  */
 function getTeamById (id) {
     return db.getTeamById(id).then(function (team) {
-        return team ? new Team(team._id, team.manager, team.name, team.race) : null;
+        return team ? new Team(team._id, team.manager, team.name, team.race, team.players) : null;
     });
 }
 
@@ -78,30 +74,27 @@ function getTeamById (id) {
 function getAllTeams () {
     return db.getAllTeams().then(function (teams) {
         return teams.map(function (team) {
-            return new Team(team._id, team.manager, team.name, team.race);
+            return new Team(team._id, team.manager, team.name, team.race, team.players);
         });
     });
 }
 
 /**
- * Create a new player and add new player to team
+ * Add player to team
  * @param {number} teamId
- * @param {object.<Player>} player New player data
- * @param {string} player.name New player name
- * @param {string} player.race New player race
- * @param {string} player.position New player position
+ * @param {number} playerId
  * @returns {object.<Team>} Updated team
  */
-function addNewPlayerToTeam (teamId, player) {
-    // create new player
-    // get new player id
-    // update team with new player id
-    // return team
+function addPlayerToTeam (teamId, playerId) {
+    return db.addPlayerToTeam(teamId, playerId).then(function (team) {
+        return new Team(team._id, team.manager, team.name, team.race, team.players);
+    });
 }
 
 module.exports = {
     createNewTeam : createNewTeam,
     getTeamById : getTeamById,
+    isNameUnique : isNameUnique,
     getAllTeams : getAllTeams,
-    addNewPlayerToTeam : addNewPlayerToTeam
+    addPlayerToTeam : addPlayerToTeam
 };

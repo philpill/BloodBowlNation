@@ -24,7 +24,7 @@ private.post('/identify', auth.identify);
 
 private.post('/players', players.create);
 
-private.post('/teams', teams.create);
+private.post('/teams', teams.validateCreate, teams.create);
 
 
 

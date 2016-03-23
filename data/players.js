@@ -11,19 +11,21 @@ function getPlayerById(id) {
 
 /**
  * Create a new player
- * @param {object} data New player data
- * @param {string} data.name Player name
- * @param {string} data.position Player position
- * @param {string} data.race Player race
+ * @param {string} userId User id
+ * @param {string} name Player name
+ * @param {string} race Player race
+ * @param {string} position Player position
+ * @param {string} teamId Team id
  * @returns {Promise}
  */
-function createNewPlayer (data) {
+function createNewPlayer (userId, name, race, position, teamId) {
     return db.insertAsync({
-        name : data.name,
-        position : data.position,
-        race : data.race,
+        name : name,
+        position : position,
+        race : race,
+        team : teamId,
         created : Date.now(),
-        createdBy : this.state.userId
+        createdBy : userId
     });
 }
 

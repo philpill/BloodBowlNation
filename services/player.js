@@ -11,11 +11,12 @@ var Promise = require('bluebird');
  * @param {string} data.name Player name
  * @param {string} data.position Player position
  * @param {string} data.race Player race
+ * @param {string} data.teamId Team Id
  * @returns {Promise}
  */
-function createNewPlayer (data) {
-    return playerData.createNewPlayer(data).then(function(newPlayer) {
-        return new Player(newPlayer.id, newPlayer.name, newPlayer.race, newPlayer.position);
+function createNewPlayer (userId, data) {
+    return playerData.createNewPlayer(userId, data.name, data.race, data.position, data.teamId).then(function(newPlayer) {
+        return new Player(newPlayer.id, newPlayer.name, newPlayer.race, newPlayer.position, newPlayer.teamId);
     });
 }
 

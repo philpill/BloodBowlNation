@@ -30,6 +30,14 @@ function getUserByEmail (email) {
     });
 }
 
+function getAllUsers () {
+    return db.findAsync({ }).then(function (users) {
+        return users ? users.map(function (user) {
+            return new User(user._id, user.email);
+        }) : [];
+    });
+}
+
 /**
  * Get user by user id
  * @param {Number} id User id
@@ -43,6 +51,7 @@ function getUserById (id) {
 
 module.exports = {
     getUserById : getUserById,
+    getAllUsers : getAllUsers,
     getUserByEmail : getUserByEmail,
     addNewUser : addNewUser
 };

@@ -2,7 +2,6 @@ var securityService = require('../services/security');
 var userService = require('../services/user');
 
 function * identify () {
-    this.type = 'application/json';
     var id = this.state.userId;
     var response = this;
     yield userService.getUserById(id).then(function (user) {
@@ -15,32 +14,24 @@ function * identify () {
 }
 
 function * authenticate () {
-    this.type = 'application/json';
     this.status = this.state.userId ? 200 : 401;
 }
 
 function * login () {
-    this.type = 'application/json';
     var body = this.request.body;
-    var response = this;
-    yield userService.getUserByEmail(body.email).then(function (user) {
-        console.log(user);
-        if (user && securityService.isPasswordValid(body.password, user.password)) {
-            response.status = 200;
-            response.body = securityService.getNewToken(user.id);
-        } else {
-            response.status = 401;
-        }
-    }).catch(function (err) {
-        response.status = 500;
-        response.body = err;
-    });
+    var user = yield userService.getUserByEmail(body.email);
+    if (user && securityService.isPasswordValid(body.password, user.password)) {
+        this.status = 200;
+        this.body = securityService.getNewToken(user.id);
+    } else {
+        this.status = 500;
+        this.body = 'user login failed';
+    }
 }
 
 // http://www.slideshare.net/derekperkins/authentication-cookies-vs-jwts-and-why-youre-doing-it-wrong
 
 function * validateRegister (next) {
-    this.type='application/json';
     var body = this.request.body;
     var isAvailable = yield userService.isEmailAvailable(body.email);
     if (isAvailable) {
@@ -52,14 +43,16 @@ function * validateRegister (next) {
 }
 
 function * register () {
-    this.type='application/json';
     var body = this.request.body;
-    var response = this;
     var hash = securityService.getPasswordHash(body.password);
-    yield userService.addNewUser(body.email, hash).then((user) => {
-        response.body = securityService.getNewToken(user.id);
-        response.status = 200;
-    });
+    var newUser = yield userService.addNewUser(body.email, hash);
+    if (newUser) {
+        this.body = securityService.getNewToken(newUser.id);
+        this.status = 200;
+    } else {
+        this.status = 500;
+        this.body = 'registration failed';
+    }
 }
 
 var auth = {
