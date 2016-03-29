@@ -1,15 +1,13 @@
 var Base = require('./base.js');
 
-var User = function (id, email, password) {
+var User = class extends Base {
 
-    Base.call(this);
+    constructor (id, email, password) {
+        this.id = id;
+        this.email = email;
+        this.password = password;
+    }
 
-    this.id = id;
-    this.email = email;
-    this.password = password;
 };
-
-User.prototype = Object.create(Base.prototype);
-User.prototype.constructor = User;
 
 module.exports = User;

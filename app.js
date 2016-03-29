@@ -25,7 +25,7 @@ app.use(function * (next) {
     yield next;
 });
 
-app.use(router.public.routes());
+app.use(router.publicRoutes.routes());
 
 app.use(function * (next) {
     if (this.state.userId) {
@@ -35,6 +35,6 @@ app.use(function * (next) {
     }
 });
 
-app.use(router.private.routes());
+app.use(router.privateRoutes.routes());
 
 app.listen(3000);

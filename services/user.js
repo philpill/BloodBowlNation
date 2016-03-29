@@ -26,7 +26,6 @@ function isDataValid (email) {
  * @returns {Promise}
  */
 function getUserByEmail (email) {
-    console.log('getUserByEmail()');
     return db.getUserByEmail(email);
 }
 

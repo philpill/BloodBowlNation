@@ -1,6 +1,8 @@
 var teamService = require('../services/team');
 var playerService = require('../services/player');
 
+var config = require('../config/players');
+
 function * create () {
     var body = this.request.body;
     var newTeam = yield teamService.createNewTeam(this.state.userId, body);
@@ -55,10 +57,23 @@ function * addNewPlayer () {
     this.body = team ? team : 'data invalid';
 }
 
+function * validateAddNewPlayer (next) {
+    var teamId = this.params.teamId;
+    var body = this.request.body;
+    var isManager = yield teamService.isManager(teamId, this.state.userId);
+    if (isManager && config[body.race] && config[body.race][body.position]) {
+        yield next();
+    } else {
+        this.status = 400;
+        this.body = 'data invalid';
+    }
+}
+
 module.exports = {
     create : create,
     validateCreate : validateCreate,
     getAll : getAll,
     getById : getById,
-    addNewPlayer : addNewPlayer
+    addNewPlayer : addNewPlayer,
+    validateAddNewPlayer : validateAddNewPlayer
 };

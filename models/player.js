@@ -1,50 +1,48 @@
-var positions = require('../config/positions');
-var races = require('../config/races');
+var config = require('../config/players');
+
 var Base = require('./base.js');
 
-/**
- * Check race exists in config
- * @param {string} race Value to check against config
- * @returns {boolean} If race exists in config
- */
-function isRaceValid (race) {
-    var isRaceValid;
-    isRaceValid = races.indexof(race) > -1 && positions[race] && positions[race].length > 0;
-    return isRaceValid;
-}
+var Player = class extends Base {
 
-/**
- * Check position exists and valid for given race
- * @param {string} race Player race to check position against
- * @param {string} position Position to validate
- * @returns {boolean} If race is valid and position is valid for race
- */
-function isPositionValid (race, position) {
-    return isRaceValid(race) && positions[race].indexOf(position) > -1;
-}
+    constructor(playerId, name, race, position, teamId) {
+        this.id = playerId;
+        this.name = name;
+        this.race = race;
+        this.postion = position;
+        this.team = teamId;
+    }
 
-function isNameValid (name) {
-    return name !== '';
-}
+    /**
+     * Check race exists in config
+     * @param {string} race Value to check against config
+     * @returns {boolean} If race exists in config
+     */
+    _isRaceValid (race) {
+        return !!config[race];
+    }
 
-function isValid (name, race, position) {
-    return isNameValid(name) && isRaceValid(race) && isPositionValid(position);
-}
+    /**
+     * Check position exists and valid for given race
+     * @param {string} race Player race to check position against
+     * @param {string} position Position to validate
+     * @returns {boolean} If race is valid and position is valid for race
+     */
+    _isPositionValid (race, position) {
+        return _isRaceValid(race) && !!config[race][position];
+    }
 
-var Player = function (playerId, name, race, position, teamId) {
+    /**
+     * Check name is valid
+     * @param {string} name Player name to validate
+     * @returns {boolean} If name is valid
+     */
+    _isNameValid (name) {
+        return name.length > 4 && name !== '';
+    }
 
-    Base.call(this);
-
-    this.isValid = isValid(name, race, position);
-
-    this.id = playerId;
-    this.name = name;
-    this.race = race;
-    this.postion = position;
-    this.team = teamId;
+    isValid () {
+        return _isNameValid(this.name) && _isRaceValid(this.race) && _isPositionValid(this.race, this.position);
+    }
 };
-
-Player.prototype = Object.create(Base.prototype);
-Player.prototype.constructor = Player;
 
 module.exports = Player;

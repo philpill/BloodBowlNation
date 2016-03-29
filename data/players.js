@@ -1,4 +1,5 @@
 var db = require('./data').players;
+var config = require('../config/players');
 
 /**
  * Get a player by id
@@ -19,11 +20,18 @@ function getPlayerById(id) {
  * @returns {Promise}
  */
 function createNewPlayer (userId, name, race, position, teamId) {
+
+    var stats = config[race][position];
+
     return db.insertAsync({
         name : name,
         position : position,
         race : race,
         team : teamId,
+        mv : stats.mv,
+        st : stats.st,
+        ag : stats.ag,
+        av : stats.av,
         created : Date.now(),
         createdBy : userId
     });

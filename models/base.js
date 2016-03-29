@@ -1,5 +1,6 @@
-var base = function () {
 
-};
+var Base = class {
 
-module.exports = base;
+}
+
+module.exports = Base;

@@ -1,5 +1,5 @@
 var db = require('../data/teams');
-var positions = require('../config/positions');
+var config = require('../config/players');
 var Team = require('../models/team');
 
 /**
@@ -8,7 +8,7 @@ var Team = require('../models/team');
  * @returns {boolean} If race exists in config
  */
 function isRaceValid (race) {
-    return positions[race] && positions[race].length > 0;
+    return !!config[race];
 }
 
 /**
@@ -51,20 +51,18 @@ function isDataValid (data) {
  * @returns {Promise} New team
  */
 function createNewTeam (userId, newTeam) {
-    return isDataValid(newTeam) ? db.createNewTeam(userId, newTeam.name, newTeam.race).then(function (newTeam) {
-        return newTeam ? new Team(newTeam._id, userId, newTeam.name, newTeam.race, newTeam.players) : null;
-    }) : null;
+    return isDataValid(newTeam)
+            ? db.createNewTeam(userId, newTeam.name, newTeam.race).then(getNewTeam)
+            : null;
 }
 
 /**
  * Get team by team id
- * @param {number} id Team id to search for team
+ * @param {string} id Team id to search for team
  * @returns {object.<Team>} Team data
  */
 function getTeamById (id) {
-    return db.getTeamById(id).then(function (team) {
-        return team ? new Team(team._id, team.manager, team.name, team.race, team.players) : null;
-    });
+    return db.getTeamById(id).then(getNewTeam);
 }
 
 /**
@@ -73,22 +71,36 @@ function getTeamById (id) {
  */
 function getAllTeams () {
     return db.getAllTeams().then(function (teams) {
-        return teams.map(function (team) {
-            return new Team(team._id, team.manager, team.name, team.race, team.players);
-        });
+        return teams.map(getNewTeam);
     });
 }
 
 /**
  * Add player to team
- * @param {number} teamId
- * @param {number} playerId
+ * @param {string} teamId
+ * @param {string} playerId
  * @returns {object.<Team>} Updated team
  */
 function addPlayerToTeam (teamId, playerId) {
-    return db.addPlayerToTeam(teamId, playerId).then(function (team) {
-        return new Team(team._id, team.manager, team.name, team.race, team.players);
+    return db.addPlayerToTeam(teamId, playerId).then(getNewTeam);
+}
+
+/**
+ * Validate if user is manager of team
+ * @param {string} teamId Id of team
+ * @param {string} userId Id of user
+ * @returns {Boolean}
+ */
+function isManager (teamId, userId) {
+    return db.isManager(teamId, userId).then(function (team) {
+        return !!team;
     });
+}
+
+function getNewTeam (data) {
+    return data
+            ? new Team(data._id, data.manager, data.name, data.race, data.players)
+            : null;
 }
 
 module.exports = {
@@ -96,5 +108,6 @@ module.exports = {
     getTeamById : getTeamById,
     isNameUnique : isNameUnique,
     getAllTeams : getAllTeams,
-    addPlayerToTeam : addPlayerToTeam
+    addPlayerToTeam : addPlayerToTeam,
+    isManager : isManager
 };

@@ -46,15 +46,28 @@ function getAllTeams () {
 
 /**
  * Add player to team
+ * @param {string} teamId
+ * @param {string} playerId
  * @returns {Promise}
  */
 function addPlayerToTeam (teamId, playerId) {
     return db.updateAsync({ _id: teamId }, { $push: { players: playerId } }, { returnUpdatedDocs : true });
 }
 
+/**
+ * Get team managed by user
+ * @param {string} teamId
+ * @param {string} userId
+ * @returns {Promise}
+ */
+function isManager (teamId, userId) {
+    return db.findOneAsync({ _id : teamId, manager : userId });
+}
+
 module.exports = {
     createNewTeam : createNewTeam,
     getTeamById : getTeamById,
     getAllTeams : getAllTeams,
-    getTeamByName : getTeamByName
+    getTeamByName : getTeamByName,
+    isManager : isManager
 };
