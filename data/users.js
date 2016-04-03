@@ -1,5 +1,7 @@
-var db = require('./data').users;
+// var db = require('./data').users;
 var User = require('../models/user');
+
+var query = require('./data').query;
 
 /**
  * Create a new user in the db
@@ -8,14 +10,9 @@ var User = require('../models/user');
  * @returns {Promise}
  */
 function addNewUser (email, hash) {
-    return getUserByEmail(email).then(function (user) {
-        return user ? null : db.insertAsync({
-            email : email,
-            password : hash,
-            created : Date.now()
-        }).then(function (data) {
-            return new User(data._id, data.email, data.password);
-        });
+    return query("INSERT INTO users (email, password) VALUES ('" + email + "', '" + hash + "');").then(function (results) {
+        console.log(results);
+        return results;
     });
 }
 
@@ -25,16 +22,16 @@ function addNewUser (email, hash) {
  * @returns {Promise}
  */
 function getUserByEmail (email) {
-    return db.findOneAsync({ email : email }).then(function (data) {
-        return data ? new User(data._id, data.email, data.password) : null;
+    return query("SELECT * FROM users WHERE email = '" + email + "';").then(function (results) {
+        console.log('getUserByEmail()');
+        console.log(results.rows[0]);
+        return results.rows.length > 0 ? results.rows[0] : null;
     });
 }
 
 function getAllUsers () {
-    return db.findAsync({ }).then(function (users) {
-        return users ? users.map(function (user) {
-            return new User(user._id, user.email);
-        }) : [];
+    return query('SELECT * FROM users;').then(function (results) {
+        console.log(results);
     });
 }
 
@@ -44,8 +41,10 @@ function getAllUsers () {
  * @returns {Promise}
  */
 function getUserById (id) {
-    return db.findOneAsync({ _id : id }).then(function (data) {
-        return data ? new User(data._id, data.email, data.password) : null;
+    return query("SELECT * FROM users WHERE id = " + id + ";").then(function (results) {
+        console.log('getUserByEmail()');
+        console.log(results.rows);
+        return results.rows.length > 0 ? results.rows[0] : null;
     });
 }
 

@@ -1,15 +1,43 @@
-var Datastore = require('nedb');
+var pg = require('pg');
 
 var Promise = require('bluebird');
 
-Promise.promisifyAll(Datastore.prototype);
+var conn = 'postgres://philpill@localhost:5432/philpill';
 
-var data = {};
+// var createQuery = 'DROP TABLE IF EXISTS "users" CASCADE; CREATE TABLE IF NOT EXISTS users(ID SERIAL PRIMARY KEY, email TEXT NOT NULL, password TEXT NOT NULL);';
+var createQuery = 'CREATE TABLE IF NOT EXISTS users(ID SERIAL PRIMARY KEY, email TEXT NOT NULL, password TEXT NOT NULL);';
 
-data.players = new Datastore({ filename: './db/players.db', autoload: true });
+pg.connect(conn, function onConnect (err, client, done) {
+    if (err) {
+        console.log(err);
+    }
+    client.query(createQuery, function (err, result) {
+        done();
+        if (err) {
+            console.log(err);
+        } else {
+            console.log(result);
+        }
+    });
+});
 
-data.teams = new Datastore({ filename: './db/teams.db', autoload: true });
 
-data.users = new Datastore({ filename: './db/users.db', autoload: true });
 
-module.exports = data;
+
+
+function query (query, callback) {
+    console.log('query');
+    console.log(query);
+    pg.connect(conn, function onConnect (err, client, done) {
+        if (err) { callback(err); }
+        client.query(query, function (err, result) {
+            console.log(result);
+            done();
+            err ? callback(err) : callback(null, result);
+        });
+    });
+}
+
+module.exports = {
+    query : Promise.promisify(query)
+}
