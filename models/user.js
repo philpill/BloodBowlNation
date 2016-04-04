@@ -2,10 +2,10 @@ var Base = require('./base.js');
 
 var User = class extends Base {
 
-    constructor (id, email, password) {
-        this.id = id;
-        this.email = email;
-        this.password = password;
+    constructor (data) {
+        this.id = data.id;
+        this.email = data.email;
+        this.password = data.password;
     }
 
 };

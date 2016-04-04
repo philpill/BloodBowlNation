@@ -50,7 +50,7 @@ function getAllUsers () {
  */
 function isEmailAvailable (email) {
     return db.getUserByEmail(email).then((user) => {
-        return user ? false : true; // does this need to be resolved as a promise?
+        return user ? false : true;
     });
 }
 

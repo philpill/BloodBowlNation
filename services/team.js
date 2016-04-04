@@ -51,9 +51,7 @@ function isDataValid (data) {
  * @returns {Promise} New team
  */
 function createNewTeam (userId, newTeam) {
-    return isDataValid(newTeam)
-            ? db.createNewTeam(userId, newTeam.name, newTeam.race).then(getNewTeam)
-            : null;
+    return db.createNewTeam(userId, newTeam.name, newTeam.race);
 }
 
 /**
