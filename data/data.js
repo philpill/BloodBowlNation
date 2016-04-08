@@ -4,12 +4,14 @@ var Promise = require('bluebird');
 
 var conn = 'postgres://philpill@localhost:5432/philpill';
 
+var destroy = `DROP SCHEMA PUBLIC CASCADE; CREATE SCHEMA PUBLIC;`;
+
 // http://stackoverflow.com/a/9790225
 var create = `
     CREATE TABLE IF NOT EXISTS manager (id SERIAL PRIMARY KEY, email TEXT NOT NULL UNIQUE, password TEXT NOT NULL);
     CREATE TABLE IF NOT EXISTS race (id SERIAL PRIMARY KEY, name TEXT NOT NULL UNIQUE);
-    CREATE TABLE IF NOT EXISTS team (id SERIAL PRIMARY KEY, name TEXT NOT NULL UNIQUE, race SERIAL NOT NULL REFERENCES race, manager SERIAL REFERENCES manager);
-    CREATE TABLE IF NOT EXISTS position (id SERIAL PRIMARY KEY, name TEXT NOT NULL, race SERIAL NOT NULL REFERENCES race, movement SMALLINT NOT NULL, strength SMALLINT NOT NULL, agility SMALLINT NOT NULL, armour SMALLINT NOT NULL, cost INTEGER NOT NULL);
+    CREATE TABLE IF NOT EXISTS team (id SERIAL PRIMARY KEY, name TEXT NOT NULL UNIQUE, race SERIAL NOT NULL REFERENCES race, manager SERIAL REFERENCES manager, treasury INTEGER NOT NULL);
+    CREATE TABLE IF NOT EXISTS position (id SERIAL PRIMARY KEY, name TEXT NOT NULL, race SERIAL NOT NULL REFERENCES race, movement SMALLINT NOT NULL, strength SMALLINT NOT NULL, agility SMALLINT NOT NULL, armour SMALLINT NOT NULL, cost INTEGER NOT NULL, quantity INTEGER NOT NULL);
     CREATE TABLE IF NOT EXISTS skill (id SERIAL PRIMARY KEY, name TEXT NOT NULL UNIQUE);
     CREATE TABLE IF NOT EXISTS position_skill (position_id INT REFERENCES position ON UPDATE CASCADE ON DELETE CASCADE, skill_id INT REFERENCES skill ON UPDATE CASCADE ON DELETE CASCADE, PRIMARY KEY (position_id, skill_id));
     CREATE TABLE IF NOT EXISTS player (id SERIAL PRIMARY KEY, name TEXT NOT NULL, race SERIAL NOT NULL REFERENCES race, positionId SERIAL NOT NULL REFERENCES position, teamId SERIAL REFERENCES team);
@@ -25,8 +27,26 @@ var populate = `
     DECLARE blockid INTEGER;
     DECLARE catchid INTEGER;
     DECLARE dodgeid INTEGER;
+    DECLARE passid INTEGER;
+    DECLARE surehandsid INTEGER;
+    DECLARE rightstuffid INTEGER;
+    DECLARE stuntyid INTEGER;
+    DECLARE lonerid INTEGER;
+    DECLARE boneheadid INTEGER;
+    DECLARE mightyblowid INTEGER;
+    DECLARE thickskullid INTEGER;
+    DECLARE throwteammateid INTEGER;
+    DECLARE alwayshungryid INTEGER;
+    DECLARE reallystupidid INTEGER;
+    DECLARE regenerationid INTEGER;
     DECLARE humanblitzerid INTEGER;
     DECLARE humancatcherid INTEGER;
+    DECLARE humanthrowerid INTEGER;
+    DECLARE humanogreid INTEGER;
+    DECLARE orcthrowerid INTEGER;
+    DECLARE orcblitzerid INTEGER;
+    DECLARE orcgoblinid INTEGER;
+    DECLARE orctrollid INTEGER;
     BEGIN
 
     INSERT INTO race (name) VALUES ('orc') ON CONFLICT DO NOTHING RETURNING id INTO orcid;
@@ -35,25 +55,58 @@ var populate = `
     INSERT INTO skill (name) VALUES ('block') ON CONFLICT DO NOTHING RETURNING id INTO blockid;
     INSERT INTO skill (name) VALUES ('catch') ON CONFLICT DO NOTHING RETURNING id INTO catchid;
     INSERT INTO skill (name) VALUES ('dodge') ON CONFLICT DO NOTHING RETURNING id INTO dodgeid;
-    INSERT INTO skill (name) VALUES ('sure hands') ON CONFLICT DO NOTHING;
-    INSERT INTO skill (name) VALUES ('pass') ON CONFLICT DO NOTHING;
-    INSERT INTO skill (name) VALUES ('right stuff') ON CONFLICT DO NOTHING;
-    INSERT INTO skill (name) VALUES ('stunty') ON CONFLICT DO NOTHING;
+    INSERT INTO skill (name) VALUES ('sure hands') ON CONFLICT DO NOTHING RETURNING id INTO surehandsid;
+    INSERT INTO skill (name) VALUES ('pass') ON CONFLICT DO NOTHING RETURNING id INTO passid;
+    INSERT INTO skill (name) VALUES ('right stuff') ON CONFLICT DO NOTHING RETURNING id INTO rightstuffid;
+    INSERT INTO skill (name) VALUES ('stunty') ON CONFLICT DO NOTHING RETURNING id INTO stuntyid;
+    INSERT INTO skill (name) VALUES ('loner') ON CONFLICT DO NOTHING RETURNING id INTO lonerid;
+    INSERT INTO skill (name) VALUES ('bonehead') ON CONFLICT DO NOTHING RETURNING id INTO boneheadid;
+    INSERT INTO skill (name) VALUES ('mightyblow') ON CONFLICT DO NOTHING RETURNING id INTO mightyblowid;
+    INSERT INTO skill (name) VALUES ('thickskull') ON CONFLICT DO NOTHING RETURNING id INTO thickskullid;
+    INSERT INTO skill (name) VALUES ('throwteammate') ON CONFLICT DO NOTHING RETURNING id INTO throwteammateid;
+    INSERT INTO skill (name) VALUES ('alwayshungry') ON CONFLICT DO NOTHING RETURNING id INTO alwayshungryid;
+    INSERT INTO skill (name) VALUES ('reallystupid') ON CONFLICT DO NOTHING RETURNING id INTO reallystupidid;
+    INSERT INTO skill (name) VALUES ('regeneration') ON CONFLICT DO NOTHING RETURNING id INTO regenerationid;
 
-    INSERT INTO position (name, race, movement, strength, agility, armour, cost) VALUES ('lineman', (SELECT id FROM race WHERE name = 'orc'), 5, 3, 3, 9, 50000) ON CONFLICT DO NOTHING;
-    INSERT INTO position (name, race, movement, strength, agility, armour, cost) VALUES ('goblin', (SELECT id FROM race WHERE name = 'orc'), 6, 2, 3, 7, 40000) ON CONFLICT DO NOTHING;
-    INSERT INTO position (name, race, movement, strength, agility, armour, cost) VALUES ('thrower', (SELECT id FROM race WHERE name = 'orc'), 5, 3, 3, 8, 70000) ON CONFLICT DO NOTHING;
-    INSERT INTO position (name, race, movement, strength, agility, armour, cost) VALUES ('black orc blocker', (SELECT id FROM race WHERE name = 'orc'), 4, 4, 2, 9, 80000) ON CONFLICT DO NOTHING;
-    INSERT INTO position (name, race, movement, strength, agility, armour, cost) VALUES ('blitzer', (SELECT id FROM race WHERE name = 'orc'), 6, 3, 3, 9, 80000) ON CONFLICT DO NOTHING;
 
-    INSERT INTO position (name, race, movement, strength, agility, armour, cost) VALUES ('lineman', (SELECT id FROM race WHERE name = 'human'), 6, 3, 3, 8, 50000) ON CONFLICT DO NOTHING;
-    INSERT INTO position (name, race, movement, strength, agility, armour, cost) VALUES ('blitzer', (SELECT id FROM race WHERE name = 'human'), 7, 3, 3, 8, 90000) ON CONFLICT DO NOTHING RETURNING id INTO humanblitzerid;
-    INSERT INTO position (name, race, movement, strength, agility, armour, cost) VALUES ('thrower', (SELECT id FROM race WHERE name = 'human'), 6, 3, 3, 8, 70000) ON CONFLICT DO NOTHING;
-    INSERT INTO position (name, race, movement, strength, agility, armour, cost) VALUES ('catcher', (SELECT id FROM race WHERE name = 'human'), 8, 2, 3, 7, 70000) ON CONFLICT DO NOTHING RETURNING id INTO humancatcherid;
+
+
+    INSERT INTO position (name, race, movement, strength, agility, armour, cost, quantity) VALUES ('lineman', orcid, 5, 3, 3, 9, 50000, 16) ON CONFLICT DO NOTHING;
+    INSERT INTO position (name, race, movement, strength, agility, armour, cost, quantity) VALUES ('goblin', orcid, 6, 2, 3, 7, 40000, 4) ON CONFLICT DO NOTHING RETURNING id INTO orcgoblinid;
+    INSERT INTO position (name, race, movement, strength, agility, armour, cost, quantity) VALUES ('thrower', orcid, 5, 3, 3, 8, 70000, 2) ON CONFLICT DO NOTHING RETURNING id INTO orcthrowerid;
+    INSERT INTO position (name, race, movement, strength, agility, armour, cost, quantity) VALUES ('black orc blocker', orcid, 4, 4, 2, 9, 80000, 4) ON CONFLICT DO NOTHING;
+    INSERT INTO position (name, race, movement, strength, agility, armour, cost, quantity) VALUES ('blitzer', orcid, 6, 3, 3, 9, 80000, 4) ON CONFLICT DO NOTHING RETURNING id INTO orcblitzerid;
+    INSERT INTO position (name, race, movement, strength, agility, armour, cost, quantity) VALUES ('troll', orcid, 4, 5, 1, 9, 110000, 1) ON CONFLICT DO NOTHING RETURNING id INTO orctrollid;
+
+    INSERT INTO position (name, race, movement, strength, agility, armour, cost, quantity) VALUES ('lineman', humanid, 6, 3, 3, 8, 50000, 16) ON CONFLICT DO NOTHING;
+    INSERT INTO position (name, race, movement, strength, agility, armour, cost, quantity) VALUES ('blitzer', humanid, 7, 3, 3, 8, 90000, 4) ON CONFLICT DO NOTHING RETURNING id INTO humanblitzerid;
+    INSERT INTO position (name, race, movement, strength, agility, armour, cost, quantity) VALUES ('thrower', humanid, 6, 3, 3, 8, 70000, 2) ON CONFLICT DO NOTHING RETURNING id INTO humanthrowerid;
+    INSERT INTO position (name, race, movement, strength, agility, armour, cost, quantity) VALUES ('catcher', humanid, 8, 2, 3, 7, 70000, 4) ON CONFLICT DO NOTHING RETURNING id INTO humancatcherid;
+    INSERT INTO position (name, race, movement, strength, agility, armour, cost, quantity) VALUES ('ogre', humanid, 5, 5, 2, 9, 140000, 1) ON CONFLICT DO NOTHING RETURNING id INTO humanogreid;
 
     INSERT INTO position_skill (position_id, skill_id) VALUES (humanblitzerid, blockid) ON CONFLICT DO NOTHING;
     INSERT INTO position_skill (position_id, skill_id) VALUES (humancatcherid, catchid) ON CONFLICT DO NOTHING;
     INSERT INTO position_skill (position_id, skill_id) VALUES (humancatcherid, dodgeid) ON CONFLICT DO NOTHING;
+    INSERT INTO position_skill (position_id, skill_id) VALUES (humanthrowerid, passid) ON CONFLICT DO NOTHING;
+    INSERT INTO position_skill (position_id, skill_id) VALUES (humanthrowerid, surehandsid) ON CONFLICT DO NOTHING;
+    INSERT INTO position_skill (position_id, skill_id) VALUES (humanogreid, lonerid) ON CONFLICT DO NOTHING;
+    INSERT INTO position_skill (position_id, skill_id) VALUES (humanogreid, boneheadid) ON CONFLICT DO NOTHING;
+    INSERT INTO position_skill (position_id, skill_id) VALUES (humanogreid, mightyblowid) ON CONFLICT DO NOTHING;
+    INSERT INTO position_skill (position_id, skill_id) VALUES (humanogreid, thickskullid) ON CONFLICT DO NOTHING;
+    INSERT INTO position_skill (position_id, skill_id) VALUES (humanogreid, throwteammateid) ON CONFLICT DO NOTHING;
+
+    INSERT INTO position_skill (position_id, skill_id) VALUES (orcthrowerid, passid) ON CONFLICT DO NOTHING;
+    INSERT INTO position_skill (position_id, skill_id) VALUES (orcthrowerid, surehandsid) ON CONFLICT DO NOTHING;
+    INSERT INTO position_skill (position_id, skill_id) VALUES (orcgoblinid, stuntyid) ON CONFLICT DO NOTHING;
+    INSERT INTO position_skill (position_id, skill_id) VALUES (orcgoblinid, dodgeid) ON CONFLICT DO NOTHING;
+    INSERT INTO position_skill (position_id, skill_id) VALUES (orcgoblinid, rightstuffid) ON CONFLICT DO NOTHING;
+    INSERT INTO position_skill (position_id, skill_id) VALUES (orcblitzerid, blockid) ON CONFLICT DO NOTHING;
+    INSERT INTO position_skill (position_id, skill_id) VALUES (orctrollid, lonerid) ON CONFLICT DO NOTHING;
+    INSERT INTO position_skill (position_id, skill_id) VALUES (orctrollid, alwayshungryid) ON CONFLICT DO NOTHING;
+    INSERT INTO position_skill (position_id, skill_id) VALUES (orctrollid, mightyblowid) ON CONFLICT DO NOTHING;
+    INSERT INTO position_skill (position_id, skill_id) VALUES (orctrollid, reallystupidid) ON CONFLICT DO NOTHING;
+    INSERT INTO position_skill (position_id, skill_id) VALUES (orctrollid, regenerationid) ON CONFLICT DO NOTHING;
+    INSERT INTO position_skill (position_id, skill_id) VALUES (orctrollid, throwteammateid) ON CONFLICT DO NOTHING;
 
     END $$;
 `;
@@ -63,6 +116,8 @@ var populate = `
 pg.connect(conn, function onConnect (err, client, done) {
 
     if (err) { console.log(err); }
+
+    client.query(destroy);
 
     client.query(create, function (err, result) {
         if (err) { console.log(err); }
