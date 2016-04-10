@@ -39,9 +39,9 @@ function * getAll () {
 function * getById () {
     var id = this.params.teamId;
     var body = this.request.body;
-    var team = yield teamService.getTeamById(id);
-    if (team) {
-        this.body = team;
+    var teams = yield teamService.getTeamById(id);
+    if (teams && teams.length) {
+        this.body = teams;
     } else {
         this.status = 404;
     }

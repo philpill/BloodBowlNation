@@ -64,7 +64,7 @@ function createNewTeam (userId, newTeam) {
  * @returns {object.<Team>} Team data
  */
 function getTeamById (id) {
-    return db.getTeamById(id).then(getNewTeam);
+    return db.getTeamById(id);
 }
 
 /**
@@ -72,9 +72,7 @@ function getTeamById (id) {
  * @returns {Array.<Team>}
  */
 function getAllTeams () {
-    return db.getAllTeams().then(function (teams) {
-        return teams.map(getNewTeam);
-    });
+    return db.getAllTeams();
 }
 
 /**

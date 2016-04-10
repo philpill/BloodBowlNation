@@ -9,11 +9,14 @@ var query = require('./data').query;
  */
 function getTeamById (teamId) {
     let ps = {
-        name : 'getTeamByName',
+        name : 'getTeamById',
         text : 'SELECT * FROM team WHERE id = $1',
         values : [teamId]
     };
     return query(ps).then((results) => {
+        console.log('getTeamById()');
+        console.log(teamId);
+        console.log(results);
         return results.rows;
     });
 }
@@ -61,8 +64,7 @@ function getTeamByName (teamName) {
 function getAllTeams () {
     let ps = {
         name : 'getAllTeams',
-        text : 'SELECT * FROM team',
-        values : [teamName]
+        text : 'SELECT * FROM team'
     };
     return query(ps).then((results) => {
         return results.rows;
