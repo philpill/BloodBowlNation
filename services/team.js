@@ -26,8 +26,12 @@ function isNameValid (name) {
  * @returns {boolean} Is name currently in use
  */
 function isNameUnique (teamName) {
-    return db.getTeamByName(teamName).then(function (team) {
-        return !team;
+    var isNameUnique = true;
+    return db.getTeamByName(teamName).then(function (teams) {
+        if (teams && teams.length) {
+            isNameUnique = false;
+        }
+        return isNameUnique;
     });
 }
 

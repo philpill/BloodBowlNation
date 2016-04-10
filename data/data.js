@@ -8,6 +8,8 @@ var destroy = `DROP SCHEMA PUBLIC CASCADE; CREATE SCHEMA PUBLIC;`;
 
 // http://stackoverflow.com/a/9790225
 var create = `
+    DO $$
+    BEGIN
     CREATE TABLE IF NOT EXISTS manager (id SERIAL PRIMARY KEY, email TEXT NOT NULL UNIQUE, password TEXT NOT NULL);
     CREATE TABLE IF NOT EXISTS race (id SERIAL PRIMARY KEY, name TEXT NOT NULL UNIQUE);
     CREATE TABLE IF NOT EXISTS team (id SERIAL PRIMARY KEY, name TEXT NOT NULL UNIQUE, race SERIAL NOT NULL REFERENCES race, manager SERIAL REFERENCES manager, treasury INTEGER NOT NULL);
@@ -16,9 +18,8 @@ var create = `
     CREATE TABLE IF NOT EXISTS position_skill (position_id INT REFERENCES position ON UPDATE CASCADE ON DELETE CASCADE, skill_id INT REFERENCES skill ON UPDATE CASCADE ON DELETE CASCADE, PRIMARY KEY (position_id, skill_id));
     CREATE TABLE IF NOT EXISTS player (id SERIAL PRIMARY KEY, name TEXT NOT NULL, race SERIAL NOT NULL REFERENCES race, positionId SERIAL NOT NULL REFERENCES position, teamId SERIAL REFERENCES team);
     CREATE TABLE IF NOT EXISTS player_skill (player_id SERIAL REFERENCES player ON UPDATE CASCADE ON DELETE CASCADE, skill_id SERIAL REFERENCES skill ON UPDATE CASCADE ON DELETE CASCADE, PRIMARY KEY (player_id, skill_id));
+    END $$;
 `;
-
-
 
 var populate = `
     DO $$
@@ -67,9 +68,6 @@ var populate = `
     INSERT INTO skill (name) VALUES ('alwayshungry') ON CONFLICT DO NOTHING RETURNING id INTO alwayshungryid;
     INSERT INTO skill (name) VALUES ('reallystupid') ON CONFLICT DO NOTHING RETURNING id INTO reallystupidid;
     INSERT INTO skill (name) VALUES ('regeneration') ON CONFLICT DO NOTHING RETURNING id INTO regenerationid;
-
-
-
 
     INSERT INTO position (name, race, movement, strength, agility, armour, cost, quantity) VALUES ('lineman', orcid, 5, 3, 3, 9, 50000, 16) ON CONFLICT DO NOTHING;
     INSERT INTO position (name, race, movement, strength, agility, armour, cost, quantity) VALUES ('goblin', orcid, 6, 2, 3, 7, 40000, 4) ON CONFLICT DO NOTHING RETURNING id INTO orcgoblinid;
@@ -128,8 +126,6 @@ pg.connect(conn, function onConnect (err, client, done) {
             done();
         });
     });
-
-    // drop schema public cascade; create schema public;
 });
 
 

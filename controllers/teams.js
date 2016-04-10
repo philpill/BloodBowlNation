@@ -6,8 +6,13 @@ var config = require('../config/players');
 function * create () {
     var body = this.request.body;
     var newTeam = yield teamService.createNewTeam(this.state.userId, body);
-    this.status = newTeam ? 200 : 400;
-    this.body = newTeam ? newTeam : 'data invalid';
+    console.log('create');
+    console.log(newTeam);
+    if (newTeam && newTeam.length) {
+        this.body = newTeam;
+    } else {
+        this.status = 400;
+    }
 }
 
 function * validateCreate (next) {
@@ -24,8 +29,11 @@ function * validateCreate (next) {
 
 function * getAll () {
     var teams = yield teamService.getAllTeams();
-    this.body = teams ? teams : 'no data';
-    this.status = teams && teams.length ? 200 : 204;
+    if (teams && teams.length) {
+        this.body = teams;
+    } else {
+        this.status = 204;
+    }
 }
 
 function * getById () {

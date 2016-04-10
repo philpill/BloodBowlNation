@@ -1,29 +1,40 @@
 var db = require('./data').teams;
 
+var query = require('./data').query;
+
 /**
  * Get a team by team id
  * @param {Number} teamId Id of team to return
  * @returns {Promise}
  */
 function getTeamById (teamId) {
-    return db.findOneAsync({ _id : teamId });
+    let ps = {
+        name : 'getTeamByName',
+        text : 'SELECT * FROM team WHERE id = $1',
+        values : [teamId]
+    };
+    return query(ps).then((results) => {
+        return results.rows;
+    });
 }
 
 /**
  * Create new team
- * @param {string} userId User Id for manager
+ * @param {number} userId User Id for manager
  * @param {string} teamName New team name
- * @param {string} teamRace New team race
+ * @param {teamRaceId} teamRaceId New team race id
  * @returns {Promise}
  */
-function createNewTeam (userId, teamName, teamRace) {
-    return db.insertAsync({
-        manager : userId,
-        name : teamName,
-        race : teamRace,
-        players : [],
-        created : Date.now(),
-        createdBy : userId
+function createNewTeam (userId, teamName, teamRaceId) {
+    let ps = {
+        name : 'createNewTeam',
+        text : 'INSERT INTO team (name, race, manager, treasury) VALUES ($1, $2, $3, $4) RETURNING *',
+        values : [teamName, teamRaceId, userId, 1000000]
+    };
+    return query(ps).then((results) => {
+        console.log('createNewTeam()');
+        console.log(results);
+        return results.rows;
     });
 }
 
@@ -33,7 +44,14 @@ function createNewTeam (userId, teamName, teamRace) {
  * @returns {Promise}
  */
 function getTeamByName (teamName) {
-    return db.findOneAsync({ name : teamName });
+    let ps = {
+        name : 'getTeamByName',
+        text : 'SELECT * FROM team WHERE name = $1',
+        values : [teamName]
+    };
+    return query(ps).then((results) => {
+        return results.rows;
+    });
 }
 
 /**
@@ -41,7 +59,14 @@ function getTeamByName (teamName) {
  * @returns {Promise}
  */
 function getAllTeams () {
-    return db.findAsync({ });
+    let ps = {
+        name : 'getAllTeams',
+        text : 'SELECT * FROM team',
+        values : [teamName]
+    };
+    return query(ps).then((results) => {
+        return results.rows;
+    });
 }
 
 /**

@@ -9,7 +9,7 @@ var query = require('./data').query;
  * @returns {Promise}
  */
 function addNewUser (email, hash) {
-    let ps = { name : 'addNewUser', text : 'INSERT INTO users (email, password) VALUES ($1, $2)', values : [email, hash] };
+    let ps = { name : 'addNewUser', text : 'INSERT INTO manager (email, password) VALUES ($1, $2)', values : [email, hash] };
     return query(ps).then((results) => {
         return results.rows;
     });
@@ -21,7 +21,7 @@ function addNewUser (email, hash) {
  * @returns {Promise}
  */
 function getUserByEmail (email) {
-    let ps = { name : 'getUserbyEmail', text : 'SELECT * FROM users WHERE email = $1', values : [email] };
+    let ps = { name : 'getUserbyEmail', text : 'SELECT * FROM manager WHERE email = $1', values : [email] };
     return query(ps).then((results) => {
         return results.rows.length > 0 ? results.rows[0] : null;
     });
@@ -32,7 +32,7 @@ function getUserByEmail (email) {
  * @returns {Promise}
  */
 function getAllUsers () {
-    let ps = { name: 'getAllUsers', text: 'SELECT * FROM users' };
+    let ps = { name: 'getAllUsers', text: 'SELECT * FROM manager' };
     return query(ps).then((results) => {
         return results.rows;
     });
@@ -44,7 +44,7 @@ function getAllUsers () {
  * @returns {Promise}
  */
 function getUserById (id) {
-    let ps = { name : 'getUserById', text : 'SELECT * FROM users WHERE id = $1', values : [id] };
+    let ps = { name : 'getUserById', text : 'SELECT * FROM manager WHERE id = $1', values : [id] };
     return query(ps).then((results) => {
         return results.rows.length > 0 ? results.rows[0] : null;
     });

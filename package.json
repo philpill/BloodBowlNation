@@ -4,14 +4,13 @@
   "description": "Blood Bowl Server",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js",
+    "start": "nodemon --use-strict app.js",
     "test": "./node_modules/mocha/bin/mocha ./tests/test.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/philpill/BloodBowlNation.git"
   },
-  "author": "",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/philpill/BloodBowlNation/issues"

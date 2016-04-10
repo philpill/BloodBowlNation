@@ -7,6 +7,7 @@ var privateRoutes = new router();
 var auth = require('./controllers/authentication');
 var players = require('./controllers/players');
 var teams = require('./controllers/teams');
+var races = require('./controllers/races');
 var users = require('./controllers/users');
 
 publicRoutes.post('/login', auth.login);
@@ -14,6 +15,8 @@ publicRoutes.post('/login', auth.login);
 publicRoutes.post('/register', auth.validateRegister, auth.register);
 
 publicRoutes.get('/teams', teams.getAll);
+
+publicRoutes.get('/races', races.getAll);
 
 publicRoutes.get('/teams/:teamId', teams.getById);
 
