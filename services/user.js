@@ -7,8 +7,8 @@ var User = require('../models/user');
  * @param {string} hash Password hash of new user
  * @returns {Promise}
  */
-function addNewUser (email, hash) {
-    return isDataValid(email) ? db.addNewUser(email, hash) : null;
+function addNewUser (name, email, hash) {
+    return isDataValid(email) ? db.addNewUser(name, email, hash) : null;
 }
 
 /**

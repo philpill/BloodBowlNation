@@ -45,7 +45,7 @@ function * validateRegister (next) {
 function * register () {
     var body = this.request.body;
     var hash = securityService.getPasswordHash(body.password);
-    var newUser = yield userService.addNewUser(body.email, hash);
+    var newUser = yield userService.addNewUser(body.name, body.email, hash);
     if (newUser) {
         this.body = securityService.getNewToken(newUser.id);
         this.status = 200;

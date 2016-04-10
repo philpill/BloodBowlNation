@@ -8,8 +8,8 @@ var query = require('./data').query;
  * @param {string} hash Password hash of new user
  * @returns {Promise}
  */
-function addNewUser (email, hash) {
-    let ps = { name : 'addNewUser', text : 'INSERT INTO manager (email, password) VALUES ($1, $2)', values : [email, hash] };
+function addNewUser (name, email, hash) {
+    let ps = { name : 'addNewUser', text : 'INSERT INTO manager (name, email, password) VALUES ($1, $2, $3)', values : [name, email, hash] };
     return query(ps).then((results) => {
         return results.rows;
     });
