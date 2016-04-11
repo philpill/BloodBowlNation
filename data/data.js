@@ -4,7 +4,8 @@ var Promise = require('bluebird');
 
 var conn = 'postgres://philpill@localhost:5432/philpill';
 
-var destroy = `DROP SCHEMA PUBLIC CASCADE; CREATE SCHEMA PUBLIC;`;
+// var destroy = 'DROP SCHEMA PUBLIC CASCADE; CREATE SCHEMA PUBLIC;';
+var destroy = 'DROP TABLE IF EXISTS race, team, player, skill, position CASCADE;';
 
 // http://stackoverflow.com/a/9790225
 var create = `
@@ -12,42 +13,42 @@ var create = `
     BEGIN
     CREATE TABLE IF NOT EXISTS manager (id SERIAL PRIMARY KEY, name TEXT NOT NULL, email TEXT NOT NULL UNIQUE, password TEXT NOT NULL);
     CREATE TABLE IF NOT EXISTS race (id SERIAL PRIMARY KEY, name TEXT NOT NULL UNIQUE);
-    CREATE TABLE IF NOT EXISTS team (id SERIAL PRIMARY KEY, name TEXT NOT NULL UNIQUE, race SERIAL NOT NULL REFERENCES race, manager SERIAL REFERENCES manager, treasury INTEGER NOT NULL);
-    CREATE TABLE IF NOT EXISTS position (id SERIAL PRIMARY KEY, name TEXT NOT NULL, race SERIAL NOT NULL REFERENCES race, movement SMALLINT NOT NULL, strength SMALLINT NOT NULL, agility SMALLINT NOT NULL, armour SMALLINT NOT NULL, cost INTEGER NOT NULL, quantity INTEGER NOT NULL);
+    CREATE TABLE IF NOT EXISTS team (id SERIAL PRIMARY KEY, name TEXT NOT NULL UNIQUE, race SERIAL NOT NULL REFERENCES race, manager SERIAL REFERENCES manager, treasury INT NOT NULL);
+    CREATE TABLE IF NOT EXISTS position (id SERIAL PRIMARY KEY, name TEXT NOT NULL, race SERIAL NOT NULL REFERENCES race, movement SMALLINT NOT NULL, strength SMALLINT NOT NULL, agility SMALLINT NOT NULL, armour SMALLINT NOT NULL, cost INT NOT NULL, quantity INT NOT NULL);
     CREATE TABLE IF NOT EXISTS skill (id SERIAL PRIMARY KEY, name TEXT NOT NULL UNIQUE);
     CREATE TABLE IF NOT EXISTS position_skill (position_id INT REFERENCES position ON UPDATE CASCADE ON DELETE CASCADE, skill_id INT REFERENCES skill ON UPDATE CASCADE ON DELETE CASCADE, PRIMARY KEY (position_id, skill_id));
-    CREATE TABLE IF NOT EXISTS player (id SERIAL PRIMARY KEY, name TEXT NOT NULL, race SERIAL NOT NULL REFERENCES race, positionId SERIAL NOT NULL REFERENCES position, teamId SERIAL REFERENCES team);
+    CREATE TABLE IF NOT EXISTS player (id SERIAL PRIMARY KEY, name TEXT NOT NULL, raceId SERIAL NOT NULL REFERENCES race, positionId SERIAL NOT NULL REFERENCES position, teamId SERIAL REFERENCES team, createdBy SERIAL NOT NULL REFERENCES manager, createdDate TIMESTAMP NOT NULL);
     CREATE TABLE IF NOT EXISTS player_skill (player_id SERIAL REFERENCES player ON UPDATE CASCADE ON DELETE CASCADE, skill_id SERIAL REFERENCES skill ON UPDATE CASCADE ON DELETE CASCADE, PRIMARY KEY (player_id, skill_id));
     END $$;
 `;
 
 var populate = `
     DO $$
-    DECLARE orcid INTEGER;
-    DECLARE humanid INTEGER;
-    DECLARE blockid INTEGER;
-    DECLARE catchid INTEGER;
-    DECLARE dodgeid INTEGER;
-    DECLARE passid INTEGER;
-    DECLARE surehandsid INTEGER;
-    DECLARE rightstuffid INTEGER;
-    DECLARE stuntyid INTEGER;
-    DECLARE lonerid INTEGER;
-    DECLARE boneheadid INTEGER;
-    DECLARE mightyblowid INTEGER;
-    DECLARE thickskullid INTEGER;
-    DECLARE throwteammateid INTEGER;
-    DECLARE alwayshungryid INTEGER;
-    DECLARE reallystupidid INTEGER;
-    DECLARE regenerationid INTEGER;
-    DECLARE humanblitzerid INTEGER;
-    DECLARE humancatcherid INTEGER;
-    DECLARE humanthrowerid INTEGER;
-    DECLARE humanogreid INTEGER;
-    DECLARE orcthrowerid INTEGER;
-    DECLARE orcblitzerid INTEGER;
-    DECLARE orcgoblinid INTEGER;
-    DECLARE orctrollid INTEGER;
+    DECLARE orcid INT;
+    DECLARE humanid INT;
+    DECLARE blockid INT;
+    DECLARE catchid INT;
+    DECLARE dodgeid INT;
+    DECLARE passid INT;
+    DECLARE surehandsid INT;
+    DECLARE rightstuffid INT;
+    DECLARE stuntyid INT;
+    DECLARE lonerid INT;
+    DECLARE boneheadid INT;
+    DECLARE mightyblowid INT;
+    DECLARE thickskullid INT;
+    DECLARE throwteammateid INT;
+    DECLARE alwayshungryid INT;
+    DECLARE reallystupidid INT;
+    DECLARE regenerationid INT;
+    DECLARE humanblitzerid INT;
+    DECLARE humancatcherid INT;
+    DECLARE humanthrowerid INT;
+    DECLARE humanogreid INT;
+    DECLARE orcthrowerid INT;
+    DECLARE orcblitzerid INT;
+    DECLARE orcgoblinid INT;
+    DECLARE orctrollid INT;
     BEGIN
 
     INSERT INTO race (name) VALUES ('orc') ON CONFLICT DO NOTHING RETURNING id INTO orcid;

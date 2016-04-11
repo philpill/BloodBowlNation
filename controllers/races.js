@@ -22,7 +22,6 @@ function * getByName () {
 
 function * getAll () {
     var races = yield raceService.getAllRaces();
-    console.log(races);
     if (races && races.length) {
         this.body = races;
     } else {

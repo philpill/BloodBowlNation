@@ -1,5 +1,3 @@
-var db = require('./data').teams;
-
 var query = require('./data').query;
 
 /**
@@ -14,7 +12,10 @@ function getRaceById (raceId) {
         values : [raceId]
     };
     return query(ps).then((results) => {
-        return results.rows;
+        if (!results || results.rows.length > 1) {
+            throw new Error('get race by id failed');
+        }
+        return results.rows[0];
     });
 }
 /**
@@ -29,7 +30,10 @@ function getRaceByName (raceName) {
         values : [raceName]
     };
     return query(ps).then((results) => {
-        return results.rows;
+        if (!results || results.rows.length > 1) {
+            throw new Error('get race by name failed');
+        }
+        return results.rows[0];
     });
 }
 

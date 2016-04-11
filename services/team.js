@@ -1,6 +1,5 @@
 var db = require('../data/teams');
 var config = require('../config/players');
-var Team = require('../models/team');
 
 /**
  * Check race exists in config
@@ -27,8 +26,8 @@ function isNameValid (name) {
  */
 function isNameUnique (teamName) {
     var isNameUnique = true;
-    return db.getTeamByName(teamName).then(function (teams) {
-        if (teams && teams.length) {
+    return db.getTeamByName(teamName).then(function (team) {
+        if (team) {
             isNameUnique = false;
         }
         return isNameUnique;
@@ -76,16 +75,6 @@ function getAllTeams () {
 }
 
 /**
- * Add player to team
- * @param {string} teamId
- * @param {string} playerId
- * @returns {object.<Team>} Updated team
- */
-function addPlayerToTeam (teamId, playerId) {
-    return db.addPlayerToTeam(teamId, playerId).then(getNewTeam);
-}
-
-/**
  * Validate if user is manager of team
  * @param {string} teamId Id of team
  * @param {string} userId Id of user
@@ -108,6 +97,5 @@ module.exports = {
     getTeamById : getTeamById,
     isNameUnique : isNameUnique,
     getAllTeams : getAllTeams,
-    addPlayerToTeam : addPlayerToTeam,
     isManager : isManager
 };

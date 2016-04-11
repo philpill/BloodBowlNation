@@ -10,6 +10,19 @@ function * getById () {
     }
 }
 
+function * addNewPlayer () {
+    var id = this.state.userId;
+    var body = this.request.body;
+    var teamId = body.teamId;
+    var newPlayer = yield playerService.addNewPlayer(id, body);
+    if (newPlayer) {
+        this.body = newPlayer;
+    } else {
+        this.status = 400;
+    }
+}
+
 module.exports = {
-    getById : getById
+    getById : getById,
+    addNewPlayer : addNewPlayer
 };

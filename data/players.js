@@ -1,5 +1,4 @@
-var db = require('./data').players;
-var config = require('../config/players');
+var query = require('./data').query;
 
 /**
  * Get a player by id
@@ -7,37 +6,33 @@ var config = require('../config/players');
  * @returns {Promise}
  */
 function getPlayerById(id) {
-    return db.findAsync({ _id : id });
+
 }
 
 /**
  * Create a new player
  * @param {string} userId User id
  * @param {string} name Player name
- * @param {string} race Player race
- * @param {string} position Player position
+ * @param {string} race Player race id
+ * @param {string} position Player position id
  * @param {string} teamId Team id
  * @returns {Promise}
  */
-function createNewPlayer (userId, name, race, position, teamId) {
-
-    var stats = config[race][position];
-
-    return db.insertAsync({
-        name : name,
-        position : position,
-        race : race,
-        team : teamId,
-        mv : stats.mv,
-        st : stats.st,
-        ag : stats.ag,
-        av : stats.av,
-        created : Date.now(),
-        createdBy : userId
+function addNewPlayer (userId, playerName, raceId, positionId, teamId) {
+    let ps = {
+        name : 'addNewPlayer',
+        text : 'INSERT INTO player (name, raceId, positionId, teamId, createdBy, createdDate) VALUES ($1, $2, $3, $4, $5, now()) RETURNING *',
+        values : [playerName, raceId, positionId, teamId, userId]
+    };
+    return query(ps).then((results) => {
+        if (!results || results.rows.length !== 1) {
+            throw new Error('add new player failed');
+        }
+        return results.rows[0];
     });
 }
 
 module.exports = {
     getPlayerById : getPlayerById,
-    createNewPlayer : createNewPlayer
+    addNewPlayer : addNewPlayer
 };

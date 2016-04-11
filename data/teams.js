@@ -1,5 +1,3 @@
-var db = require('./data').teams;
-
 var query = require('./data').query;
 
 /**
@@ -14,10 +12,10 @@ function getTeamById (teamId) {
         values : [teamId]
     };
     return query(ps).then((results) => {
-        console.log('getTeamById()');
-        console.log(teamId);
-        console.log(results);
-        return results.rows;
+        if (!results || results.rows.length > 1) {
+            throw new Error('get team by id failed');
+        }
+        return results.rows[0];
     });
 }
 
@@ -35,9 +33,10 @@ function createNewTeam (userId, teamName, teamRaceId) {
         values : [teamName, teamRaceId, userId, 1000000]
     };
     return query(ps).then((results) => {
-        console.log('createNewTeam()');
-        console.log(results);
-        return results.rows;
+        if (!results || results.rows.length !== 1) {
+            throw new Error('create new team failed');
+        }
+        return results.rows[0];
     });
 }
 
@@ -53,7 +52,10 @@ function getTeamByName (teamName) {
         values : [teamName]
     };
     return query(ps).then((results) => {
-        return results.rows;
+        if (!results || results.rows.length > 1) {
+            throw new Error('get team by name failed');
+        }
+        return results.rows[0];
     });
 }
 
@@ -69,16 +71,6 @@ function getAllTeams () {
     return query(ps).then((results) => {
         return results.rows;
     });
-}
-
-/**
- * Add player to team
- * @param {string} teamId
- * @param {string} playerId
- * @returns {Promise}
- */
-function addPlayerToTeam (teamId, playerId) {
-    return db.updateAsync({ _id: teamId }, { $push: { players: playerId } }, { returnUpdatedDocs : true });
 }
 
 /**

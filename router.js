@@ -29,7 +29,7 @@ privateRoutes.post('/players/:playerId', players.getById);
 
 privateRoutes.post('/teams', teams.validateCreate, teams.create);
 
-privateRoutes.post('/teams/:teamId', teams.validateAddNewPlayer, teams.addNewPlayer);
+privateRoutes.post('/teams/:teamId/player', teams.validateAddNewPlayer, players.addNewPlayer);
 
 
 

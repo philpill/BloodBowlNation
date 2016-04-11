@@ -1,5 +1,3 @@
-var User = require('../models/user');
-
 var query = require('./data').query;
 
 /**
@@ -9,9 +7,12 @@ var query = require('./data').query;
  * @returns {Promise}
  */
 function addNewUser (name, email, hash) {
-    let ps = { name : 'addNewUser', text : 'INSERT INTO manager (name, email, password) VALUES ($1, $2, $3)', values : [name, email, hash] };
+    let ps = { name : 'addNewUser', text : 'INSERT INTO manager (name, email, password) VALUES ($1, $2, $3) RETURNING *', values : [name, email, hash] };
     return query(ps).then((results) => {
-        return results.rows;
+        if (!results || results.rows.length !== 1) {
+            throw new Error('add new user failed');
+        }
+        return results.rows[0];
     });
 }
 
@@ -23,7 +24,10 @@ function addNewUser (name, email, hash) {
 function getUserByEmail (email) {
     let ps = { name : 'getUserbyEmail', text : 'SELECT * FROM manager WHERE email = $1', values : [email] };
     return query(ps).then((results) => {
-        return results.rows.length > 0 ? results.rows[0] : null;
+        if (!results || results.rows.length > 1) {
+            throw new Error('get user by email failed');
+        }
+        return results.rows[0];
     });
 }
 
@@ -46,7 +50,10 @@ function getAllUsers () {
 function getUserById (id) {
     let ps = { name : 'getUserById', text : 'SELECT * FROM manager WHERE id = $1', values : [id] };
     return query(ps).then((results) => {
-        return results.rows.length > 0 ? results.rows[0] : null;
+        if (!results || results.rows.length > 1) {
+            throw new Error('get user by id failed');
+        }
+        return results.rows[0];
     });
 }
 
