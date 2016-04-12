@@ -9,6 +9,7 @@ var players = require('./controllers/players');
 var teams = require('./controllers/teams');
 var races = require('./controllers/races');
 var users = require('./controllers/users');
+var positions = require('./controllers/positions');
 
 publicRoutes.post('/login', auth.login);
 
@@ -17,6 +18,8 @@ publicRoutes.post('/register', auth.validateRegister, auth.register);
 publicRoutes.get('/teams', teams.getAll);
 
 publicRoutes.get('/races', races.getAll);
+
+publicRoutes.get('/positions', positions.getAllPositions);
 
 publicRoutes.get('/teams/:teamId', teams.getById);
 

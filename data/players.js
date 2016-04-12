@@ -21,7 +21,7 @@ function getPlayerById(id) {
 function addNewPlayer (userId, playerName, raceId, positionId, teamId) {
     let ps = {
         name : 'addNewPlayer',
-        text : 'INSERT INTO player (name, raceId, positionId, teamId, createdBy, createdDate) VALUES ($1, $2, $3, $4, $5, now()) RETURNING *',
+        text : 'INSERT INTO player (name, race, position, team, createdBy, createdDate) VALUES ($1, $2, $3, $4, $5, now()) RETURNING *',
         values : [playerName, raceId, positionId, teamId, userId]
     };
     return query(ps).then((results) => {
