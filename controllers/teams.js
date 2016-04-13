@@ -45,22 +45,9 @@ function * getById () {
     }
 }
 
-function * validateAddNewPlayer (next) {
-    var teamId = this.params.teamId;
-    var body = this.request.body;
-    var isManager = yield teamService.isManager(teamId, this.state.userId);
-    if (isManager && config[body.race] && config[body.race][body.position]) {
-        yield next();
-    } else {
-        this.status = 400;
-        this.body = 'data invalid';
-    }
-}
-
 module.exports = {
     create : create,
     validateCreate : validateCreate,
     getAll : getAll,
-    getById : getById,
-    validateAddNewPlayer : validateAddNewPlayer
+    getById : getById
 };

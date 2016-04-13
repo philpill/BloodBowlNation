@@ -23,6 +23,9 @@ publicRoutes.get('/positions', positions.getAllPositions);
 
 publicRoutes.get('/teams/:teamId', teams.getById);
 
+publicRoutes.get('/teams/:teamId/players', players.getPlayersByTeamId);
+
+
 
 privateRoutes.post('/authenticate', auth.authenticate);
 
@@ -32,7 +35,8 @@ privateRoutes.post('/players/:playerId', players.getById);
 
 privateRoutes.post('/teams', teams.validateCreate, teams.create);
 
-privateRoutes.post('/teams/:teamId/player', teams.validateAddNewPlayer, players.addNewPlayer);
+privateRoutes.post('/teams/:teamId/player', players.validateAddNewPlayer, players.addNewPlayer);
+
 
 
 

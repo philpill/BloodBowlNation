@@ -2,7 +2,7 @@ var query = require('./data').query;
 
 /**
  * Get a team by team id
- * @param {Number} teamId Id of team to return
+ * @param {number} teamId Id of team to return
  * @returns {Promise}
  */
 function getTeamById (teamId) {
@@ -29,7 +29,7 @@ function getTeamById (teamId) {
 function createNewTeam (userId, teamName, teamRaceId) {
     let ps = {
         name : 'createNewTeam',
-        text : 'INSERT INTO team (name, race, manager, treasury) VALUES ($1, $2, $3, $4) RETURNING *',
+        text : 'INSERT INTO team (name, race, manager, treasury, createdDate) VALUES ($1, $2, $3, $4, NOW()) RETURNING *',
         values : [teamName, teamRaceId, userId, 1000000]
     };
     return query(ps).then((results) => {
@@ -75,12 +75,23 @@ function getAllTeams () {
 
 /**
  * Get team managed by user
- * @param {string} teamId
- * @param {string} userId
+ * @param {number} teamId
+ * @param {number} userId
  * @returns {Promise}
  */
 function isManager (teamId, userId) {
-    return db.findOneAsync({ _id : teamId, manager : userId });
+    let isManager = false;
+    let ps = {
+        name : 'isManager',
+        text : 'SELECT * FROM team WHERE id = $1 AND manager = $2',
+        values : [teamId, userId]
+    };
+    return query(ps).then((results) => {
+        if (results && results.rows.length === 1) {
+            isManager = true;
+        }
+        return isManager;
+    });
 }
 
 module.exports = {

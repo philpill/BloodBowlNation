@@ -23,7 +23,12 @@ function getPlayerById (playerId) {
     return db.getPlayerById(playerId);
 }
 
+function getPlayersByTeamId (teamId) {
+    return db.getPlayersByTeamId(teamId);
+}
+
 module.exports = {
     addNewPlayer : addNewPlayer,
-    getPlayerById : getPlayerById
+    getPlayerById : getPlayerById,
+    getPlayersByTeamId : getPlayersByTeamId
 }

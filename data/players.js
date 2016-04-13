@@ -21,7 +21,7 @@ function getPlayerById(id) {
 function addNewPlayer (userId, playerName, raceId, positionId, teamId) {
     let ps = {
         name : 'addNewPlayer',
-        text : 'INSERT INTO player (name, race, position, team, createdBy, createdDate) VALUES ($1, $2, $3, $4, $5, now()) RETURNING *',
+        text : 'INSERT INTO player (name, race, position, team, createdBy, createdDate) VALUES ($1, $2, $3, $4, $5, NOW()) RETURNING *',
         values : [playerName, raceId, positionId, teamId, userId]
     };
     return query(ps).then((results) => {
@@ -32,7 +32,22 @@ function addNewPlayer (userId, playerName, raceId, positionId, teamId) {
     });
 }
 
+function getPlayersByTeamId (teamId) {
+    let ps = {
+        name : 'getPlayersByTeamId',
+        text : 'SELECT * FROM player WHERE team = $1',
+        values : [teamId]
+    };
+    return query(ps).then((results) => {
+        if (!results) {
+            throw new Error('get players by team id failed');
+        }
+        return results.rows;
+    });
+}
+
 module.exports = {
     getPlayerById : getPlayerById,
-    addNewPlayer : addNewPlayer
+    addNewPlayer : addNewPlayer,
+    getPlayersByTeamId : getPlayersByTeamId
 };
