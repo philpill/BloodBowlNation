@@ -19,16 +19,25 @@ function getPlayerById(id) {
  * @returns {Promise}
  */
 function addNewPlayer (userId, playerName, raceId, positionId, teamId) {
-    let ps = {
+    let insertPlayer = {
         name : 'addNewPlayer',
-        text : 'INSERT INTO player (name, race, position, team, createdBy, createdDate) VALUES ($1, $2, $3, $4, $5, NOW()) RETURNING *',
+        text : `INSERT INTO player (name, race, position, team, createdBy, createdDate)
+                    VALUES ($1, $2, $3, $4, $5, NOW()) RETURNING *;`,
         values : [playerName, raceId, positionId, teamId, userId]
     };
-    return query(ps).then((results) => {
-        if (!results || results.rows.length !== 1) {
-            throw new Error('add new player failed');
-        }
-        return results.rows[0];
+    let updateTeam = {
+        name : 'deductCostOfNewPlayer',
+        text : `UPDATE team SET treasury = treasury - (SELECT cost FROM position WHERE position.id = $1)
+                    WHERE team.id = $2;`,
+        values : [positionId, teamId]
+    };
+    return query(updateTeam).then(() => {
+        return query(insertPlayer).then((results) => {
+            if (!results || results.rows.length !== 1) {
+                throw new Error('add new player failed');
+            }
+            return results.rows[0];
+        });
     });
 }
 
