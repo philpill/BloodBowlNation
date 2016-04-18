@@ -5,7 +5,8 @@
   "main": "app.js",
   "scripts": {
     "start": "nodemon --use-strict app.js",
-    "test": "./node_modules/mocha/bin/mocha ./tests/test.js"
+    "test": "./node_modules/mocha/bin/mocha ./tests/test.js",
+    "restart": "node ./init.js"
   },
   "repository": {
     "type": "git",

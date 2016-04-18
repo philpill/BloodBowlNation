@@ -25,7 +25,6 @@ function * addNewPlayer () {
 function * validateAddNewPlayer (next) {
     var teamId = this.params.teamId;
     var body = this.request.body;
-    console.log(body);
     var isManager = yield teamService.isManager(teamId, this.state.userId);
     if (isManager) {
         yield next;
@@ -45,9 +44,36 @@ function * getPlayersByTeamId () {
     }
 }
 
+function * retirePlayer () {
+    var body = this.request.body;
+    var playerId = body.player;
+    var player = yield playerService.retirePlayer(playerId);
+    if (player) {
+        this.body = player;
+    } else {
+        this.status = 400;
+    }
+}
+
+function * validateRetirePlayer () {
+    var body = this.request.body;
+    var playerId = body.player;
+    var player = yield playerService.getPlayerById(playerId);
+    var isManager = yield teamService.isManager(player.team, this.state.userId);
+    if (isManager) {
+        yield next;
+    } else {
+        this.status = 400;
+        this.body = 'data invalid';
+    }
+}
+
 module.exports = {
     getById : getById,
     addNewPlayer : addNewPlayer,
     validateAddNewPlayer : validateAddNewPlayer,
-    getPlayersByTeamId : getPlayersByTeamId
+    getPlayersByTeamId : getPlayersByTeamId,
+    retirePlayer : retirePlayer,
+    validateRetirePlayer : validateRetirePlayer
+
 };

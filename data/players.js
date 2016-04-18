@@ -21,8 +21,8 @@ function getPlayerById(id) {
 function addNewPlayer (userId, playerName, raceId, positionId, teamId) {
     let insertPlayer = {
         name : 'addNewPlayer',
-        text : `INSERT INTO player (name, race, position, team, createdBy, createdDate)
-                    VALUES ($1, $2, $3, $4, $5, NOW()) RETURNING *;`,
+        text : `INSERT INTO player (name, race, position, team, created_by, created_date, is_retired)
+                    VALUES ($1, $2, $3, $4, $5, NOW(), false) RETURNING *;`,
         values : [playerName, raceId, positionId, teamId, userId]
     };
     let updateTeam = {
@@ -55,8 +55,23 @@ function getPlayersByTeamId (teamId) {
     });
 }
 
+function retirePlayer (playerId) {
+    let ps = {
+        name : 'retirePlayer',
+        text : `UPDATE player SET is_retired = TRUE WHERE player.id = $1;`,
+        values : [playerId]
+    };
+    return query(ps).then((results) => {
+        if (!results) {
+            throw new Error('retire player failed');
+        }
+        return results.rows;
+    });
+}
+
 module.exports = {
     getPlayerById : getPlayerById,
     addNewPlayer : addNewPlayer,
-    getPlayersByTeamId : getPlayersByTeamId
+    getPlayersByTeamId : getPlayersByTeamId,
+    retirePlayer : retirePlayer
 };

@@ -7,7 +7,7 @@ var query = require('./data').query;
  * @returns {Promise}
  */
 function addNewUser (name, email, hash) {
-    let ps = { name : 'addNewUser', text : 'INSERT INTO manager (name, email, password, createdDate) VALUES ($1, $2, $3, NOW()) RETURNING *', values : [name, email, hash] };
+    let ps = { name : 'addNewUser', text : 'INSERT INTO manager (name, email, password, created_date) VALUES ($1, $2, $3, NOW()) RETURNING *', values : [name, email, hash] };
     return query(ps).then((results) => {
         if (!results || results.rows.length !== 1) {
             throw new Error('add new user failed');

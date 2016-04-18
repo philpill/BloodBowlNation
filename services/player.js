@@ -27,8 +27,13 @@ function getPlayersByTeamId (teamId) {
     return db.getPlayersByTeamId(teamId);
 }
 
+function retirePlayer (playerId) {
+    return db.retirePlayer(playerId);
+}
+
 module.exports = {
     addNewPlayer : addNewPlayer,
     getPlayerById : getPlayerById,
-    getPlayersByTeamId : getPlayersByTeamId
+    getPlayersByTeamId : getPlayersByTeamId,
+    retirePlayer : retirePlayer
 }

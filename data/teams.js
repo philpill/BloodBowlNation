@@ -29,7 +29,7 @@ function getTeamById (teamId) {
 function createNewTeam (userId, teamName, teamRaceId) {
     let ps = {
         name : 'createNewTeam',
-        text : 'INSERT INTO team (name, race, manager, treasury, createdDate) VALUES ($1, $2, $3, $4, NOW()) RETURNING *',
+        text : 'INSERT INTO team (name, race, manager, treasury, created_date) VALUES ($1, $2, $3, $4, NOW()) RETURNING *',
         values : [teamName, teamRaceId, userId, 1000000]
     };
     return query(ps).then((results) => {
